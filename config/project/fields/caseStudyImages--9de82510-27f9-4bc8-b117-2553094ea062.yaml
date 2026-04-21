@@ -1,0 +1,33 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
+handle: caseStudyImages
+instructions: ''
+name: 'Case Study Images'
+searchable: true
+settings:
+  allowSelfRelations: false
+  allowUploads: true
+  allowedKinds: null
+  defaultUploadLocationSource: 'volume:49dabed7-207d-4087-9227-a18660a3b4c2' # Panda
+  defaultUploadLocationSubpath: ''
+  limit: ''
+  localizeRelations: false
+  previewMode: full
+  restrictFiles: ''
+  selectionLabel: 'Add an Image'
+  showSiteMenu: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+  singleUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  singleUploadLocationSubpath: ''
+  source: null
+  sources:
+    - 'volume:49dabed7-207d-4087-9227-a18660a3b4c2' # Panda
+  targetSiteId: null
+  useSingleFolder: false
+  validateRelatedElements: false
+  viewMode: large
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Assets

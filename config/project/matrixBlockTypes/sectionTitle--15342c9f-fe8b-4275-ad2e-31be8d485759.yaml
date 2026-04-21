@@ -1,0 +1,41 @@
+field: c35e1a9b-e5ca-43f8-a58e-0a58e1581fbd # Page Sections
+fieldLayouts:
+  47ed02a2-47b3-43b2-8b3d-9a1178cc51ca:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: d61e0893-3424-44ae-baa1-54d16eb8de43 # Title
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  d61e0893-3424-44ae-baa1-54d16eb8de43: # Title
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: sectionTitle
+    instructions: ''
+    name: Title
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+handle: sectionTitle
+name: 'Section Title'
+sortOrder: 1

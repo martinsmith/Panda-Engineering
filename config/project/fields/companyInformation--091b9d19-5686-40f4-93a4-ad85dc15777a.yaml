@@ -1,0 +1,43 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: e2b4b0d2-50f5-4093-8fbb-f12bcd5fd3a4 # Global
+handle: companyInformation
+instructions: ''
+name: 'Company Information'
+searchable: true
+settings:
+  columns:
+    __assoc__:
+      -
+        - 1cfcc26c-9d2a-42d0-b6c7-155d7c010a92 # Address
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - 8ec8a84e-28c6-4e2f-a346-0bbcbbd546dc # Company Reg
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - 000dc138-de3d-4948-bec2-496f89984e1d # Contacts
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+  contentTable: '{{%stc_companyinformation}}'
+  fieldLayout: row
+  maxRows: ''
+  minRows: '1'
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: ''
+  staticField: '1'
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

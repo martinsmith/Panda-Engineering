@@ -1,0 +1,19 @@
+fieldLayouts:
+  3f89ecbb-e865-402f-8ab4-f77ac3274e46:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: 091b9d19-5686-40f4-93a4-ad85dc15777a # Company Information
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+handle: contactInfo
+name: 'Contact Information'
+sortOrder: 0

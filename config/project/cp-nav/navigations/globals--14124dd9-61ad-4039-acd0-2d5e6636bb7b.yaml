@@ -1,0 +1,16 @@
+currLabel: Globals
+customIcon: null
+enabled: true
+handle: globals
+icon: globe
+layoutId: 2
+level: 1
+newWindow: false
+parentId: null
+prevLabel: Globals
+prevLevel: null
+prevParentId: null
+prevUrl: globals
+sortOrder: 2
+type: ''
+url: globals

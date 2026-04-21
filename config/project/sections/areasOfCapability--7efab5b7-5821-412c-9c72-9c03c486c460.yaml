@@ -1,0 +1,27 @@
+defaultPlacement: end
+enableVersioning: true
+handle: areasOfCapability
+name: 'Areas of Capability'
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: none
+siteSettings:
+  08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering
+    enabledByDefault: true
+    hasUrls: true
+    template: _areas/_entry
+    uriFormat: '{parent.uri}/{slug}'
+structure:
+  maxLevels: 2
+  uid: 9894632d-b6d3-4389-9654-c481aa7dfd0d
+type: structure

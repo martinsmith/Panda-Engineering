@@ -1,0 +1,47 @@
+fieldLayouts:
+  ecc9d6bf-60f5-4a42-98e3-26da1a6e90bc:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\entries\EntryTitleField
+            warning: null
+            width: 100
+          -
+            fieldUid: 6af18bea-6a01-4de3-9c52-9162e75f7ebb # Page Introduction
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: 'Page Intro'
+        sortOrder: 1
+handle: entype_articleIndex
+hasTitleField: true
+name: 'News Intro'
+section: 54c945bd-ff56-4c1c-b4ab-121864677770 # Panda News
+sortOrder: 2
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

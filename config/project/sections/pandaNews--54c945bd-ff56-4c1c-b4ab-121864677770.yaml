@@ -1,0 +1,15 @@
+defaultPlacement: end
+enableVersioning: true
+handle: pandaNews
+name: 'Panda News'
+propagationMethod: none
+siteSettings:
+  08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering
+    enabledByDefault: true
+    hasUrls: true
+    template: _pandaNews/_entry
+    uriFormat: '{parent.uri}/{slug}'
+structure:
+  maxLevels: 2
+  uid: 7e976b1c-4731-42e7-9e78-47954568c3ff
+type: structure

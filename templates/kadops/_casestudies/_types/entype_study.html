@@ -1,0 +1,32 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="content studies">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageIntroduction }}
+      <div class="projectImages">
+      {% for asset in entry.supportingImages %}
+      <figure>
+        <img src="{{ asset.url('summaries') }}" alt="{{ asset.title }}">
+        <figcaption>{{ asset.title }}</figcaption>
+      </figure>
+      {% endfor %}
+      </div>
+      {{ entry.pageText }}
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

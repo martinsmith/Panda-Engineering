@@ -1,0 +1,58 @@
+columnSuffix: null
+contentColumnType: text
+fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
+handle: achievements
+instructions: ''
+name: Achievments
+searchable: true
+settings:
+  addRowLabel: 'Add an Achievement'
+  columnType: text
+  columns:
+    __assoc__:
+      -
+        - col1
+        -
+          __assoc__:
+            -
+              - heading
+              - Achievement
+            -
+              - handle
+              - achievement
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+      -
+        - col2
+        -
+          __assoc__:
+            -
+              - heading
+              - Where
+            -
+              - handle
+              - where
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+  defaults:
+    -
+      __assoc__:
+        -
+          - col1
+          - ''
+        -
+          - col2
+          - ''
+  maxRows: ''
+  minRows: '1'
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Table

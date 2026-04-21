@@ -1,0 +1,62 @@
+{% extends '_layout' %}
+
+{% block bodyClass %}
+<body class="articles">
+{% endblock %}
+
+{% block content %}
+
+<main>
+  <div class="content news">
+    <div class="pageText intro">
+    <header>
+      <h1>{{ entry.title }}</h1>
+    </header>
+      {{ entry.pageIntroduction }}
+    </div>
+  {% set stuff = craft.entries.section('news').level(2).limit(1) %}
+
+  <div class="pageText current">
+    {% for current in stuff %}
+        <header>
+          <h1>{{ current.title }}</h1>
+        </header>
+        {{ current.pageText }}
+    {% endfor %}
+  </div>
+
+  <div class="archive">
+    <header>
+      <h2>Further reading</h2>
+    </header>
+
+            {% set stuff = craft.entries({
+              section: 'news',
+              orderBy: ('postDate desc'),
+              level: 2,
+              offset: 1,
+            })%}
+    <ul>
+      {% for entry in stuff.all() %}
+      <li>
+        <div>
+        <header>
+          <h3><a href="{{ entry.url }}">{{ entry.title }}</a></h3>
+        </header>
+          <p>{{ entry.pageText|chop(limit="20", unit='w', append='...') }}</p>
+          <p class="readMore"><a href="{{ entry.url }}">Read More</a></p>
+        </div>
+        <p class="postDate">{{ entry.postDate | date("j M Y") }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</main>
+
+
+
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

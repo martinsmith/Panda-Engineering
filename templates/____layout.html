@@ -1,0 +1,152 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="referrer" content="origin-when-cross-origin" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ currentSite.name }}</title>
+  <link rel="stylesheet" href="/_dist/css/style.min.css">
+  <link rel="stylesheet" href="/_dist/css/_menu/hc-offcanvas-nav.min.css">
+  {% block pageCss %}
+  {% endblock %}
+  <!--[if lt IE 9]>
+  <script src="/_dist/js/polyfill/html5-shiv.js"></script>
+  <![endif]-->
+</head>
+
+
+<body>
+{% if currentSite.handle == 'pandaEngineering' %}
+  <div class="wrap panda">
+    {% else %}
+  <div class="wrap kadops">
+    {% endif %}
+    <!-- Star wrap -->
+    <div class="head">
+      <div>
+        <div class="brand">
+          <a href="/"><img src="{{ brand.brand.logo.one.url() }}" alt="{{ currentSite.name }}"></a>
+        </div>
+
+        <div class="contact">
+          {% if currentSite.handle == 'pandaEngineering' %}
+          <p>Panda Engineering (Bfd) Ltd.</p>
+          {% endif %}
+          {% for item in contactInfo.companyInformation.contacts %}
+          <p>Telephone {{ item.name }}: <a href="tel:{{ item.number }}">{{ item.number }}</a></p>
+          <p>Email: <a href="mailto:{{ item.email }}">{{ item.email }}</a></p>
+          {% endfor %}
+        </div>
+        <nav id="wideNav">
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if currentSite.handle == 'pandaEngineering' %}
+            <li><a href="/areas-of-capability">Areas of capability</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% else %}
+            <li><a href="/capabilities">Areas of Capability</a></li>
+            <li><a href="/case-studies">Case Studies</a></li>
+            <li><a href="/meet-the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        <div class="toggle button_container">
+          <div class="lines">
+            <span class="top"></span>
+            <span class="middle"></span>
+            <span class="bottom"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+    <footer>
+      <div>
+        <div class="contact">
+          <h2>Contact</h2>
+          <p class="address">{{ contactInfo.companyInformation.address| nl2br }}</p>
+          <div class="direct">
+            {% for item in contactInfo.companyInformation.contacts %}
+              <p>Telephone {{ item.name }}: <a href="tel:{{ item.number }}">{{ item.number }}</a></p>
+              <p>Email: <a href="mailto:{{ item.email }}">{{ item.email }}</a></p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="footerLinks">
+          <h2>Pages</h2>
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if currentSite.handle == 'pandaEngineering' %}
+            <li><a href="/areas-of-capability">Areas of capability</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% else %}
+            <li><a href="/capabilities">Areas of Capability</a></li>
+            <li><a href="/case-studies">Case Studies</a></li>
+            <li><a href="/meet-the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        {% if currentSite.handle == 'pandaEngineering' %}
+        <div class="policies">
+          <h2>Policies</h2>
+          <ul>
+            {% for item in policyDocuments.policyDocuments %}
+            <li><a href="{{ item.documentUpload.one.url() }}">{{ item.documentTitle }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        <p class="colophon">Copyright &copy; {{ now|date('Y') }} Kadops.co.uk. All rights reserved</p>
+      </div>
+    </footer>
+    <!-- End of wrap -->
+  </div>
+  <nav id="mobNav">
+    <ul>
+      <li><a href="/">Home</a></li>
+      {% if currentSite.handle == 'pandaEngineering' %}
+      {% set capabilities = craft.entries.section('areasOfCapability').all() %}
+      {% nav item in capabilities %}
+      <li>
+        {{ item.getLink() }}
+        {% ifchildren %}
+        <ul>
+          {% children %}
+        </ul>
+        {% endifchildren %}
+      </li>
+      {% endnav %}
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/the-team">Meet the Team</a></li>
+      <li><a href="/news">News</a></li>
+      {% else %}
+      <li><a href="/capabilities">Areas of Capability</a></li>
+      <li><a href="/case-studies">Case Studies</a></li>
+      <li><a href="/meet-the-team">Meet the Team</a></li>
+      <li><a href="/news">News</a></li>
+      {% endif %}
+    </ul>
+</nav>
+  <div class="preloader"><div class="loader"></div></div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="/_dist/js/_menu/hc-offcanvas-nav.min.js?ver=3.4.1"></script>
+
+  <!--<![endif]-->
+  {% block pageScripts %}
+
+  {% endblock %}
+  <script async src="/_dist/js/main.min.js"></script>
+</body>
+
+</html>

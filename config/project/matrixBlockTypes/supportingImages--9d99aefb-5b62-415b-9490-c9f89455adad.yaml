@@ -1,0 +1,56 @@
+field: 3e8173e2-82d1-4c5e-8d56-622c2f629efe # Content
+fieldLayouts:
+  c19f91df-aa36-40da-8aee-e9a0deefae36:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: 51382061-10b3-4d46-85d3-3e42b04e08f4 # Add Images
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  51382061-10b3-4d46-85d3-3e42b04e08f4: # Add Images
+    columnSuffix: null
+    contentColumnType: string
+    fieldGroup: null
+    handle: addImages
+    instructions: ''
+    name: 'Add Images'
+    searchable: true
+    settings:
+      allowSelfRelations: false
+      allowUploads: true
+      allowedKinds: null
+      defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+      defaultUploadLocationSubpath: ''
+      limit: ''
+      localizeRelations: false
+      previewMode: full
+      restrictFiles: ''
+      selectionLabel: 'Add an Image'
+      showSiteMenu: true
+      showUnpermittedFiles: false
+      showUnpermittedVolumes: false
+      singleUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+      singleUploadLocationSubpath: ''
+      source: null
+      sources:
+        - 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+        - 'volume:49dabed7-207d-4087-9227-a18660a3b4c2' # Panda
+      targetSiteId: null
+      useSingleFolder: false
+      validateRelatedElements: false
+      viewMode: large
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\Assets
+handle: supportingImages
+name: 'Supporting Images'
+sortOrder: 3

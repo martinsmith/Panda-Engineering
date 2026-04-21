@@ -1,0 +1,16 @@
+currLabel: Entries
+customIcon: null
+enabled: true
+handle: entries
+icon: section
+layout: 2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666 # Staff
+level: 1
+newWindow: false
+parentId: null
+prevLabel: Entries
+prevLevel: null
+prevParentId: null
+prevUrl: entries
+sortOrder: 1
+type: craft
+url: entries

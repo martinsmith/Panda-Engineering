@@ -1,0 +1,105 @@
+{% extends '_layout' %}
+
+{% block bodyClass %}
+<body class="articles">
+{% endblock %}
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+<main class="articles">
+  <div class="columnA leadArticle fullArticle">
+    <header>
+      <h1>{{ entry.title }}</h1>
+    </header>
+    <div>
+      {{ entry.pageText }}
+      <p class="postDate">{{ entry.postDate | date("j M Y") }}</p>
+    </div>
+    <figure>
+      {% if entry.mainSupportingImage|length %}
+      <a href="{{ entry.url }}"><img src="{{ entry.mainSupportingImage.one().getUrl() }}" alt="{{ entry.mainSupportingImage.one().title }}"></a>
+      {% else %}
+      <a href="{{ entry.url }}"><img src="{{ articleFallbackImage.pendingImage.one().getUrl() }}" alt="{{ articleFallbackImage.pendingImage.one().title }}"></a>
+      {% endif %}
+    </figure>
+  </div>
+  <div class="columnB articleListing">
+    <header>
+      <h2>Further reading</h2>
+    </header>
+
+    {% set query = craft.entries()
+      .section('articles')
+      .limit(2)
+      .offset(1)
+      .level(2)
+      .id('not ' ~ entry.id)
+     %}
+
+  {% paginate query as pageInfo, pageEntries %}
+
+    <ul class="summaries">
+      {% for entry in pageEntries %}
+      <li>
+        <div>
+        <header>
+          <h2><a href="{{ entry.url }}">{{ entry.title }}</a></h2>
+        </header>
+          <p>{{ entry.pageText|chop(limit="20", unit='w', append='...') }}</p>
+          <p class="readMore"><a href="{{ entry.url }}">Read More</a></p>
+        </div>
+        <figure>
+          {% if entry.mainSupportingImage|length %}
+          <a href="{{ entry.url }}"><img src="{{ entry.mainSupportingImage.one().getUrl() }}" alt="{{ entry.mainSupportingImage.one().title }}"></a>
+          {% else %}
+          <a href="{{ entry.url }}"><img src="{{ articleFallbackImage.pendingImage.one().getUrl() }}" alt="{{ articleFallbackImage.pendingImage.one().title }}"></a>
+          {% endif %}
+        </figure>
+        <p class="postDate">{{ entry.postDate | date("j M Y") }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% if pageInfo.totalPages > 1 %}
+      {% set pageRange = 3 %}
+      {% set rangeStart = max(2, pageInfo.currentPage - pageRange) %}
+      {% set rangeEnd = min(pageInfo.totalPages - 1, pageInfo.currentPage + pageRange) %}
+      <ul class="pagination">
+        <li{% if not pageInfo.getPrevUrl() %} class="disabled"{% endif %}>
+          {% if pageInfo.getPrevUrl() %}<a href="{{ pageInfo.getPrevUrl() }}">Prev</a>{% else %}<span>Prev</span>{% endif %}
+        </li>
+        <li{% if pageInfo.currentPage == 1 %} class="active"{% endif %}>
+          <a href="{{ pageInfo.getFirstUrl() }}">1</a>
+        </li>
+        {% if rangeStart > 2 %}<li class="ellipsis"><span>&hellip;</span></li>{% endif %}
+        {% for page, url in pageInfo.getRangeUrls(rangeStart, rangeEnd) %}
+          <li{% if page == pageInfo.currentPage %} class="active"{% endif %}>
+            <a href="{{ url }}">{{ page }}</a>
+          </li>
+        {% endfor %}
+        {% if rangeEnd < pageInfo.totalPages - 1 %}<li class="ellipsis"><span>&hellip;</span></li>{% endif %}
+        {% if pageInfo.totalPages > 1 %}
+          <li{% if pageInfo.currentPage == pageInfo.totalPages %} class="active"{% endif %}>
+            <a href="{{ pageInfo.getLastUrl() }}">{{ pageInfo.totalPages }}</a>
+          </li>
+        {% endif %}
+        <li{% if not pageInfo.getNextUrl() %} class="disabled"{% endif %}>
+          {% if pageInfo.getNextUrl() %}<a href="{{ pageInfo.getNextUrl() }}">Next</a>{% else %}<span>Next</span>{% endif %}
+        </li>
+      </ul>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

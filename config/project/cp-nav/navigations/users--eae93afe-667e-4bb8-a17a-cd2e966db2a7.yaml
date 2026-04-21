@@ -1,0 +1,16 @@
+currLabel: Users
+customIcon: null
+enabled: true
+handle: users
+icon: users
+layoutId: 2
+level: 1
+newWindow: false
+parentId: null
+prevLabel: Users
+prevLevel: null
+prevParentId: null
+prevUrl: users
+sortOrder: 4
+type: craft
+url: users

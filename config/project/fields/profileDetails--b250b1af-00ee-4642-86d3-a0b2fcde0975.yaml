@@ -1,0 +1,64 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
+handle: profileDetails
+instructions: ''
+name: 'Profile Details'
+searchable: true
+settings:
+  columns:
+    __assoc__:
+      -
+        - a177ad8e-a72d-4a70-9d76-f8d803cae361 # Profile Picture
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - 18184c72-56da-4f73-9685-77478df376d7 # First Name
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - a2b34d35-591a-4435-9902-8ccb25ac9bb9 # Surname
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - e3402563-be6f-41fa-88d1-3b4d54a5e45c # Position/Title
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - 53c51fff-4779-42d2-84dc-b034c0e7a5d6 # Qualifications
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+      -
+        - fa499391-926a-4107-8094-57c3522fb407 # Email Address
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+  contentTable: '{{%stc_profiledetails}}'
+  fieldLayout: row
+  maxRows: ''
+  minRows: ''
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: ''
+  staticField: '1'
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

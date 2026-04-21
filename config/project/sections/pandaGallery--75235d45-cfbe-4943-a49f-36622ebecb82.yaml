@@ -1,0 +1,27 @@
+defaultPlacement: end
+enableVersioning: true
+handle: pandaGallery
+name: Gallery
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering
+    enabledByDefault: true
+    hasUrls: true
+    template: _gallery/_entry
+    uriFormat: '{parent.uri}/{slug}'
+structure:
+  maxLevels: 2
+  uid: a7373c69-0118-4077-aae0-2270ee8787c8
+type: structure

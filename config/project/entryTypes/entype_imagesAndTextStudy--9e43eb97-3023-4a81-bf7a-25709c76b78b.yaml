@@ -1,0 +1,56 @@
+fieldLayouts:
+  4dfeee6d-8172-4cca-a509-5fab4c3dee0d:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\entries\EntryTitleField
+            warning: null
+            width: 100
+          -
+            fieldUid: 9de82510-27f9-4bc8-b117-2553094ea062 # Case Study Images
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: a7606d83-b448-42ce-b465-eb80ab40d4d0 # Page Text
+            instructions: null
+            label: 'Study Text'
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+handle: entype_imagesAndTextStudy
+hasTitleField: true
+name: 'Images and Text Study'
+section: 75235d45-cfbe-4943-a49f-36622ebecb82 # Gallery
+sortOrder: 3
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

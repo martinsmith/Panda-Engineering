@@ -1,0 +1,36 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
+handle: policyDocuments
+instructions: ''
+name: 'Policy Documents'
+searchable: true
+settings:
+  columns:
+    __assoc__:
+      -
+        - e5fefffd-14d4-49f6-afba-ff31c9439344 # Document title
+        -
+          __assoc__:
+            -
+              - width
+              - 60%
+      -
+        - d734bee2-d132-4204-89a0-edec02ba9213 # Document Upload
+        -
+          __assoc__:
+            -
+              - width
+              - 40%
+  contentTable: '{{%stc_policydocuments}}'
+  fieldLayout: table
+  maxRows: '5'
+  minRows: '1'
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: 'Add a document'
+  staticField: ''
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

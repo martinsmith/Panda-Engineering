@@ -1,0 +1,16 @@
+currLabel: Utilities
+customIcon: null
+enabled: '1'
+handle: utilities
+icon: tool
+layout: 1b2fd43c-2000-42df-b5aa-0c4c7609c574 # Default
+level: 1
+newWindow: '0'
+parentId: null
+prevLabel: Utilities
+prevLevel: null
+prevParentId: null
+prevUrl: utilities
+sortOrder: '8'
+type: craft
+url: utilities

@@ -1,0 +1,16 @@
+currLabel: Globals
+customIcon: null
+enabled: true
+handle: globals
+icon: globe
+layout: 2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666 # Staff
+level: 1
+newWindow: false
+parentId: null
+prevLabel: Globals
+prevLevel: null
+prevParentId: null
+prevUrl: globals
+sortOrder: 2
+type: ''
+url: globals

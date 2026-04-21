@@ -1,0 +1,218 @@
+field: b250b1af-00ee-4642-86d3-a0b2fcde0975 # Profile Details
+fieldLayouts:
+  0e4420ae-c556-4666-b12f-bf3733dbccc7:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: a177ad8e-a72d-4a70-9d76-f8d803cae361 # Profile Picture
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 18184c72-56da-4f73-9685-77478df376d7 # First Name
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: a2b34d35-591a-4435-9902-8ccb25ac9bb9 # Surname
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: e3402563-be6f-41fa-88d1-3b4d54a5e45c # Position/Title
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 53c51fff-4779-42d2-84dc-b034c0e7a5d6 # Qualifications
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: fa499391-926a-4107-8094-57c3522fb407 # Email Address
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 4d9c3753-fecb-4198-9645-80bc57876a27 # LinkedIn Link
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  4d9c3753-fecb-4198-9645-80bc57876a27: # LinkedIn Link
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: linkedinLink
+    instructions: ''
+    name: 'LinkedIn Link'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  53c51fff-4779-42d2-84dc-b034c0e7a5d6: # Qualifications
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: qualifications
+    instructions: ''
+    name: Qualifications
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  18184c72-56da-4f73-9685-77478df376d7: # First Name
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: firstName
+    instructions: ''
+    name: 'First Name'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  a2b34d35-591a-4435-9902-8ccb25ac9bb9: # Surname
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: surname
+    instructions: ''
+    name: Surname
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  a177ad8e-a72d-4a70-9d76-f8d803cae361: # Profile Picture
+    columnSuffix: null
+    contentColumnType: string
+    fieldGroup: null
+    handle: profilePicture
+    instructions: ''
+    name: 'Profile Picture'
+    searchable: true
+    settings:
+      allowSelfRelations: false
+      allowUploads: true
+      allowedKinds: null
+      defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+      defaultUploadLocationSubpath: ''
+      limit: '1'
+      localizeRelations: false
+      previewMode: full
+      restrictFiles: ''
+      selectionLabel: 'Add a photo'
+      showSiteMenu: true
+      showUnpermittedFiles: false
+      showUnpermittedVolumes: false
+      singleUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+      singleUploadLocationSubpath: ''
+      source: null
+      sources: '*'
+      targetSiteId: null
+      useSingleFolder: true
+      validateRelatedElements: false
+      viewMode: large
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\Assets
+  e3402563-be6f-41fa-88d1-3b4d54a5e45c: # Position/Title
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: positionTitle
+    instructions: ''
+    name: Position/Title
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  fa499391-926a-4107-8094-57c3522fb407: # Email Address
+    columnSuffix: null
+    contentColumnType: string
+    fieldGroup: null
+    handle: emailAddress
+    instructions: ''
+    name: 'Email Address'
+    searchable: true
+    settings:
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\Email

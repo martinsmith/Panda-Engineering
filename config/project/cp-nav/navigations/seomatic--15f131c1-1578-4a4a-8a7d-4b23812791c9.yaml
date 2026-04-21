@@ -1,0 +1,16 @@
+currLabel: SEOmatic
+customIcon: null
+enabled: true
+handle: seomatic
+icon: /var/www/vhosts/kadops.co.uk/httpdocs/craft/vendor/nystudio107/craft-seomatic/src/icon-mask.svg
+layout: 1b2fd43c-2000-42df-b5aa-0c4c7609c574 # Default
+level: 1
+newWindow: false
+parentId: null
+prevLabel: SEOmatic
+prevLevel: null
+prevParentId: null
+prevUrl: seomatic
+sortOrder: 9999
+type: plugin
+url: seomatic

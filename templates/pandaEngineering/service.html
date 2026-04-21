@@ -1,0 +1,63 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+{% if entry.hero.heroImage|length %}
+<div class="hero" style="background-image: url({{ entry.hero.heroImage.one().url }})">
+  <div>{{ entry.hero.heroOverlayText }}</div>
+</div>
+{% endif %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageIntroduction }}
+      {% if entry.serviceList|length and entry.serviceList[0].service %}
+      <div class="serviceList">
+        <header>
+          <h2>Service List</h2>
+        </header>
+        <ul>
+          {% for item in entry.serviceList %}
+          <li>{{ item.service }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if entry.capacityList|length and entry.capacityList[0].item %}
+      <div class="serviceList">
+        <header>
+          <h2>Capacity List</h2>
+        </header>
+        <ul>
+          {% for item in entry.capacityList %}
+          <li>{{ item.item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+
+          {% if entry.supportingImages|length %}
+          <div class="supportingImages">
+            {% for asset in entry.supportingImages %}
+              <img src="{{ asset.url('summaries') }}" alt="{{ asset.title }}">
+            {% endfor %}
+          </div>
+          {% endif %}
+
+    </div>
+  </div>
+</main>
+  {% endblock %}
+
+  {% block pageScripts %}
+  {% endblock %}

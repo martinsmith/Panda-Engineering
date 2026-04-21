@@ -1,0 +1,20 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
+handle: references
+instructions: ''
+name: References
+searchable: true
+settings:
+  contentTable: '{{%stc_references}}'
+  fieldLayout: row
+  maxRows: ''
+  minRows: '1'
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: 'Add a Reference'
+  staticField: ''
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

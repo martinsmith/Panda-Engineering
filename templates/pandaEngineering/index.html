@@ -1,0 +1,45 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+{% if entry.hero.heroImage|length %}
+<div class="hero" style="background-image: url({{ entry.hero.heroImage.one().url }})">
+  <div>{{ entry.hero.heroOverlayText }}</div>
+</div>
+{% endif %}
+<main>
+  <div class="content">
+    <div class="pageText pandaIndex">
+      {% if entry.pageTitle|length %}
+      <header>
+        <h1>{{ entry.pageTitle }}</h1>
+      </header>
+      {% endif %}
+      {% set myEntryQuery = craft.entries()
+        .section('areasOfCapability')
+        .level(2)
+        %}
+
+        <ul class="serviceBlocks">
+          {% for item in myEntryQuery %}
+          <li>
+            <a href="{{ item.url }}">
+              <h2>{{ item.title }}</h2>
+              <img src="{{ item.hero.heroImage.one.url('summaries') }}" alt="{{ item.hero.heroImage.one.title }}">
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      {{ entry.pageText }}
+    </div>
+  </div>
+</main>
+  {% endblock %}
+
+  {% block pageScripts %}
+  {% endblock %}

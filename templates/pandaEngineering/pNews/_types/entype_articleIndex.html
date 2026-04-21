@@ -1,0 +1,40 @@
+{% extends '_layout' %}
+
+{% block bodyClass %}
+<body class="articles">
+{% endblock %}
+
+{% block content %}
+{% set stuff = craft.entries.section('articles').level(2) %}
+
+
+
+
+
+
+<main class="articles">
+  <div class="columnA leadArticle">
+    <header>
+      <h1>News Articles</h1>
+    </header>
+    <ul>
+      {% for entry in stuff.all() %}
+      <li>
+        <header>
+          <h2><a href="{{ entry.url }}">{{ entry.title }}</a></h2>
+        </header>
+        <p class="postDate">{{ entry.postDate | date("j M Y") }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="columnB articleListing">
+
+
+
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

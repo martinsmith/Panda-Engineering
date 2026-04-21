@@ -1,0 +1,10 @@
+format: jpg
+handle: summaries
+height: 250
+interlace: none
+mode: crop
+name: Summaries
+position: center-center
+quality: 82
+upscale: true
+width: 490

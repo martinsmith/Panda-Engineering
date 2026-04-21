@@ -1,0 +1,19 @@
+fieldLayouts:
+  c7f6a110-77ab-4c40-bb42-5ed3d946ef68:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: df6900ca-95b7-4dd4-8f9b-b4457d51e3d6 # Policy Documents
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Documents
+        sortOrder: 1
+handle: policyDocuments
+name: 'Policy Documents'
+sortOrder: 0

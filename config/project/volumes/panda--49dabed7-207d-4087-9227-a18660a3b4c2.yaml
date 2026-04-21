@@ -1,0 +1,38 @@
+fieldLayouts:
+  52bea9a1-8de7-48b4-9c68-69c7866865c9:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\assets\AssetTitleField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fs: panda
+handle: panda
+hasUrls: true
+name: Panda
+sortOrder: 2
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+url: $CLOUDFRONT_URL

@@ -1,0 +1,177 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="referrer" content="origin-when-cross-origin" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/_dist/css/style.min.css">
+  <link rel="stylesheet" href="/_dist/css/_menu/hc-offcanvas-nav.min.css">
+	{% if currentSite.handle == 'pandaEngineering' %}
+  <script> (function (i, p, t, r, a, c, k) { i['WivObjKey'] = a; i[a] = i[a] || function () { i[a].q = i[a].q || [], i[a].q.push(arguments), i[a].c && i[a].c(); }, c = p.createElement(t), c.type = 'text/javascript', c.src = i.location.href.split('/')[0] + r, k = p.getElementsByTagName(t)[0], k.parentNode.insertBefore(c, k); })(window, document, 'script', '//iptrack.io/api/v1/wiv.js', 'wiv'); wiv('pageview_after_render', '0b29fdf993df4b5ea18d452bd77a9640'); </script>
+<meta name="google-site-verification" content="EiWOVLVxH-KXv4Mu4x1ZN2-3GdjJUYqbcMCzMeY96gk" />
+	<meta name="google-site-verification" content="fXPZMvGOs5M_bwZvxmqyalpc65zK_v0-JVIZ07K9M4o" /> <!-- AMI Web Verification -->
+	    {% endif %}
+	<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K7WJ565');</script>
+<!-- End Google Tag Manager -->
+	
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-219864959-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-219864959-1');
+</script>
+
+  {% block pageCss %}
+  {% endblock %}
+  <!--[if lt IE 9]>
+  <script src="/_dist/js/polyfill/html5-shiv.js"></script>
+  <![endif]-->
+</head>
+
+
+<body>
+{% if currentSite.handle == 'pandaEngineering' %}
+  <div class="wrap panda">
+    {% else %}
+  <div class="wrap kadops">
+    {% endif %}
+    <!-- Star wrap -->
+    <div class="head">
+      <div>
+        <div class="brand">
+          <a href="/"><img src="{{ brand.brand.logo.one.url() }}" alt="{{ currentSite.name }}"></a>
+        </div>
+
+        <div class="contact">
+          {% if currentSite.handle == 'pandaEngineering' %}
+          <p>Panda Engineering (Bfd) Ltd.</p>
+          {% endif %}
+          {% for item in contactInfo.companyInformation.contacts %}
+          <p>Telephone {{ item.name }}: <a href="tel:{{ item.number }}">{{ item.number }}</a></p>
+          <p>Email: <a href="mailto:{{ item.email }}">{{ item.email }}</a></p>
+          {% endfor %}
+        </div>
+        <nav id="wideNav">
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if currentSite.handle == 'pandaEngineering' %}
+            <li><a href="/areas-of-capability">Areas of capability</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% else %}
+            <li><a href="/capabilities">Areas of Capability</a></li>
+            <li><a href="/case-studies">Case Studies</a></li>
+            <li><a href="/meet-the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        <div class="toggle button_container">
+          <div class="lines">
+            <span class="top"></span>
+            <span class="middle"></span>
+            <span class="bottom"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+    <footer>
+      <div>
+        <div class="contact">
+          <h2>Contact</h2>
+          <p class="address">{{ contactInfo.companyInformation.address| nl2br }}</p>
+          <div class="direct">
+            {% for item in contactInfo.companyInformation.contacts %}
+              <p>Telephone {{ item.name }}: <a href="tel:{{ item.number }}">{{ item.number }}</a></p>
+              <p>Email: <a href="mailto:{{ item.email }}">{{ item.email }}</a></p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="footerLinks">
+          <h2>Pages</h2>
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if currentSite.handle == 'pandaEngineering' %}
+            <li><a href="/areas-of-capability">Areas of capability</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% else %}
+            <li><a href="/capabilities">Areas of Capability</a></li>
+            <li><a href="/case-studies">Case Studies</a></li>
+            <li><a href="/meet-the-team">Meet the Team</a></li>
+            <li><a href="/news">News</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        {% if currentSite.handle == 'pandaEngineering' %}
+        <div class="policies">
+          <h2>Policies</h2>
+          <ul>
+            {% for item in policyDocuments.policyDocuments %}
+            <li><a href="{{ item.documentUpload.one.url() }}">{{ item.documentTitle }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        <p class="colophon">Copyright &copy; {{ now|date('Y') }} Kadops.co.uk. All rights reserved</p>
+      </div>
+    </footer>
+    <!-- End of wrap -->
+  </div>
+  <nav id="mobNav">
+    <ul>
+      <li><a href="/">Home</a></li>
+      {% if currentSite.handle == 'pandaEngineering' %}
+      {% set capabilities = craft.entries.section('areasOfCapability').all() %}
+      {% nav item in capabilities %}
+      <li>
+        {{ item.getLink() }}
+        {% ifchildren %}
+        <ul>
+          {% children %}
+        </ul>
+        {% endifchildren %}
+      </li>
+      {% endnav %}
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/the-team">Meet the Team</a></li>
+      <li><a href="/news">News</a></li>
+      {% else %}
+      <li><a href="/capabilities">Areas of Capability</a></li>
+      <li><a href="/case-studies">Case Studies</a></li>
+      <li><a href="/meet-the-team">Meet the Team</a></li>
+      <li><a href="/news">News</a></li>
+      {% endif %}
+    </ul>
+</nav>
+  <div class="preloader"><div class="loader"></div></div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="/_dist/js/_menu/hc-offcanvas-nav.min.js?ver=3.4.1"></script>
+
+  <!--<![endif]-->
+  {% block pageScripts %}
+
+  {% endblock %}
+  <script async src="/_dist/js/main.min.js"></script>
+	  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K7WJ565"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: e2b4b0d2-50f5-4093-8fbb-f12bcd5fd3a4 # Global
+handle: brand
+instructions: ''
+name: Brand
+searchable: true
+settings:
+  columns:
+    __assoc__:
+      -
+        - 6e33bb60-e268-4870-bc46-b4fc8094502e # Logo
+        -
+          __assoc__:
+            -
+              - width
+              - ''
+  contentTable: '{{%stc_brand}}'
+  fieldLayout: row
+  maxRows: ''
+  minRows: ''
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: ''
+  staticField: '1'
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

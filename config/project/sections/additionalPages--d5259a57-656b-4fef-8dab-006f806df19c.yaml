@@ -1,0 +1,27 @@
+defaultPlacement: end
+enableVersioning: true
+handle: additionalPages
+name: 'Additional Pages'
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering
+    enabledByDefault: true
+    hasUrls: true
+    template: generic
+    uriFormat: '{slug}'
+structure:
+  maxLevels: 1
+  uid: ac18ad09-f22d-4416-a53e-e36401d54147
+type: structure

@@ -1,0 +1,67 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+<link rel="stylesheet" type="text/css" href="/_dist/css/_lightcase/lightcase.min.css">
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageIntroduction }}
+    </div>
+    {% set children = entry.children().level(2) %}
+    {% for item in children %}
+    {% if item.type == 'entype_Images_Only' %}
+    <div class="pStudies pStudyGallery">
+      <header>
+        <h2>{{ item.title }}</h2>
+      </header>
+      <ul class="gallery">
+        {% for asset in item.caseStudyImages %}
+        <li><a href="{{ asset.url() }}" data-rel="lightcase:collection"><img src="{{ asset.url('summaries') }}" alt="{{ asset.title }}"></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% elseif item.type.handle in ['entype_imagesAndTextStudy'] %}
+    <div class="pStudies pStudyExtended">
+      <header>
+        <h2><a href="{{ item.url }}">{{ item.title }}</a></h2>
+      </header>
+        <figure>
+          <img src="{{ item.caseStudyImages.one.url('summaries') }}" alt="{{ item.caseStudyImages.one.title }}">
+        </figure>
+        <div>
+        {{ item.pageText | chop(limit=30, unit='w', allowedTags="<p>") }}
+        <p class="readMore"><a href="{{ item.url }}">Read More</a></p>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+  <script type="text/javascript" src="/_dist/js/_lightcase/lightcase.min.js"></script>
+  <script type="text/javascript" src="/_dist/js/_lightcase/jquery.events.touch.min.js"></script>
+  <script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('a[data-rel^=lightcase]').lightcase({
+      useKeys: true,
+      // liveResize: true,
+      showCaption: false,
+      // transition: 'fade',
+      disableShrink: true,
+      showSequenceInfo: false,
+      // swipe: true,
+    });
+	});
+</script>
+{% endblock %}

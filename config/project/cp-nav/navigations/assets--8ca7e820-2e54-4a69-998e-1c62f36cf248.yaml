@@ -1,0 +1,16 @@
+currLabel: Assets
+customIcon: null
+enabled: true
+handle: assets
+icon: assets
+layoutId: 2
+level: 1
+newWindow: false
+parentId: null
+prevLabel: Assets
+prevLevel: null
+prevParentId: null
+prevUrl: assets
+sortOrder: 3
+type: craft
+url: assets

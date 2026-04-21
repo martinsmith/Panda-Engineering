@@ -1,0 +1,104 @@
+field: 0f34b306-eb64-41bb-9475-6d149116fd30 # References
+fieldLayouts:
+  333dc926-33a2-45c6-8e0e-f2c957283121:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: 6347a00b-ca50-41a2-ad19-8425c746ba6c # Referee Name
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: f1e920b9-7b31-4868-b327-3c35f5fc3bf5 # Referee Position
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 50244b2b-4d04-4815-85e6-044d3a4399d2 # Reference
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  6347a00b-ca50-41a2-ad19-8425c746ba6c: # Referee Name
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: refereeName
+    instructions: ''
+    name: 'Referee Name'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  50244b2b-4d04-4815-85e6-044d3a4399d2: # Reference
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: reference
+    instructions: ''
+    name: Reference
+    searchable: true
+    settings:
+      availableTransforms: '*'
+      availableVolumes: ''
+      columnType: text
+      configSelectionMode: choose
+      defaultTransform: ''
+      manualConfig: ''
+      purifierConfig: ''
+      purifyHtml: '1'
+      redactorConfig: ''
+      removeEmptyTags: '1'
+      removeInlineStyles: '1'
+      removeNbsp: '1'
+      showHtmlButtonForNonAdmins: true
+      showUnpermittedFiles: false
+      showUnpermittedVolumes: false
+      uiMode: enlarged
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\redactor\Field
+  f1e920b9-7b31-4868-b327-3c35f5fc3bf5: # Referee Position
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: refereePosition
+    instructions: ''
+    name: 'Referee Position'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText

@@ -1,0 +1,38 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageText }}
+    </div>
+    <div class="pulledContent">
+
+      {% set children = entry.children().level(2) %}
+
+        <ul>
+          {% for content in children %}
+          <li>
+            <a href="{{ content.url }}">
+              <h2>{{ content.title }}</h2>
+              <img src="{{ content.supportingImages.one().url('summaries') }}" alt="{{ content.supportingImages.one().title }}">
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

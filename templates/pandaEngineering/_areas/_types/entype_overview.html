@@ -1,0 +1,36 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageIntroduction }}
+    </div>
+      {% set children = entry.children().level(2) %}
+      <ul class="serviceBlocks">
+        {% for item in children %}
+        <li>
+          <a href="{{ item.url }}">
+            <h2>{{ item.title }}</h2>
+            <p>{{ item.hero.heroOverlayText }}</p>
+            <img src="{{ item.hero.heroImage.one.url('summaries') }}" alt="{{ item.hero.heroImage.one.title }}">
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

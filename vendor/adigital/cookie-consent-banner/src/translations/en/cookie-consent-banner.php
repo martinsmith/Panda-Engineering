@@ -1,0 +1,25 @@
+<?php
+/**
+ * Cookie Consent Banner plugin for Craft CMS 4.x
+ *
+ * Add a configurable cookie consent banner to the website.
+ *
+ * @link      https://adigital.agency
+ * @copyright Copyright (c) 2018 A Digital
+ */
+
+/**
+ * Cookie Consent Banner en Translation
+ *
+ * Returns an array with the string to be translated (as passed to `Craft::t('cookie-consent-banner', '...')`) as
+ * the key, and the translation as the value.
+ *
+ * http://www.yiiframework.com/doc-2.0/guide-tutorial-i18n.html
+ *
+ * @author    A Digital
+ * @package   CookieConsentBanner
+ * @since     1.0.0
+ */
+return [
+    'Cookie Consent Banner plugin loaded' => 'Cookie Consent Banner plugin loaded',
+];

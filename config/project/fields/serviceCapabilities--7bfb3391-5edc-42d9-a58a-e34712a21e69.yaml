@@ -1,0 +1,20 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
+handle: serviceCapabilities
+instructions: ''
+name: 'Service Capabilities'
+searchable: true
+settings:
+  contentTable: '{{%stc_servicecapabilities}}'
+  fieldLayout: row
+  maxRows: ''
+  minRows: '1'
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: 'Add a Service'
+  staticField: ''
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

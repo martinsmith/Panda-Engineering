@@ -1,0 +1,36 @@
+columnSuffix: null
+contentColumnType: string
+fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
+handle: hero
+instructions: ''
+name: Hero
+searchable: true
+settings:
+  columns:
+    __assoc__:
+      -
+        - 4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a # Hero Image
+        -
+          __assoc__:
+            -
+              - width
+              - 20%
+      -
+        - 2440d605-4546-4ad3-84b8-61d02fd259f6 # Hero Overlay Text
+        -
+          __assoc__:
+            -
+              - width
+              - 80%
+  contentTable: '{{%stc_hero}}'
+  fieldLayout: row
+  maxRows: ''
+  minRows: ''
+  placeholderKey: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  selectionLabel: ''
+  staticField: '1'
+translationKeyFormat: null
+translationMethod: site
+type: verbb\supertable\fields\SuperTableField

@@ -1,0 +1,189 @@
+field: d1cec1dd-df52-4e68-a979-c893e6af1616 # Profile
+fieldLayouts:
+  5cf24184-92fd-42f0-9489-2b8ceebdcd59:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: 92c21d7c-f3a9-4219-8f54-505098156f65 # Profile Picture
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 964636a0-9dd8-4e64-8a82-b2870e2e12af # First Name
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 85bd7c4f-aae4-456f-af33-31b87ab82276 # Surname
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: cf7b0e33-7c76-4132-bb68-aacf438ed2c7 # Position/Title
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 5e131149-b2d7-423b-b1ab-52ef8e34c208 # Email Address
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: d682feb0-05b9-4c03-b3f6-33bf5e8b07ee # LinkedIn Link
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  5e131149-b2d7-423b-b1ab-52ef8e34c208: # Email Address
+    columnSuffix: null
+    contentColumnType: string
+    fieldGroup: null
+    handle: emailAddress
+    instructions: ''
+    name: 'Email Address'
+    searchable: true
+    settings:
+      placeholder: ''
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\Email
+  85bd7c4f-aae4-456f-af33-31b87ab82276: # Surname
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: surname
+    instructions: ''
+    name: Surname
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  92c21d7c-f3a9-4219-8f54-505098156f65: # Profile Picture
+    columnSuffix: null
+    contentColumnType: string
+    fieldGroup: null
+    handle: profilePicture
+    instructions: ''
+    name: 'Profile Picture'
+    searchable: true
+    settings:
+      allowSelfRelations: false
+      allowUploads: true
+      allowedKinds: null
+      defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+      defaultUploadLocationSubpath: ''
+      limit: '1'
+      localizeRelations: false
+      previewMode: full
+      restrictFiles: ''
+      selectionLabel: 'Add a photo'
+      showSiteMenu: true
+      showUnpermittedFiles: false
+      showUnpermittedVolumes: false
+      singleUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+      singleUploadLocationSubpath: ''
+      source: null
+      sources: '*'
+      targetSiteId: null
+      useSingleFolder: true
+      validateRelatedElements: false
+      viewMode: large
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\Assets
+  964636a0-9dd8-4e64-8a82-b2870e2e12af: # First Name
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: firstName
+    instructions: ''
+    name: 'First Name'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  cf7b0e33-7c76-4132-bb68-aacf438ed2c7: # Position/Title
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: positionTitle
+    instructions: ''
+    name: Position/Title
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText
+  d682feb0-05b9-4c03-b3f6-33bf5e8b07ee: # LinkedIn Link
+    columnSuffix: null
+    contentColumnType: text
+    fieldGroup: null
+    handle: linkedinLink
+    instructions: ''
+    name: 'LinkedIn Link'
+    searchable: true
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: null
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: site
+    type: craft\fields\PlainText

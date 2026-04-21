@@ -1,0 +1,9 @@
+baseUrl: $PANDA_SITE_URL
+enabled: true
+handle: pandaEngineering
+hasUrls: true
+language: en-GB
+name: 'Panda Engineering'
+primary: true
+siteGroup: b403bca0-2ac3-4d19-ae05-a15addf85b37 # Panda Group
+sortOrder: 2
