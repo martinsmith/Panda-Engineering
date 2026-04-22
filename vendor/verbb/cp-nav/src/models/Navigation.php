@@ -7,6 +7,7 @@ use verbb\cpnav\helpers\Permissions;
 
 use Craft;
 use craft\base\Model;
+use craft\elements\Asset;
 use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\helpers\FileHelper;
@@ -50,7 +51,6 @@ class Navigation extends Model
     public ?string $customIcon = null;
     public ?string $type = null;
     public bool $newWindow = false;
-    public ?string $subnavBehaviour = null;
     public ?DateTime $dateCreated = null;
     public ?DateTime $dateUpdated = null;
     public ?string $uid = null;
@@ -65,15 +65,6 @@ class Navigation extends Model
 
     // Public Methods
     // =========================================================================
-
-    public function defineRules(): array
-    {
-        return [
-            [['currLabel'], 'required', 'when' => function($model) {
-                return !$model->isDivider();
-            }],
-        ];
-    }
 
     public function getConfig(): array
     {
@@ -94,7 +85,6 @@ class Navigation extends Model
             'customIcon' => $this->customIcon,
             'type' => $this->type,
             'newWindow' => $this->newWindow,
-            'subnavBehaviour' => $this->subnavBehaviour,
         ];
     }
 
@@ -159,8 +149,9 @@ class Navigation extends Model
     {
         // Ignore any icon with a directory separator - that's not an icon font
         // Be sure to check for Windows-based paths too.
-        if (!str_contains($this->icon, '/') && !str_contains($this->icon, '\\')) {
-            return $this->icon;
+        // if (!str_contains($this->icon, '/') && !str_contains($this->icon, '\\')) {
+        if (str_contains($this->icon, 'fontIcon:')) {
+            return str_replace('fontIcon:', '', $this->icon);
         }
 
         return null;
@@ -168,9 +159,9 @@ class Navigation extends Model
 
     public function getIcon(): ?string
     {
-        // Get custom icon content - takes precedence
-        if ($customIcon = $this->getCustomIconPath()) {
-            return $customIcon;
+        // If set to `title` we want to fallback on the default
+        if ($this->icon === 'title') {
+            return null;
         }
 
         // Get the original navs path, so we can handle multi-environment paths correctly. Path's will be stored
@@ -181,7 +172,7 @@ class Navigation extends Model
             return $this->_originalNavItem['icon'] ?? $this->icon;
         }
 
-        return null;
+        return $this->icon;
     }
 
     public function getUrl(): ?string
@@ -200,13 +191,30 @@ class Navigation extends Model
         return UrlHelper::url($url);
     }
 
+    public function getCustomIcon(): ?Asset
+    {
+        if ($this->customIcon) {
+            $customIcon = Json::decode($this->customIcon)[0] ?? null;
+
+            if ($customIcon) {
+                if ($asset = Craft::$app->getAssets()->getAssetById($customIcon)) {
+                    if ($asset->extension === 'svg') {
+                        return $asset;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     public function getCustomIconPath(): bool|string|null
     {
         try {
             if ($this->customIcon) {
                 $customIcon = Json::decode($this->customIcon)[0] ?? null;
 
-                if ($asset = Craft::$app->assets->getAssetById($customIcon)) {
+                if ($asset = Craft::$app->getAssets()->getAssetById($customIcon)) {
                     // Check if this volume supports the path (ie, local volume)
                     $volumePath = $asset->getVolume()->path ?? null;
 
@@ -223,28 +231,10 @@ class Navigation extends Model
                 }
             }
         } catch (Throwable $e) {
-            CpNav::error(Craft::t('app', '{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]));
+            CpNav::error('{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]);
         }
 
         return '';
-    }
-
-    public function getSubnavBehaviour(): ?string
-    {
-        if ($this->getChildren()) {
-            /* @var Settings $settings */
-            $settings = CpNav::$plugin->getSettings();
-
-            $behaviour = $settings->defaultSubnavBehaviour;
-
-            if ($this->subnavBehaviour) {
-                $behaviour = $this->subnavBehaviour;
-            }
-
-            return $behaviour;
-        }
-
-        return null;
     }
 
     public function getLayout(): ?Layout
@@ -340,11 +330,6 @@ class Navigation extends Model
             $children[] = $child;
         }
 
-        // Return no children if the subnav is only set to show when active (and this isn't active)
-        if ($this->getSubnavBehaviour() === Settings::SUBNAV_DEFAULT && !$this->isSelected()) {
-            return [];
-        }
-
         return $children;
     }
 
@@ -365,5 +350,18 @@ class Navigation extends Model
                 }
             }
         }
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        return [
+            [['currLabel'], 'required', 'when' => function($model) {
+                return !$model->isDivider();
+            }],
+        ];
     }
 }

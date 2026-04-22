@@ -2,6 +2,7 @@ fieldLayouts:
   4dfeee6d-8172-4cca-a509-5fab4c3dee0d:
     tabs:
       -
+        elementCondition: null
         elements:
           -
             autocapitalize: true
@@ -9,7 +10,9 @@ fieldLayouts:
             autocorrect: true
             class: null
             disabled: false
+            elementCondition: null
             id: null
+            inputType: null
             instructions: null
             label: null
             max: null
@@ -24,32 +27,43 @@ fieldLayouts:
             tip: null
             title: null
             type: craft\fieldlayoutelements\entries\EntryTitleField
+            uid: 9b1a19d2-dd50-493e-82b4-011ebf62e854
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: 9de82510-27f9-4bc8-b117-2553094ea062 # Case Study Images
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 175019a7-b01b-46f8-bde1-4b45e87f34db
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: a7606d83-b448-42ce-b465-eb80ab40d4d0 # Page Text
             instructions: null
             label: 'Study Text'
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 66fff263-bdcd-423a-a117-0b1fc6f98b36
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: c2c5d9db-5ef2-47e2-95ea-a99c078cfbc3
+        userCondition: null
 handle: entype_imagesAndTextStudy
 hasTitleField: true
 name: 'Images and Text Study'
-section: 75235d45-cfbe-4943-a49f-36622ebecb82 # Gallery
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
 sortOrder: 3
 titleFormat: null
 titleTranslationKeyFormat: null

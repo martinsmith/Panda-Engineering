@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
  * Site Group condition rule.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.12.0
+ * @since 5.4.0
  */
 class SiteGroupConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {

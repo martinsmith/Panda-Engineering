@@ -1,16 +1,17 @@
 currLabel: GraphQL
 customIcon: null
-enabled: '0'
+enabled: false
 handle: graphql
 icon: '@app/icons/graphql.svg'
 layout: 1b2fd43c-2000-42df-b5aa-0c4c7609c574 # Default
 level: 1
-newWindow: '0'
-parentId: null
+newWindow: false
+parent: null
 prevLabel: GraphQL
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: graphql
-sortOrder: '7'
+sortOrder: 7
+subnavBehaviour: null
 type: craft
 url: graphql

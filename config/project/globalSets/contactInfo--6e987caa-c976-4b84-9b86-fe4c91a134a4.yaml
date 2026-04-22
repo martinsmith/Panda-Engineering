@@ -2,18 +2,23 @@ fieldLayouts:
   3f89ecbb-e865-402f-8ab4-f77ac3274e46:
     tabs:
       -
+        elementCondition: null
         elements:
           -
+            elementCondition: null
             fieldUid: 091b9d19-5686-40f4-93a4-ad85dc15777a # Company Information
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: ea6d2ec7-fb23-43a2-80cc-a0d58e5b98a1
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: 12f850fd-f45d-4e92-95dd-5326a8ff7514
+        userCondition: null
 handle: contactInfo
 name: 'Contact Information'
 sortOrder: 0

@@ -14,7 +14,7 @@ use craft\models\Update;
  * Define entry types event class.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.15.0
+ * @since 5.7.0
  */
 class UpdateReleaseEvent extends Event
 {

@@ -30,6 +30,7 @@ use craft\helpers\Db;
 use craft\helpers\FileHelper;
 use craft\helpers\ImageTransforms;
 use craft\helpers\StringHelper;
+use craft\helpers\UrlHelper;
 use craft\i18n\Formatter;
 use craft\imagetransforms\ImageTransformer;
 use craft\models\ImageTransform;
@@ -311,6 +312,7 @@ class AssetsController extends Controller
         $asset = new Asset();
         $asset->tempFilePath = $tempPath;
         $asset->setFilename($filename);
+        $asset->setMimeType(FileHelper::getMimeType($tempPath, checkExtension: false) ?? $uploadedFile->type);
         $asset->newFolderId = $folder->id;
         $asset->setVolumeId($folder->volumeId);
         $asset->uploaderId = Craft::$app->getUser()->getId();
@@ -325,8 +327,7 @@ class AssetsController extends Controller
 
         // In case of error, let user know about it.
         if (!$result) {
-            $errors = $asset->getFirstErrors();
-            return $this->asFailure(implode("\n", $errors));
+            return $this->asModelFailure($asset);
         }
 
         if ($selectionCondition) {
@@ -345,12 +346,17 @@ class AssetsController extends Controller
                 $asset->setScenario(Asset::SCENARIO_MOVE);
 
                 if (!$elementsService->saveElement($asset)) {
-                    $errors = $asset->getFirstErrors();
-                    return $this->asJson([
-                        'error' => $this->asFailure(implode("\n", $errors)),
-                    ]);
+                    return $this->asModelFailure($asset);
                 }
             }
+        }
+
+        // try to get uploaded asset's URL
+        $url = null;
+        try {
+            $url = $asset->getUrl();
+        } catch (Throwable) {
+            // do nothing
         }
 
         if ($asset->conflictingFilename !== null) {
@@ -363,12 +369,14 @@ class AssetsController extends Controller
                 'conflictingAssetId' => $conflictingAsset->id ?? null,
                 'suggestedFilename' => $asset->suggestedFilename,
                 'conflictingAssetUrl' => ($conflictingAsset && $conflictingAsset->getVolume()->getFs()->hasUrls) ? $conflictingAsset->getUrl() : null,
+                'url' => $url,
             ]);
         }
 
         return $this->asSuccess(data: [
             'filename' => $asset->getFilename(),
             'assetId' => $asset->id,
+            'url' => $url,
         ]);
     }
 
@@ -429,7 +437,7 @@ class AssetsController extends Controller
         if ($assetToReplace !== null && $uploadedFile) {
             $tempPath = $this->_getUploadedFileTempPath($uploadedFile);
             $filename = Assets::prepareAssetName($uploadedFile->name);
-            $assets->replaceAssetFile($assetToReplace, $tempPath, $filename);
+            $assets->replaceAssetFile($assetToReplace, $tempPath, $filename, $uploadedFile->type);
         } elseif ($sourceAsset !== null) {
             // Or replace using an existing Asset
 
@@ -451,7 +459,7 @@ class AssetsController extends Controller
             // If we have an actual asset for which to replace the file, just do it.
             if (!empty($assetToReplace)) {
                 $tempPath = $sourceAsset->getCopyOfFile();
-                $assets->replaceAssetFile($assetToReplace, $tempPath, $assetToReplace->getFilename());
+                $assets->replaceAssetFile($assetToReplace, $tempPath, $assetToReplace->getFilename(), $sourceAsset->getMimeType());
                 Craft::$app->getElements()->deleteElement($sourceAsset);
             } else {
                 // If all we have is the filename, then make sure that the destination is empty and go for it.
@@ -703,9 +711,7 @@ class AssetsController extends Controller
             ]);
         }
 
-        return $this->asSuccess(data: [
-            'success' => true,
-        ]);
+        return $this->asSuccess();
     }
 
     /**
@@ -826,7 +832,6 @@ class AssetsController extends Controller
         $newFolder = $assets->getFolderById($newFolderId);
 
         return $this->asSuccess(data: [
-            'success' => true,
             'transferList' => $fileTransferList,
             'newFolderUid' => $newFolder->uid,
             'newFolderId' => $newFolderId,
@@ -1031,7 +1036,7 @@ class AssetsController extends Controller
 
             // Only replace file if it changed, otherwise just save changed focal points
             if ($imageChanged) {
-                $assets->replaceAssetFile($asset, $finalImage, $asset->getFilename());
+                $assets->replaceAssetFile($asset, $finalImage, $asset->getFilename(), $asset->getMimeType());
             } elseif ($focalChanged) {
                 Craft::$app->getElements()->saveElement($asset);
             }
@@ -1367,9 +1372,15 @@ class AssetsController extends Controller
         // If we're returning the original asset, and it's in a local FS, just read the file out directly
         $useOriginal = $transformString === 'original';
         if ($useOriginal) {
-            $fs = $asset->getVolume()->getFs();
+            $volume = $asset->getVolume();
+            $fs = $volume->getFs();
             if ($fs instanceof LocalFsInterface) {
-                $path = sprintf('%s/%s', rtrim($fs->getRootPath(), '/'), $asset->getPath());
+                $path = sprintf(
+                    '%s/%s/%s',
+                    rtrim($fs->getRootPath(), '/'),
+                    rtrim($volume->getSubpath(), '/'),
+                    $asset->getPath()
+                );
                 return $this->response->sendFile($path, $asset->getFilename(), [
                     'inline' => true,
                 ]);
@@ -1379,7 +1390,11 @@ class AssetsController extends Controller
         if ($useOriginal) {
             $ext = $asset->getExtension();
         } else {
-            $transform = new ImageTransform(ImageTransforms::parseTransformString($transformString));
+            $transform = Craft::createObject([
+                'class' => ImageTransform::class,
+                ...ImageTransforms::parseTransformString($transformString),
+            ]);
+
             $ext = $transform->format ?: ImageTransforms::detectTransformFormat($asset);
         }
 
@@ -1411,11 +1426,65 @@ class AssetsController extends Controller
     }
 
     /**
+     * Show in folder action.
+     * Find asset by id and Return source path info for each folder up until the one the asset is in.
+     *
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws InvalidConfigException
+     * @throws \yii\web\MethodNotAllowedHttpException
+     */
+    public function actionShowInFolder(): Response
+    {
+        $this->requireCpRequest();
+
+        $assetId = Craft::$app->getRequest()->getRequiredParam('assetId');
+
+        $asset = Asset::findOne($assetId);
+        if ($asset === null) {
+            throw new BadRequestHttpException("Invalid asset ID: $assetId");
+        }
+
+        $this->requireVolumePermissionByAsset('viewAssets', $asset);
+        $this->requirePeerVolumePermissionByAsset('viewPeerAssets', $asset);
+
+        // get the folder for selected asset
+        $folder = $asset->getFolder();
+        $sourcePath[] = $folder->getSourcePathInfo();
+
+        // for a JSON response (e.g. via element actions)
+        if ($this->request->getAcceptsJson()) {
+            // get all the way up to the root folder, cause we need source path info for each step
+            while (($parent = $folder->getParent()) !== null) {
+                $sourcePath[] = $parent->getSourcePathInfo();
+                $folder = $parent;
+            }
+
+            $data = [
+                'filename' => $asset->filename,
+                'sourcePath' => array_reverse($sourcePath),
+            ];
+
+            return $this->asJson($data);
+        }
+
+        // for a redirect response (e.g. element action menu items)
+        $uri = StringHelper::ensureLeft(UrlHelper::prependCpTrigger($sourcePath[0]['uri']), '/');
+        $url = UrlHelper::urlWithParams($uri, [
+            'search' => $asset->filename,
+            'includeSubfolders' => '0',
+            'sourcePathStep' => "folder:$folder->uid",
+        ]);
+
+        return $this->redirect($url);
+    }
+
+    /**
      * Returns the total number of assets, and their total file size, based on their IDs and/or folder IDs.
      *
      * @return Response
      * @throws BadRequestHttpException
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public function actionMoveInfo(): Response
     {

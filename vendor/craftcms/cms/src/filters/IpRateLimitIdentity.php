@@ -19,7 +19,7 @@ use yii\filters\RateLimitInterface;
  * for unauthenticated requests, using cache storage for allowance tracking.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.17.9
+ * @since 5.9.15
  */
 class IpRateLimitIdentity extends BaseObject implements RateLimitInterface
 {

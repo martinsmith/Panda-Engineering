@@ -18,7 +18,7 @@ use yii\console\ExitCode;
  * Sets or removes environment variables in the `.env` file.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.11.0
+ * @since 5.3.0
  */
 class EnvController extends Controller
 {

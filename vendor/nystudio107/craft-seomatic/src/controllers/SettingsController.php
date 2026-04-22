@@ -10,15 +10,20 @@
 namespace nystudio107\seomatic\controllers;
 
 use Craft;
+use craft\commerce\models\ProductType;
 use craft\elements\Asset;
 use craft\errors\MissingComponentException;
 use craft\helpers\Cp;
 use craft\helpers\UrlHelper;
+use craft\models\Section;
+use craft\models\Site;
 use craft\web\Controller;
 use craft\web\UrlManager;
 use DateTime;
+use Illuminate\Support\Collection;
 use nystudio107\seomatic\assetbundles\seomatic\SeomaticAsset;
 use nystudio107\seomatic\autocompletes\TrackingVarsAutocomplete;
+use nystudio107\seomatic\base\SeoElementInterface;
 use nystudio107\seomatic\helpers\ArrayHelper;
 use nystudio107\seomatic\helpers\AssetHelper;
 use nystudio107\seomatic\helpers\DynamicMeta as DynamicMetaHelper;
@@ -214,6 +219,7 @@ class SettingsController extends Controller
             $stat = round(($stat / $numFields) * 100);
             $variables['siteSetupStat'] = $stat;
         }
+        $this->setCrumbVariables($variables);
 
         // Render the template
         return $this->renderTemplate('seomatic/dashboard/index', $variables);
@@ -340,6 +346,8 @@ class SettingsController extends Controller
             MetaBundles::GLOBAL_META_BUNDLE,
             (int)$variables['currentSiteId']
         );
+
+        $this->setCrumbVariables($variables);
 
         // Render the template
         return $this->renderTemplate('seomatic/settings/global/' . $subSection, $variables);
@@ -487,6 +495,7 @@ class SettingsController extends Controller
         ];
         $this->setMultiSiteVariables($siteHandle, $siteId, $variables);
         $variables['controllerHandle'] = 'content';
+        $this->setCrumbVariables($variables);
         $variables['selectedSubnavItem'] = 'content';
         $metaBundles = Seomatic::$plugin->metaBundles->getContentMetaBundlesForSiteId($siteId);
         Seomatic::$plugin->metaBundles->deleteVestigialMetaBundles($metaBundles);
@@ -567,7 +576,7 @@ class SettingsController extends Controller
         );
         // Enabled sites
         $this->setMultiSiteVariables($siteHandle, $siteId, $variables);
-        $this->cullDisabledSites($sourceBundleType, $sourceHandle, $variables);
+        $this->cullDisabledSites($seoElement, $sourceBundleType, $sourceHandle, $variables);
         // Meta Bundle settings
         Seomatic::$previewingMetaContainers = true;
         // Get the site to copy the settings from, if any
@@ -612,11 +621,12 @@ class SettingsController extends Controller
             ],
             [
                 'label' => $metaBundle->sourceName . ' · ' . $subSectionTitle,
-                'url' => UrlHelper::cpUrl("seomatic/edit-content/${subSection}/${sourceBundleType}/${sourceHandle}"),
+                'url' => UrlHelper::cpUrl("seomatic/edit-content/{$subSection}/{$sourceBundleType}/{$sourceHandle}"),
             ],
         ];
         $variables['selectedSubnavItem'] = 'content';
-        $variables['controllerHandle'] = "edit-content/${subSection}/${sourceBundleType}/${sourceHandle}";
+        $variables['controllerHandle'] = "edit-content/{$subSection}/{$sourceBundleType}/{$sourceHandle}";
+        $this->setCrumbVariables($variables);
         // Image selectors
         $variables['currentSubSection'] = $subSection;
         $bundleSettings = $metaBundle->metaBundleSettings;
@@ -803,6 +813,7 @@ class SettingsController extends Controller
         }
         $variables['elementType'] = Asset::class;
         $variables['assetVolumeSources'] = AssetHelper::getAssetInputSources();
+        $this->setCrumbVariables($variables);
 
         // Render the template
         return $this->renderTemplate('seomatic/settings/site/' . $subSection, $variables);
@@ -1001,6 +1012,7 @@ class SettingsController extends Controller
             ],
         ];
         $variables['selectedSubnavItem'] = 'tracking';
+        $this->setCrumbVariables($variables);
 
         // Render the template
         return $this->renderTemplate('seomatic/settings/tracking/_edit', $variables);
@@ -1203,14 +1215,106 @@ class SettingsController extends Controller
             Craft::$app->getIsMultiSite() &&
             count($variables['enabledSiteIds'])
         );
+    }
 
+    /**
+     * @param array $variables
+     * @return void
+     */
+    protected function setCrumbVariables(array &$variables)
+    {
+        $sites = Craft::$app->getSites();
+        if (!array_key_exists('crumbs', $variables)) {
+            $variables['crumbs'] = [];
+        }
+        // Handle adding in the Sites menu if there are multiple sites
         if ($variables['showSites']) {
+            $siteCrumbItems = [];
+            $siteGroups = Craft::$app->getSites()->getAllGroups();
+            $crumbSites = Collection::make($sites->getAllSites())
+                ->map(fn(Site $site) => ['site' => $site])
+                ->keyBy(fn(array $site) => $site['site']->id)
+                ->filter(fn(array $site) => in_array($site['site']->id, $variables['enabledSiteIds']))
+                ->all();
+
+            foreach ($siteGroups as $siteGroup) {
+                $groupSites = $siteGroup->getSites();
+
+                if (empty($groupSites)) {
+                    continue;
+                }
+
+                $groupSiteItems = array_map(fn(Site $site) => [
+                    'status' => $crumbSites[$site->id]['site']->status ?? null,
+                    'label' => Craft::t('site', $site->name),
+                    'url' => UrlHelper::cpUrl("seomatic/{$variables['controllerHandle']}?site=$site->handle"),
+                    'hidden' => !isset($crumbSites[$site->id]),
+                    'selected' => $site->id === $variables['currentSiteId'],
+                    'attributes' => [
+                        'data' => [
+                            'site-id' => $site->id,
+                        ],
+                    ],
+                ], $groupSites);
+
+                if (count($siteGroups) > 1) {
+                    $siteCrumbItems[] = [
+                        'heading' => Craft::t('site', $siteGroup->name),
+                        'items' => $groupSiteItems,
+                        'hidden' => !ArrayHelper::contains($groupSiteItems, fn(array $item) => !$item['hidden']),
+                    ];
+                } else {
+                    array_push($siteCrumbItems, ...$groupSiteItems);
+                }
+            }
+            // Add in the breadcrumbs
+            $variables['crumbs'] = [
+                [
+                    'id' => 'language-menu',
+                    'icon' => 'world',
+                    'label' => Craft::t(
+                        'site',
+                        $sites->getSiteById((int)$variables['currentSiteId'])->name
+                    ),
+                    'menu' => [
+                        'items' => $siteCrumbItems,
+                        'label' => Craft::t('site', 'Select site'),
+                    ],
+                ],
+                ...$variables['crumbs'],
+            ];
+
             $variables['sitesMenuLabel'] = Craft::t(
                 'site',
                 $sites->getSiteById((int)$variables['currentSiteId'])->name
             );
         } else {
             $variables['sitesMenuLabel'] = '';
+        }
+        // Handle adding in the Entry Types menu if there are multiple entry types
+        if (isset($variables['typeMenu']) && !empty($variables['typeMenu'])) {
+            $typeCrumbItems = [];
+            foreach ($variables['typeMenu'] as $key => $value) {
+                $typeCrumbItems[] = [
+                    'status' => null,
+                    'url' => UrlHelper::url("seomatic/{$variables['controllerHandle']}{$variables['siteHandleUri']}", [
+                        'site' => $variables['currentSiteHandle'],
+                        'typeId' => $key,
+                    ]),
+                    'label' => $value,
+                    'selected' => $variables['currentTypeId'] === $key,
+                ];
+            }
+            $variables['crumbs'][] =
+                [
+                    'id' => 'types-menu',
+                    'icon' => 'list',
+                    'label' => $variables['typeMenu'][$variables['currentTypeId']],
+                    'menu' => [
+                        'items' => $typeCrumbItems,
+                        'label' => Craft::t('seomatic', 'Entry Types'),
+                    ],
+                ];
         }
     }
 
@@ -1239,12 +1343,22 @@ class SettingsController extends Controller
      * Remove any sites for which meta bundles do not exist (they may be
      * disabled for this section)
      *
+     * @param class-string<SeoElementInterface> $seoElement
      * @param string $sourceBundleType
      * @param string $sourceHandle
      * @param array $variables
      */
-    protected function cullDisabledSites(string $sourceBundleType, string $sourceHandle, array &$variables)
+    protected function cullDisabledSites($seoElement, string $sourceBundleType, string $sourceHandle, array &$variables)
     {
+        /** @var Section|ProductType|null $section */
+        $section = $seoElement::sourceModelFromHandle($sourceHandle);
+        $sectionSiteIds = [];
+        if ($section) {
+            $sectionSettings = $section->getSiteSettings();
+            foreach ($sectionSettings as $sectionSetting) {
+                $sectionSiteIds[] = $sectionSetting->siteId;
+            }
+        }
         if (isset($variables['enabledSiteIds'])) {
             foreach ($variables['enabledSiteIds'] as $key => $value) {
                 $metaBundle = Seomatic::$plugin->metaBundles->getMetaBundleBySourceHandle(
@@ -1252,6 +1366,10 @@ class SettingsController extends Controller
                     $sourceHandle,
                     $value
                 );
+                // Make sure the site exists for this Section
+                if (!in_array($value, $sectionSiteIds, true)) {
+                    unset($variables['enabledSiteIds'][$key]);
+                }
                 if ($metaBundle === null) {
                     unset($variables['enabledSiteIds'][$key]);
                 }

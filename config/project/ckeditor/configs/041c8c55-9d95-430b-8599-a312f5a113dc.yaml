@@ -1,0 +1,28 @@
+headingLevels:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+name: Kadops
+options:
+  code:
+    indentSequence: '  '
+  htmlSupport:
+    allow:
+      -
+        attributes: true
+        classes: true
+        styles: true
+toolbar:
+  - heading
+  - '|'
+  - blockQuote
+  - codeBlock
+  - bold
+  - italic
+  - insertImage
+  - bulletedList
+  - link
+  - sourceEditing

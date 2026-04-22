@@ -14,7 +14,7 @@ use Craft;
  * descendant element IDs from an element query
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.14.3
+ * @since 5.6.3
  */
 class ExcludeDescendantIdsExpression implements ExpressionInterface
 {
@@ -24,7 +24,7 @@ class ExcludeDescendantIdsExpression implements ExpressionInterface
      * @param int[] $elementIds The element IDs to exclude
      */
     public function __construct(
-        private array $elementIds,
+        private readonly array $elementIds,
     ) {
     }
 

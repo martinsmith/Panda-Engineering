@@ -16,7 +16,7 @@ use yii\db\ExpressionInterface as BaseExpressionInterface;
  * ExpressionBuilder builds [[ExpressionInterface]] DB expressions.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.14.3
+ * @since 5.1.0
  */
 class ExpressionBuilder implements ExpressionBuilderInterface
 {

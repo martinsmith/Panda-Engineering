@@ -6,11 +6,12 @@ icon: settings
 layout: 2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666 # Staff
 level: 1
 newWindow: false
-parentId: null
+parent: null
 prevLabel: Settings
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: settings
 sortOrder: 9
+subnavBehaviour: null
 type: craft
 url: settings

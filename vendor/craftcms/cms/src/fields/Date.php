@@ -8,18 +8,18 @@
 namespace craft\fields;
 
 use Craft;
+use craft\base\CrossSiteCopyableFieldInterface;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\base\PreviewableFieldInterface;
+use craft\base\InlineEditableFieldInterface;
+use craft\base\MergeableFieldInterface;
 use craft\base\SortableFieldInterface;
-use craft\elements\db\ElementQuery;
-use craft\elements\db\ElementQueryInterface;
+use craft\elements\Entry;
 use craft\fields\conditions\DateFieldConditionRule;
 use craft\gql\directives\FormatDateTime;
 use craft\gql\types\DateTime as DateTimeType;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
-use craft\helpers\ElementHelper;
 use craft\helpers\Gql;
 use craft\helpers\Html;
 use craft\i18n\Locale;
@@ -36,7 +36,7 @@ use yii\db\Schema;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0.0
  */
-class Date extends Field implements PreviewableFieldInterface, SortableFieldInterface
+class Date extends Field implements InlineEditableFieldInterface, SortableFieldInterface, MergeableFieldInterface, CrossSiteCopyableFieldInterface
 {
     /**
      * @inheritdoc
@@ -49,9 +49,37 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     /**
      * @inheritdoc
      */
-    public static function valueType(): string
+    public static function icon(): string
+    {
+        return 'calendar';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function phpType(): string
     {
         return sprintf('\\%s|null', DateTime::class);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function dbType(): array|string
+    {
+        return [
+            'date' => Schema::TYPE_DATETIME,
+            'tz' => Schema::TYPE_STRING,
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function queryCondition(array $instances, mixed $value, array &$params): ?array
+    {
+        $valueSql = static::valueSql($instances);
+        return Db::parseDateParam($valueSql, $value);
     }
 
     /**
@@ -167,22 +195,20 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     /**
      * @inheritdoc
      */
-    public function getContentColumnType(): array|string
+    public function getSettingsHtml(): ?string
     {
-        if ($this->showTimeZone) {
-            return [
-                'date' => Schema::TYPE_DATETIME,
-                'tz' => Schema::TYPE_STRING,
-            ];
-        }
-
-        return Schema::TYPE_DATETIME;
+        return $this->settingsHtml(false);
     }
 
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml(): ?string
+    public function getReadOnlySettingsHtml(): ?string
+    {
+        return $this->settingsHtml(true);
+    }
+
+    private function settingsHtml(bool $readOnly): string
     {
         if ($this->showDate && !$this->showTime) {
             $dateTimeValue = 'showDate';
@@ -220,6 +246,7 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
             'value' => $dateTimeValue,
             'incrementOptions' => $incrementOptions,
             'field' => $this,
+            'readOnly' => $readOnly,
         ]);
     }
 
@@ -234,7 +261,7 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     /**
      * @inheritdoc
      */
-    protected function inputHtml(mixed $value, ?ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         /** @var DateTime|null $value */
         $view = Craft::$app->getView();
@@ -316,7 +343,7 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     /**
      * @inheritdoc
      */
-    public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
+    public function getPreviewHtml(mixed $value, ElementInterface $element): string
     {
         /** @var DateTime|null $value */
         if (!$value) {
@@ -351,6 +378,17 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     /**
      * @inheritdoc
      */
+    public function previewPlaceholderHtml(mixed $value, ?ElementInterface $element): string
+    {
+        if (!$value) {
+            $value = new DateTime();
+        }
+        return $this->getPreviewHtml($value, $element ?? new Entry());
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function useFieldset(): bool
     {
         return $this->showTime;
@@ -359,7 +397,7 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     /**
      * @inheritdoc
      */
-    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?ElementInterface $element): mixed
     {
         if ($value instanceof DateTime) {
             return $value;
@@ -400,22 +438,17 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
             return null;
         }
 
-        /** @var DateTime $value */
-        if (!$this->showTimeZone) {
-            return Db::prepareDateForDb($value);
-        }
-
-        // Only store the time zone if it was created in the IANA format
-        if ($value->getTimezone()->getLocation()) {
-            $timeZone = $value->getTimezone()->getName();
-        } else {
-            $timeZone = null;
-        }
-
-        return [
+        $serialized = [
             'date' => Db::prepareDateForDb($value),
-            'tz' => $timeZone,
         ];
+
+        if ($this->showTimeZone && $value->getTimezone()->getLocation()) {
+            $serialized += [
+                'tz' => $value->getTimezone()->getName(),
+            ];
+        }
+
+        return $serialized;
     }
 
     /**
@@ -424,18 +457,6 @@ class Date extends Field implements PreviewableFieldInterface, SortableFieldInte
     public function getElementConditionRuleType(): array|string|null
     {
         return DateFieldConditionRule::class;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
-    {
-        /** @var ElementQuery $query */
-        if ($value !== null) {
-            $column = ElementHelper::fieldColumnFromField($this);
-            $query->subQuery->andWhere(Db::parseDateParam("content.$column", $value));
-        }
     }
 
     /**

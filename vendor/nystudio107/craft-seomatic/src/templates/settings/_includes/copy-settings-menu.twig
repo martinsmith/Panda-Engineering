@@ -20,6 +20,7 @@
     {% endif %}
     <div class="pr-2">
         <div id="sites-btn" class="btn menubtn" data-icon="copy">{{ 'Copy Settings From:' }}</div>
+
         <div class="menu">
             {% set siteGroups = craft.app.sites.getAllGroups() %}
             {% for group in siteGroups %}

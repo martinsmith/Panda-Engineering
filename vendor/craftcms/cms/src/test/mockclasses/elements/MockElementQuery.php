@@ -79,9 +79,9 @@ class MockElementQuery extends ElementQuery
      * Set the return values.
      *
      * @param array $values
-     * @return self
+     * @return static
      */
-    public function setReturnValues(array $values = []): self
+    public function setReturnValues(array $values = []): static
     {
         $this->returnValues = $values;
         return $this;
@@ -125,9 +125,9 @@ class MockElementQuery extends ElementQuery
      *
      * @param string $name
      * @param array $params
-     * @return self
+     * @return static
      */
-    public function __call($name, $params): self
+    public function __call($name, $params): static
     {
         $this->properties[$name] = reset($params);
         return $this;

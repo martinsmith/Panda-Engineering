@@ -41,7 +41,10 @@ var $notification = $('.cp-nav-notice');
 if ($notification.length) {
     $notification.remove();
 
-    $notification.insertAfter('#global-sidebar #system-info').addClass('shown');
+    $('#global-sidebar .global-sidebar__nav').prepend($notification);
+
+    // Use a class toggle to prevent flicker before loaded
+    $notification.addClass('shown');
 }
 
 
@@ -81,19 +84,19 @@ Craft.CpNav.AddMenuItem = Garnish.Base.extend({
         $fieldsContainer.html(response.data.bodyHtml)
         Craft.initUiElements($fieldsContainer);
 
-        var $footer = $('<div class="hud-footer"/>').appendTo(this.$form),
-            $btnContainer = $('<div class="buttons right"/>').appendTo($footer);
+        var $footer = $('<div class="hud-footer flex"/>').appendTo(this.$form),
+            $footerSpacer = $('<div class="flex-grow"/>').appendTo($footer);
 
         this.$cancelBtn = $('<button/>', {
             type: 'button',
             class: 'btn',
             text: Craft.t('app', 'Cancel'),
-        }).appendTo($btnContainer);
+        }).appendTo($footer);
 
         this.$saveBtn = Craft.ui.createSubmitButton({
             label: Craft.t('app', 'Save'),
             spinner: true,
-        }).appendTo($btnContainer);
+        }).appendTo($footer);
 
         $hudContents = $hudContents.add(this.$form);
 
@@ -283,19 +286,19 @@ Craft.CpNav.EditNavItem = Garnish.Base.extend({
         $fieldsContainer.html(response.data.bodyHtml)
         Craft.initUiElements($fieldsContainer);
 
-        var $footer = $('<div class="hud-footer"/>').appendTo(this.$form),
-            $btnContainer = $('<div class="buttons right"/>').appendTo($footer);
+        var $footer = $('<div class="hud-footer flex"/>').appendTo(this.$form),
+            $footerSpacer = $('<div class="flex-grow"/>').appendTo($footer);
 
         this.$cancelBtn = $('<button/>', {
             type: 'button',
             class: 'btn',
             text: Craft.t('app', 'Cancel'),
-        }).appendTo($btnContainer);
+        }).appendTo($footer);
 
         this.$saveBtn = Craft.ui.createSubmitButton({
             label: Craft.t('app', 'Save'),
             spinner: true,
-        }).appendTo($btnContainer);
+        }).appendTo($footer);
 
         $hudContents = $hudContents.add(this.$form);
 

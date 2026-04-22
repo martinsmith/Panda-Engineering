@@ -21,6 +21,7 @@ use craft\elements\Category;
 use craft\elements\Entry;
 use craft\elements\Tag;
 use craft\elements\User;
+use craft\enums\CmsEdition;
 use craft\errors\DbConnectException;
 use craft\errors\SiteNotFoundException;
 use craft\errors\WrongEditionException;
@@ -38,7 +39,11 @@ use craft\fieldlayoutelements\assets\AssetTitleField;
 use craft\fieldlayoutelements\entries\EntryTitleField;
 use craft\fieldlayoutelements\FullNameField;
 use craft\fieldlayoutelements\TitleField;
-use craft\fieldlayoutelements\users\AddressesField;
+use craft\fieldlayoutelements\users\AffiliatedSiteField;
+use craft\fieldlayoutelements\users\EmailField;
+use craft\fieldlayoutelements\users\FullNameField as UserFullNameField;
+use craft\fieldlayoutelements\users\PhotoField;
+use craft\fieldlayoutelements\users\UsernameField;
 use craft\helpers\App;
 use craft\helpers\Db;
 use craft\helpers\Session;
@@ -59,11 +64,11 @@ use craft\services\Announcements;
 use craft\services\Api;
 use craft\services\AssetIndexer;
 use craft\services\Assets;
+use craft\services\Auth;
 use craft\services\Categories;
 use craft\services\Composer;
 use craft\services\Conditions;
 use craft\services\Config;
-use craft\services\Content;
 use craft\services\Dashboard;
 use craft\services\Deprecator;
 use craft\services\Drafts;
@@ -77,7 +82,6 @@ use craft\services\Globals;
 use craft\services\Gql;
 use craft\services\Images;
 use craft\services\ImageTransforms;
-use craft\services\Matrix;
 use craft\services\Path;
 use craft\services\Plugins;
 use craft\services\PluginStore;
@@ -86,9 +90,9 @@ use craft\services\Relations;
 use craft\services\Revisions;
 use craft\services\Routes;
 use craft\services\Search;
-use craft\services\Sections;
 use craft\services\Security;
 use craft\services\Sites;
+use craft\services\Sso;
 use craft\services\Structures;
 use craft\services\SystemMessages;
 use craft\services\Tags;
@@ -104,7 +108,7 @@ use craft\services\Webpack;
 use craft\web\Application as WebApplication;
 use craft\web\AssetManager;
 use craft\web\Request as WebRequest;
-use craft\web\User as UserSession;
+use craft\web\UrlManager;
 use craft\web\View;
 use Illuminate\Support\Collection;
 use Symfony\Component\VarDumper\Caster\ReflectionCaster;
@@ -130,19 +134,19 @@ use yii\web\ServerErrorHttpException;
  * ApplicationTrait
  *
  * @property bool $isInstalled Whether Craft is installed
- * @property int $edition The active Craft edition
  * @property-read Addresses $addresses The addresses service
  * @property-read Announcements $announcements The announcements service
  * @property-read Api $api The API service
  * @property-read AssetIndexer $assetIndexer The asset indexer service
  * @property-read AssetManager $assetManager The asset manager component
  * @property-read Assets $assets The assets service
+ * @property-read Auth $auth The user authentication service
  * @property-read Categories $categories The categories service
  * @property-read Composer $composer The Composer service
  * @property-read Conditions $conditions The conditions service
  * @property-read Config $config The config service
  * @property-read Connection $db The database connection component
- * @property-read Content $content The content service
+ * @property-read Connection $db2 The database connection component used for mutex locks and element bulk op records
  * @property-read Dashboard $dashboard The dashboard service
  * @property-read Deprecator $deprecator The deprecator service
  * @property-read Drafts $drafts The drafts service
@@ -161,7 +165,6 @@ use yii\web\ServerErrorHttpException;
  * @property-read Locale $formattingLocale The Locale object that should be used to define the formatter
  * @property-read Locale $locale The Locale object for the target language
  * @property-read Mailer $mailer The mailer component
- * @property-read Matrix $matrix The matrix service
  * @property-read MigrationManager $contentMigrator The content migration manager
  * @property-read MigrationManager $migrator The application’s migration manager
  * @property-read Mutex $mutex The application’s mutex service
@@ -170,19 +173,20 @@ use yii\web\ServerErrorHttpException;
  * @property-read Plugins $plugins The plugins service
  * @property-read ProjectConfig $projectConfig The project config service
  * @property-read Queue|QueueInterface $queue The job queue
- * @property-read Relations $relations The relations service
+ * @property-read Relations $relations The relations service (deprecated)
  * @property-read Revisions $revisions The revisions service
  * @property-read Routes $routes The routes service
  * @property-read Search $search The search service
- * @property-read Sections $sections The sections service
  * @property-read Security $security The security component
  * @property-read Sites $sites The sites service
+ * @property-read Sso $sso The SSO service
  * @property-read Structures $structures The structures service
  * @property-read SystemMessages $systemMessages The system email messages service
  * @property-read Tags $tags The tags service
  * @property-read TemplateCaches $templateCaches The template caches service
  * @property-read Tokens $tokens The tokens service
  * @property-read Updates $updates The updates service
+ * @property-read UrlManager $urlManager The URL manager for this application
  * @property-read UserGroups $userGroups The user groups service
  * @property-read UserPermissions $userPermissions The user permissions service
  * @property-read Users $users The users service
@@ -204,6 +208,7 @@ use yii\web\ServerErrorHttpException;
  * @method Formatter getFormatter() Returns the formatter component.
  * @method I18N getI18n() Returns the internationalization (i18n) component.
  * @method Security getSecurity() Returns the security component.
+ * @method UrlManager getUrlManager() Returns the URL manager for this application.
  * @method View getView() Returns the view component.
  * @mixin WebApplication
  * @mixin ConsoleApplication
@@ -226,6 +231,12 @@ trait ApplicationTrait
      * @var string|null The environment ID Craft is currently running in.
      */
     public ?string $env = null;
+
+    /**
+     * @var CmsEdition The installed Craft CMS edition.
+     * @since 5.0.0
+     */
+    public CmsEdition $edition;
 
     /**
      * @var string The base Craftnet API URL to use.
@@ -265,12 +276,6 @@ trait ApplicationTrait
     private bool $_isMultiSiteWithTrashed;
 
     /**
-     * @var int The Craft edition
-     * @see getEdition()
-     */
-    private int $_edition;
-
-    /**
      * @var Info|null
      */
     private ?Info $_info = null;
@@ -296,7 +301,7 @@ trait ApplicationTrait
      * Returns the application ID combined with the environment name.
      *
      * @return string
-     * @since 4.12.0
+     * @since 5.4.0
      * @see id
      * @see env
      */
@@ -324,7 +329,7 @@ trait ApplicationTrait
         }
 
         // Override where Yii should find its asset deps
-        $assetsPath = Craft::getAlias('@craft') . '/web/assets';
+        $assetsPath = Craft::getAlias('@app/web/assets');
         Craft::setAlias('@bower/jquery/dist', $assetsPath . '/jquery/dist');
         Craft::setAlias('@bower/inputmask/dist', $assetsPath . '/inputmask/dist');
         Craft::setAlias('@bower/punycode', $assetsPath . '/punycode/dist');
@@ -384,9 +389,7 @@ trait ApplicationTrait
         if ($useUserLanguage) {
             // If the user is logged in *and* has a primary language set, use that
             // (don't actually try to fetch the user, as plugins haven't been loaded yet)
-            /** @var UserSession $user */
-            $user = $this->getUser();
-            $id = Session::get($user->idParam);
+            $id = Session::get($this->getUser()->idParam);
             if (
                 $id &&
                 ($language = $this->getUsers()->getUserPreference($id, 'language')) !== null &&
@@ -577,27 +580,25 @@ trait ApplicationTrait
     }
 
     /**
-     * Returns the Craft edition.
+     * Returns the installed Craft CMS edition’s ID.
      *
      * @return int
+     * @deprecated in 5.0.0. [[$edition]] should be used instead.
      */
     public function getEdition(): int
     {
-        if (!isset($this->_edition)) {
-            $handle = App::env('CRAFT_EDITION') ?? $this->getProjectConfig()->get('system.edition') ?? 'solo';
-            $this->_edition = App::editionIdByHandle($handle);
-        }
-        return $this->_edition;
+        return $this->edition->value;
     }
 
     /**
      * Returns the name of the Craft edition.
      *
      * @return string
+     * @deprecated in 5.0.0. [[$edition]] should be used instead.
      */
     public function getEditionName(): string
     {
-        return App::editionName($this->getEdition());
+        return $this->edition->name;
     }
 
     /**
@@ -605,19 +606,19 @@ trait ApplicationTrait
      *
      * @return string
      * @since 4.4.0
+     * @deprecated in 5.0.0. [[$edition]] should be used instead.
      */
     public function getEditionHandle(): string
     {
-        /** @var WebApplication|ConsoleApplication $this */
-        return App::editionHandle($this->getEdition());
+        return $this->edition->handle();
     }
 
     /**
      * Returns the edition Craft is actually licensed to run in.
      *
-     * @return int|null
+     * @return CmsEdition|null
      */
-    public function getLicensedEdition(): ?int
+    public function getLicensedEdition(): ?CmsEdition
     {
         $licenseInfo = $this->getCache()->get(App::CACHE_KEY_LICENSE_INFO) ?: [];
 
@@ -625,23 +626,18 @@ trait ApplicationTrait
             return null;
         }
 
-        return App::editionIdByHandle($licenseInfo['craft']['edition']);
+        return CmsEdition::fromHandle($licenseInfo['craft']['edition']);
     }
 
     /**
      * Returns the name of the edition Craft is actually licensed to run in.
      *
      * @return string|null
+     * @deprecated in 5.0.0. [[getLicensedEdition()]] should be used instead.
      */
     public function getLicensedEditionName(): ?string
     {
-        $licensedEdition = $this->getLicensedEdition();
-
-        if ($licensedEdition !== null) {
-            return App::editionName($licensedEdition);
-        }
-
-        return null;
+        return $this->getLicensedEdition()?->name;
     }
 
     /**
@@ -652,29 +648,36 @@ trait ApplicationTrait
     public function getHasWrongEdition(): bool
     {
         $licensedEdition = $this->getLicensedEdition();
-
-        return ($licensedEdition !== null && $licensedEdition !== $this->getEdition() && !$this->getCanTestEditions());
+        return (
+            $licensedEdition !== null &&
+            $licensedEdition !== $this->edition &&
+            !$this->getCanTestEditions()
+        );
     }
 
     /**
-     * Sets the Craft edition.
+     * Sets the installed Craft CMS edition.
      *
-     * @param int $edition The edition to set.
+     * @param CmsEdition|int $edition The edition to set.
      * @return bool
      */
-    public function setEdition(int $edition): bool
+    public function setEdition(CmsEdition|int $edition): bool
     {
-        $oldEdition = $this->getEdition();
-        $this->getProjectConfig()->set('system.edition', App::editionHandle($edition), "Craft CMS edition change");
-        $this->_edition = $edition;
+        if (is_int($edition)) {
+            $edition = CmsEdition::from($edition);
+        }
+
+        $oldEdition = $this->edition ?? CmsEdition::Solo;
+        $this->getProjectConfig()->set('system.edition', $edition->handle(), 'Craft CMS edition change');
+        $this->edition = $edition;
 
         // Fire an 'afterEditionChange' event
         /** @var WebRequest|ConsoleRequest $request */
         $request = $this->getRequest();
         if (!$request->getIsConsoleRequest() && $this->hasEventHandlers(WebApplication::EVENT_AFTER_EDITION_CHANGE)) {
             $this->trigger(WebApplication::EVENT_AFTER_EDITION_CHANGE, new EditionChangeEvent([
-                'oldEdition' => $oldEdition,
-                'newEdition' => $edition,
+                'oldEdition' => $oldEdition->value,
+                'newEdition' => $edition->value,
             ]));
         }
 
@@ -684,18 +687,22 @@ trait ApplicationTrait
     /**
      * Requires that Craft is running an equal or better edition than what's passed in
      *
-     * @param int $edition The Craft edition to require.
+     * @param CmsEdition|int $edition The Craft edition to require.
      * @param bool $orBetter If true, makes $edition the minimum edition required.
      * @throws WrongEditionException if attempting to do something not allowed by the current Craft edition
      */
-    public function requireEdition(int $edition, bool $orBetter = true): void
+    public function requireEdition(CmsEdition|int $edition, bool $orBetter = true): void
     {
-        if ($this->getIsInstalled() && !$this->getProjectConfig()->getIsApplyingExternalChanges()) {
-            $installedEdition = $this->getEdition();
+        if (is_int($edition)) {
+            $edition = CmsEdition::from($edition);
+        }
 
-            if (($orBetter && $installedEdition < $edition) || (!$orBetter && $installedEdition !== $edition)) {
-                $editionName = App::editionName($edition);
-                throw new WrongEditionException("Craft $editionName is required for this");
+        if ($this->getIsInstalled() && !$this->getProjectConfig()->getIsApplyingExternalChanges()) {
+            if (!match ($orBetter) {
+                true => $this->edition->value >= $edition->value,
+                false => $this->edition === $edition
+            }) {
+                throw new WrongEditionException("Craft $edition->name is required for this.");
             }
         }
     }
@@ -713,12 +720,11 @@ trait ApplicationTrait
             Craft::$app->getConfig()->getGeneral()->allowAdminChanges
         ) {
             // Are they either *using* or *licensed to use* something < Craft Pro?
-            $activeEdition = $this->getEdition();
             $licensedEdition = $this->getLicensedEdition();
 
             return (
-                ($activeEdition < Craft::Pro) ||
-                ($licensedEdition !== null && $licensedEdition < Craft::Pro)
+                ($this->edition->value < CmsEdition::Pro->value) ||
+                ($licensedEdition !== null && $licensedEdition->value < CmsEdition::Pro->value)
             );
         }
 
@@ -734,7 +740,7 @@ trait ApplicationTrait
      */
     public function getCanTestEditions(): bool
     {
-        if (App::env('CRAFT_NO_TRIALS')) {
+        if (App::normalizeBooleanValue(App::env('CRAFT_NO_TRIALS'))) {
             return false;
         }
 
@@ -928,8 +934,9 @@ trait ApplicationTrait
      */
     public function getSystemName(): string
     {
-        if (($name = Craft::$app->getProjectConfig()->get('system.name')) !== null) {
-            return App::parseEnv($name);
+        $name = App::parseEnv(Craft::$app->getProjectConfig()->get('system.name'));
+        if ($name !== null) {
+            return $name;
         }
 
         try {
@@ -1033,6 +1040,17 @@ trait ApplicationTrait
     }
 
     /**
+     * Returns the user authentication service.
+     *
+     * @return Auth The Auth service
+     * @since 5.0.0
+     */
+    public function getAuth(): Auth
+    {
+        return $this->get('auth');
+    }
+
+    /**
      * Returns the image transforms service.
      *
      * @return ImageTransforms The asset transforms service
@@ -1084,16 +1102,6 @@ trait ApplicationTrait
     }
 
     /**
-     * Returns the content service.
-     *
-     * @return Content The content service
-     */
-    public function getContent(): Content
-    {
-        return $this->get('content');
-    }
-
-    /**
      * Returns the content migration manager.
      *
      * @return MigrationManager The content migration manager
@@ -1111,6 +1119,20 @@ trait ApplicationTrait
     public function getDashboard(): Dashboard
     {
         return $this->get('dashboard');
+    }
+
+    /**
+     * Returns the database connection used for mutex locks and element bulk op records.
+     *
+     * This helps avoid erratic behavior when locks are used during transactions
+     * (see https://makandracards.com/makandra/17437-mysql-careful-when-using-database-locks-in-transactions).
+     *
+     * @return Connection
+     * @since 5.3.0
+     */
+    public function getDb2(): Connection
+    {
+        return $this->get('db2');
     }
 
     /**
@@ -1279,16 +1301,6 @@ trait ApplicationTrait
     }
 
     /**
-     * Returns the matrix service.
-     *
-     * @return Matrix The matrix service
-     */
-    public function getMatrix(): Matrix
-    {
-        return $this->get('matrix');
-    }
-
-    /**
      * Returns the application’s migration manager.
      *
      * @return MigrationManager The application’s migration manager
@@ -1362,6 +1374,7 @@ trait ApplicationTrait
      * Returns the relations service.
      *
      * @return Relations The relations service
+     * @deprecated in 5.3.0
      */
     public function getRelations(): Relations
     {
@@ -1400,16 +1413,6 @@ trait ApplicationTrait
     }
 
     /**
-     * Returns the sections service.
-     *
-     * @return Sections The sections service
-     */
-    public function getSections(): Sections
-    {
-        return $this->get('sections');
-    }
-
-    /**
      * Returns the sites service.
      *
      * @return Sites The sites service
@@ -1417,6 +1420,17 @@ trait ApplicationTrait
     public function getSites(): Sites
     {
         return $this->get('sites');
+    }
+
+    /**
+     * Returns the SSO service.
+     *
+     * @return Sso The SSO service
+     * @since 5.3.0
+     */
+    public function getSso(): Sso
+    {
+        return $this->get('sso');
     }
 
     /**
@@ -1543,7 +1557,7 @@ trait ApplicationTrait
 
         // Register Collection::set() as an alias of put() - with support for bulk-setting values
         Collection::macro('set', function(mixed $values) {
-            /** @var Collection $this */
+            assert($this instanceof Collection);
             if (is_array($values)) {
                 foreach ($values as $key => $value) {
                     $this->put($key, $value);
@@ -1556,13 +1570,16 @@ trait ApplicationTrait
 
         // Register Collection::one() as an alias of first(), for consistency with yii\db\Query.
         Collection::macro('one', function() {
-            /** @var Collection $this */
+            assert($this instanceof Collection);
             return $this->first(...func_get_args());
         });
 
+        // Set the Craft edition
+        $this->_setCraftEdition();
+
         // Load the request before anything else, so everything else can safely check Craft::$app->has('request', true)
         // to avoid possible recursive fatal errors in the request initialization
-        $request = $this->getRequest();
+        $this->getRequest();
         $this->getLog();
 
         // Set the timezone
@@ -1626,7 +1643,6 @@ trait ApplicationTrait
      */
     private function _setTimeZone(): void
     {
-        /** @var WebApplication|ConsoleApplication $this */
         $timeZone = $this->getConfig()->getGeneral()->timezone ?? $this->getProjectConfig()->get('system.timeZone');
 
         if ($timeZone) {
@@ -1700,7 +1716,15 @@ trait ApplicationTrait
                     $event->fields[] = EntryTitleField::class;
                     break;
                 case User::class:
-                    $event->fields[] = AddressesField::class;
+                    if (!$this->getConfig()->getGeneral()->useEmailAsUsername) {
+                        $event->fields[] = UsernameField::class;
+                    }
+                    $event->fields[] = UserFullNameField::class;
+                    $event->fields[] = PhotoField::class;
+                    $event->fields[] = EmailField::class;
+                    if (Craft::$app->getIsMultiSite()) {
+                        $event->fields[] = AffiliatedSiteField::class;
+                    }
                     break;
             }
         });
@@ -1716,18 +1740,10 @@ trait ApplicationTrait
             ->onAdd(ProjectConfig::PATH_ADDRESS_FIELD_LAYOUTS, $this->_proxy('addresses', 'handleChangedAddressFieldLayout'))
             ->onUpdate(ProjectConfig::PATH_ADDRESS_FIELD_LAYOUTS, $this->_proxy('addresses', 'handleChangedAddressFieldLayout'))
             ->onRemove(ProjectConfig::PATH_ADDRESS_FIELD_LAYOUTS, $this->_proxy('addresses', 'handleChangedAddressFieldLayout'))
-            // Field groups
-            ->onAdd(ProjectConfig::PATH_FIELD_GROUPS . '.{uid}', $this->_proxy('fields', 'handleChangedGroup'))
-            ->onUpdate(ProjectConfig::PATH_FIELD_GROUPS . '.{uid}', $this->_proxy('fields', 'handleChangedGroup'))
-            ->onRemove(ProjectConfig::PATH_FIELD_GROUPS . '.{uid}', $this->_proxy('fields', 'handleDeletedGroup'))
             // Fields
             ->onAdd(ProjectConfig::PATH_FIELDS . '.{uid}', $this->_proxy('fields', 'handleChangedField'))
             ->onUpdate(ProjectConfig::PATH_FIELDS . '.{uid}', $this->_proxy('fields', 'handleChangedField'))
             ->onRemove(ProjectConfig::PATH_FIELDS . '.{uid}', $this->_proxy('fields', 'handleDeletedField'))
-            // Block types
-            ->onAdd(ProjectConfig::PATH_MATRIX_BLOCK_TYPES . '.{uid}', $this->_proxy('matrix', 'handleChangedBlockType'))
-            ->onUpdate(ProjectConfig::PATH_MATRIX_BLOCK_TYPES . '.{uid}', $this->_proxy('matrix', 'handleChangedBlockType'))
-            ->onRemove(ProjectConfig::PATH_MATRIX_BLOCK_TYPES . '.{uid}', $this->_proxy('matrix', 'handleDeletedBlockType'))
             // Volumes
             ->onAdd(ProjectConfig::PATH_VOLUMES . '.{uid}', $this->_proxy('volumes', 'handleChangedVolume'))
             ->onUpdate(ProjectConfig::PATH_VOLUMES . '.{uid}', $this->_proxy('volumes', 'handleChangedVolume'))
@@ -1769,13 +1785,13 @@ trait ApplicationTrait
             ->onUpdate(ProjectConfig::PATH_GLOBAL_SETS . '.{uid}', $this->_proxy('globals', 'handleChangedGlobalSet'))
             ->onRemove(ProjectConfig::PATH_GLOBAL_SETS . '.{uid}', $this->_proxy('globals', 'handleDeletedGlobalSet'))
             // Sections
-            ->onAdd(ProjectConfig::PATH_SECTIONS . '.{uid}', $this->_proxy('sections', 'handleChangedSection'))
-            ->onUpdate(ProjectConfig::PATH_SECTIONS . '.{uid}', $this->_proxy('sections', 'handleChangedSection'))
-            ->onRemove(ProjectConfig::PATH_SECTIONS . '.{uid}', $this->_proxy('sections', 'handleDeletedSection'))
+            ->onAdd(ProjectConfig::PATH_SECTIONS . '.{uid}', $this->_proxy('entries', 'handleChangedSection'))
+            ->onUpdate(ProjectConfig::PATH_SECTIONS . '.{uid}', $this->_proxy('entries', 'handleChangedSection'))
+            ->onRemove(ProjectConfig::PATH_SECTIONS . '.{uid}', $this->_proxy('entries', 'handleDeletedSection'))
             // Entry types
-            ->onAdd(ProjectConfig::PATH_ENTRY_TYPES . '.{uid}', $this->_proxy('sections', 'handleChangedEntryType'))
-            ->onUpdate(ProjectConfig::PATH_ENTRY_TYPES . '.{uid}', $this->_proxy('sections', 'handleChangedEntryType'))
-            ->onRemove(ProjectConfig::PATH_ENTRY_TYPES . '.{uid}', $this->_proxy('sections', 'handleDeletedEntryType'))
+            ->onAdd(ProjectConfig::PATH_ENTRY_TYPES . '.{uid}', $this->_proxy('entries', 'handleChangedEntryType'))
+            ->onUpdate(ProjectConfig::PATH_ENTRY_TYPES . '.{uid}', $this->_proxy('entries', 'handleChangedEntryType'))
+            ->onRemove(ProjectConfig::PATH_ENTRY_TYPES . '.{uid}', $this->_proxy('entries', 'handleDeletedEntryType'))
             // GraphQL schemas
             ->onAdd(ProjectConfig::PATH_GRAPHQL_SCHEMAS . '.{uid}', $this->_proxy('gql', 'handleChangedSchema'))
             ->onUpdate(ProjectConfig::PATH_GRAPHQL_SCHEMAS . '.{uid}', $this->_proxy('gql', 'handleChangedSchema'))
@@ -1789,7 +1805,7 @@ trait ApplicationTrait
             if (!Craft::$app->getProjectConfig()->getIsApplyingExternalChanges()) {
                 $this->getRoutes()->handleDeletedSite($event);
                 $this->getCategories()->pruneDeletedSite($event);
-                $this->getSections()->pruneDeletedSite($event);
+                $this->getEntries()->pruneDeletedSite($event);
             }
         });
     }
@@ -1809,5 +1825,31 @@ trait ApplicationTrait
         return function() use ($id, $method) {
             return $this->get($id)->$method(...func_get_args());
         };
+    }
+
+    /**
+     * Set Craft's edition
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function _setCraftEdition(): void
+    {
+        $edition = App::env('CRAFT_EDITION') ?? $this->getProjectConfig()->get('system.edition');
+        $this->edition = $edition ? CmsEdition::fromHandle($edition) : CmsEdition::Solo;
+    }
+
+    /**
+     * Ensure that edition is set.
+     *
+     * @return void
+     * @throws Exception
+     * @since 5.8.18
+     */
+    public function ensureEdition(): void
+    {
+        if (!isset($this->edition)) {
+            $this->_setCraftEdition();
+        }
     }
 }

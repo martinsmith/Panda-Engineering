@@ -45,15 +45,16 @@ class CpNav extends Plugin
 
         self::$plugin = $this;
 
-        $this->_registerComponents();
-        $this->_registerLogTarget();
-        $this->_registerProjectConfigEventListeners();
+        $this->_registerProjectConfigEventHandlers();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            $this->_registerCpRoutes();
-            $this->_registerTemplateHooks();
+            // No need to do anything if this is an action request (despite being a CP request)
+            if (!Craft::$app->getRequest()->getIsActionRequest()) {
+                $this->_registerCpRoutes();
+                $this->_registerTemplateHooks();
 
-            Craft::$app->getView()->registerAssetBundle(CpNavAsset::class);
+                Craft::$app->getView()->registerAssetBundle(CpNavAsset::class);
+            }
         }
     }
 
@@ -88,7 +89,7 @@ class CpNav extends Plugin
         });
     }
 
-    private function _registerProjectConfigEventListeners(): void
+    private function _registerProjectConfigEventHandlers(): void
     {
         Craft::$app->getProjectConfig()->onAdd(Navigations::CONFIG_NAVIGATION_KEY . '.{uid}', [$this->getNavigations(), 'handleChangedNavigation'])
             ->onUpdate(Navigations::CONFIG_NAVIGATION_KEY . '.{uid}', [$this->getNavigations(), 'handleChangedNavigation'])

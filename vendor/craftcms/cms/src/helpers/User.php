@@ -19,10 +19,93 @@ use craft\elements\User as UserElement;
 class User
 {
     /**
+     * @param UserElement $user
+     * @return string|null
+     */
+    public static function getAuthStatus(UserElement $user): ?string
+    {
+        switch ($user->getStatus()) {
+            case UserElement::STATUS_INACTIVE:
+            case UserElement::STATUS_ARCHIVED:
+                return UserElement::AUTH_INVALID_CREDENTIALS;
+            case UserElement::STATUS_PENDING:
+                return UserElement::AUTH_PENDING_VERIFICATION;
+            case UserElement::STATUS_SUSPENDED:
+                return UserElement::AUTH_ACCOUNT_SUSPENDED;
+            case UserElement::STATUS_ACTIVE:
+                if ($user->locked) {
+                    // Let them know how much time they have to wait (if any) before their account is unlocked.
+                    if (Craft::$app->getConfig()->getGeneral()->cooldownDuration) {
+                        return UserElement::AUTH_ACCOUNT_COOLDOWN;
+                    }
+                    return UserElement::AUTH_ACCOUNT_LOCKED;
+                }
+                // Is a password reset required?
+                if ($user->passwordResetRequired) {
+                    return UserElement::AUTH_PASSWORD_RESET_REQUIRED;
+                }
+                $request = Craft::$app->getRequest();
+                if (!$request->getIsConsoleRequest()) {
+                    if ($request->getIsCpRequest()) {
+                        if (!$user->can('accessCp')) {
+                            return UserElement::AUTH_NO_CP_ACCESS;
+                        }
+                        if (
+                            Craft::$app->getIsLive() === false &&
+                            $user->can('accessCpWhenSystemIsOff') === false
+                        ) {
+                            return UserElement::AUTH_NO_CP_OFFLINE_ACCESS;
+                        }
+                    } elseif (
+                        Craft::$app->getIsLive() === false &&
+                        $user->can('accessSiteWhenSystemIsOff') === false
+                    ) {
+                        return UserElement::AUTH_NO_SITE_OFFLINE_ACCESS;
+                    }
+                }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param UserElement|null $user
+     * @return string|null
+     */
+    public static function getAuthFailureMessage(?UserElement $user): ?string
+    {
+        switch ($user->authError ?? "") {
+            case UserElement::AUTH_PENDING_VERIFICATION:
+                return Craft::t('app', 'Account has not been activated.');
+            case UserElement::AUTH_ACCOUNT_LOCKED:
+                return Craft::t('app', 'Account locked.');
+            case UserElement::AUTH_ACCOUNT_COOLDOWN:
+                $timeRemaining = $user?->getRemainingCooldownTime();
+
+                if ($timeRemaining) {
+                    return Craft::t('app', 'Account locked. Try again in {time}.', ['time' => DateTimeHelper::humanDuration($timeRemaining)]);
+                }
+                return Craft::t('app', 'Account locked.');
+            case UserElement::AUTH_PASSWORD_RESET_REQUIRED:
+                return Craft::t('app', 'You need to reset your password.');
+            case UserElement::AUTH_ACCOUNT_SUSPENDED:
+                return Craft::t('app', 'Account suspended.');
+            case UserElement::AUTH_NO_CP_ACCESS:
+                return Craft::t('app', 'You cannot access the control panel with that account.');
+            case UserElement::AUTH_NO_CP_OFFLINE_ACCESS:
+                return Craft::t('app', 'You cannot access the control panel while the system is offline with that account.');
+            case UserElement::AUTH_NO_SITE_OFFLINE_ACCESS:
+                return Craft::t('app', 'You cannot access the site while the system is offline with that account.');
+        }
+
+        return null;
+    }
+
+    /**
      * @param string|null $authError
      * @param UserElement|null $user
      * @return array{0:string,1:string}
-     * @since 4.16.7
+     * @since 5.8.10
      */
     public static function getLoginFailureInfo(?string $authError, ?UserElement $user): array
     {
@@ -42,7 +125,7 @@ class User
      * @param string|null $authError
      * @param UserElement|null $user
      * @return string
-     * @deprecated in 4.16.7
+     * @deprecated in 5.8.10
      */
     public static function getLoginFailureMessage(?string $authError, ?UserElement $user): string
     {

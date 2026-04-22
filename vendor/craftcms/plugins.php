@@ -4,25 +4,6 @@ $vendorDir = dirname(__DIR__);
 $rootDir = dirname(dirname(__DIR__));
 
 return array (
-  'adigital/cookie-consent-banner' => 
-  array (
-    'class' => 'adigital\\cookieconsentbanner\\CookieConsentBanner',
-    'basePath' => $vendorDir . '/adigital/cookie-consent-banner/src',
-    'handle' => 'cookie-consent-banner',
-    'aliases' => 
-    array (
-      '@adigital/cookieconsentbanner' => $vendorDir . '/adigital/cookie-consent-banner/src',
-    ),
-    'name' => 'Cookie Consent Banner',
-    'version' => '2.3.1',
-    'description' => 'Add a configurable cookie consent banner to the website.',
-    'developer' => 'A Digital',
-    'developerUrl' => 'https://adigital.agency',
-    'documentationUrl' => 'https://github.com/a-digital/cookie-consent-banner/blob/master/README.md',
-    'changelogUrl' => 'https://github.com/a-digital/cookie-consent-banner/blob/master/CHANGELOG.md',
-    'hasCpSettings' => true,
-    'hasCpSection' => false,
-  ),
   'craftcms/aws-s3' => 
   array (
     'class' => 'craft\\awss3\\Plugin',
@@ -57,22 +38,41 @@ return array (
     'developerEmail' => 'support@craftcms.com',
     'documentationUrl' => 'https://github.com/craftcms/postmark/blob/master/README.md',
   ),
-  'craftcms/redactor' => 
+  'adigital/cookie-consent-banner' => 
   array (
-    'class' => 'craft\\redactor\\Plugin',
-    'basePath' => $vendorDir . '/craftcms/redactor/src',
-    'handle' => 'redactor',
+    'class' => 'adigital\\cookieconsentbanner\\CookieConsentBanner',
+    'basePath' => $vendorDir . '/adigital/cookie-consent-banner/src',
+    'handle' => 'cookie-consent-banner',
     'aliases' => 
     array (
-      '@craft/redactor' => $vendorDir . '/craftcms/redactor/src',
+      '@adigital/cookieconsentbanner' => $vendorDir . '/adigital/cookie-consent-banner/src',
     ),
-    'name' => 'Redactor',
-    'version' => '3.1.0',
-    'description' => 'Edit rich text content in Craft CMS using Redactor by Imperavi.',
+    'name' => 'Cookie Consent Banner',
+    'version' => '3.1.1',
+    'description' => 'Add a configurable cookie consent banner to the website.',
+    'developer' => 'A Digital',
+    'developerUrl' => 'https://adigital.agency',
+    'documentationUrl' => 'https://github.com/a-digital/cookie-consent-banner/blob/master/README.md',
+    'changelogUrl' => 'https://github.com/a-digital/cookie-consent-banner/blob/master/CHANGELOG.md',
+    'hasCpSettings' => true,
+    'hasCpSection' => false,
+  ),
+  'craftcms/ckeditor' => 
+  array (
+    'class' => 'craft\\ckeditor\\Plugin',
+    'basePath' => $vendorDir . '/craftcms/ckeditor/src',
+    'handle' => 'ckeditor',
+    'aliases' => 
+    array (
+      '@craft/ckeditor' => $vendorDir . '/craftcms/ckeditor/src',
+    ),
+    'name' => 'CKEditor',
+    'version' => '4.11.4',
+    'description' => 'Edit rich text content in Craft CMS using CKEditor.',
     'developer' => 'Pixel & Tonic',
     'developerUrl' => 'https://pixelandtonic.com/',
     'developerEmail' => 'support@craftcms.com',
-    'documentationUrl' => 'https://github.com/craftcms/redactor/blob/v2/README.md',
+    'documentationUrl' => 'https://github.com/craftcms/ckeditor/blob/master/README.md',
   ),
   'mmikkel/child-me' => 
   array (
@@ -84,7 +84,7 @@ return array (
       '@mmikkel/childme' => $vendorDir . '/mmikkel/child-me/src',
     ),
     'name' => 'Child Me!',
-    'version' => '1.3.3',
+    'version' => '2.2.3',
     'schemaVersion' => '1.0.0',
     'description' => 'Easily create child elements',
     'developer' => 'Mats Mikkel Rummelhoff',
@@ -104,7 +104,7 @@ return array (
       '@mmikkel/retcon' => $vendorDir . '/mmikkel/retcon/src',
     ),
     'name' => 'Retcon',
-    'version' => '2.8.2',
+    'version' => '3.2.2',
     'schemaVersion' => '1.0.0',
     'description' => 'Powerful Twig filters for mutating and querying HTML',
     'developer' => 'Mats Mikkel Rummelhoff',
@@ -127,7 +127,7 @@ return array (
       '@TopShelfCraft/Wordsmith' => $vendorDir . '/topshelfcraft/wordsmith/src',
     ),
     'name' => 'Wordsmith',
-    'version' => '4.5.0',
+    'version' => '5.0.0',
     'description' => '...because you have the best words.',
     'developer' => 'Top Shelf Craft (Michael Rog)',
     'developerUrl' => 'https://topshelfcraft.com',
@@ -143,13 +143,30 @@ return array (
       '@verbb/cpnav' => $vendorDir . '/verbb/cp-nav/src',
     ),
     'name' => 'Control Panel Nav',
-    'version' => '4.0.13',
+    'version' => '5.0.7',
     'description' => 'Manage the Craft Control Panel navigation.',
     'developer' => 'Verbb',
     'developerUrl' => 'https://verbb.io',
     'developerEmail' => 'support@verbb.io',
     'documentationUrl' => 'https://github.com/verbb/cp-nav',
-    'changelogUrl' => 'https://raw.githubusercontent.com/verbb/cp-nav/craft-4/CHANGELOG.md',
+    'changelogUrl' => 'https://raw.githubusercontent.com/verbb/cp-nav/craft-5/CHANGELOG.md',
+  ),
+  'craftcms/redactor' => 
+  array (
+    'class' => 'craft\\redactor\\Plugin',
+    'basePath' => $vendorDir . '/craftcms/redactor/src',
+    'handle' => 'redactor',
+    'aliases' => 
+    array (
+      '@craft/redactor' => $vendorDir . '/craftcms/redactor/src',
+    ),
+    'name' => 'Redactor',
+    'version' => '4.2.0',
+    'description' => 'Edit rich text content in Craft CMS using Redactor by Imperavi.',
+    'developer' => 'Pixel & Tonic',
+    'developerUrl' => 'https://pixelandtonic.com/',
+    'developerEmail' => 'support@craftcms.com',
+    'documentationUrl' => 'https://github.com/craftcms/redactor/blob/v2/README.md',
   ),
   'verbb/redactor-tweaks' => 
   array (
@@ -161,13 +178,13 @@ return array (
       '@verbb/redactortweaks' => $vendorDir . '/verbb/redactor-tweaks/src',
     ),
     'name' => 'Redactor Tweaks',
-    'version' => '3.0.2',
+    'version' => '4.0.1',
     'description' => 'A small Craft CMS plugin that provides some tweaks to the default Redactor II Rich Text fieldtype.',
     'developer' => 'Verbb',
     'developerUrl' => 'https://verbb.io',
     'developerEmail' => 'support@verbb.io',
     'documentationUrl' => 'https://github.com/verbb/redactor-tweaks',
-    'changelogUrl' => 'https://raw.githubusercontent.com/verbb/redactor-tweaks/craft-4/CHANGELOG.md',
+    'changelogUrl' => 'https://raw.githubusercontent.com/verbb/redactor-tweaks/craft-5/CHANGELOG.md',
   ),
   'verbb/super-table' => 
   array (
@@ -179,13 +196,13 @@ return array (
       '@verbb/supertable' => $vendorDir . '/verbb/super-table/src',
     ),
     'name' => 'Super Table',
-    'version' => '3.0.16',
+    'version' => '4.0.5',
     'description' => 'Super-charge your Craft workflow with Super Table. Use it to group fields together or build complex Matrix-in-Matrix solutions.',
     'developer' => 'Verbb',
     'developerUrl' => 'https://verbb.io',
     'developerEmail' => 'support@verbb.io',
     'documentationUrl' => 'https://github.com/verbb/super-table',
-    'changelogUrl' => 'https://raw.githubusercontent.com/verbb/super-table/craft-4/CHANGELOG.md',
+    'changelogUrl' => 'https://raw.githubusercontent.com/verbb/super-table/craft-5/CHANGELOG.md',
   ),
   'nystudio107/craft-seomatic' => 
   array (
@@ -197,8 +214,8 @@ return array (
       '@nystudio107/seomatic' => $vendorDir . '/nystudio107/craft-seomatic/src',
     ),
     'name' => 'SEOmatic',
-    'version' => '4.1.20',
-    'description' => 'SEOmatic facilitates modern SEO best practices & implementation for Craft CMS 4. It is a turnkey SEO system that is comprehensive, powerful, and flexible.',
+    'version' => '5.1.21',
+    'description' => 'SEOmatic facilitates modern SEO best practices & implementation for Craft CMS 5. It is a turnkey SEO system that is comprehensive, powerful, and flexible.',
     'developer' => 'nystudio107',
     'developerUrl' => 'https://nystudio107.com',
     'documentationUrl' => 'https://nystudio107.com/docs/seomatic/',

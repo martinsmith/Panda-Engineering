@@ -6,11 +6,12 @@ icon: /var/www/vhosts/kadops.co.uk/httpdocs/craft/vendor/nystudio107/craft-seoma
 layout: 1b2fd43c-2000-42df-b5aa-0c4c7609c574 # Default
 level: 1
 newWindow: false
-parentId: null
+parent: null
 prevLabel: SEOmatic
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: seomatic
 sortOrder: 9999
+subnavBehaviour: null
 type: plugin
 url: seomatic

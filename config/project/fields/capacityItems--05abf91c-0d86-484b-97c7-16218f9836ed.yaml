@@ -1,0 +1,37 @@
+columnSuffix: null
+handle: capacityItems
+instructions: null
+name: 'Page Sections - Capacity List - Capacity Items'
+searchable: true
+settings:
+  addRowLabel: 'Add an Item'
+  columns:
+    __assoc__:
+      -
+        - col1
+        -
+          __assoc__:
+            -
+              - heading
+              - 'Capacity Item'
+            -
+              - handle
+              - capacityItem
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+  defaults:
+    -
+      __assoc__:
+        -
+          - col1
+          - ''
+  maxRows: null
+  minRows: 1
+  staticRows: false
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Table

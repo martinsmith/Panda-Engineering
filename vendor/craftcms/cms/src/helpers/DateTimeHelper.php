@@ -60,7 +60,7 @@ class DateTimeHelper
      * @var string[] Supported relative time units.
      * @see relativeTimeStatement()
      * @see relativeTimeToSeconds()
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public const RELATIVE_TIME_UNITS = [
         'sec',
@@ -287,17 +287,25 @@ class DateTimeHelper
      * Converts a date to an ISO-8601 string.
      *
      * @param mixed $date The date, in any format that [[toDateTime()]] supports.
+     * @param bool $setToUtc Whether the resulting string should be set to UTC.
      * @return string|false The date formatted as an ISO-8601 string, or `false` if $date was not a valid date
      */
-    public static function toIso8601(mixed $date): string|false
+    public static function toIso8601(mixed $date, bool $setToUtc = false): string|false
     {
-        $date = static::toDateTime($date);
-
-        if ($date !== false) {
-            return $date->format(DateTime::ATOM);
+        if ($date instanceof DateTime && $setToUtc) {
+            $date = clone $date;
+        } else {
+            $date = static::toDateTime($date);
+            if (!$date) {
+                return false;
+            }
         }
 
-        return false;
+        if ($setToUtc) {
+            $date->setTimezone(new DateTimeZone('UTC'));
+        }
+
+        return $date->format(DateTime::ATOM);
     }
 
     /**
@@ -751,6 +759,31 @@ class DateTimeHelper
     }
 
     /**
+     * Converts a time to an integer (the number of seconds since midnight).
+     *
+     * @param int|string|DateTimeInterface|null $time
+     * @return int|null
+     * @since 5.9.17
+     */
+    public static function timeToSeconds(int|string|DateTimeInterface|null $time): ?int
+    {
+        if (is_int($time) || $time === null) {
+            return $time;
+        }
+
+        if (is_string($time)) {
+            [$hours, $minutes, $seconds] = array_pad(explode(':', $time), 3, 0);
+        } else {
+            /** @var DateTimeInterface $time */
+            $hours = (int)$time->format('H');
+            $minutes = (int)$time->format('i');
+            $seconds = (int)$time->format('s');
+        }
+
+        return (int)$hours * 3600 + (int)$minutes * 60 + (int)$seconds;
+    }
+
+    /**
      * Returns a human-friendly duration string for the given date interval or number of seconds.
      *
      * @param mixed $dateInterval The value, represented as either a [[\DateInterval]] object, an interval duration string, or a number of seconds.
@@ -859,7 +892,7 @@ class DateTimeHelper
      * @param int $number
      * @param string $unit
      * @return string
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public static function relativeTimeStatement(int $number, string $unit): string
     {
@@ -882,7 +915,7 @@ class DateTimeHelper
      * @param int $number
      * @param string $unit
      * @return int
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public static function relativeTimeToSeconds(int $number, string $unit): int
     {
@@ -902,11 +935,14 @@ class DateTimeHelper
     {
         $value = trim($value);
 
-        // First see if it's in YYYY-MM-DD or YYYY-MM-DD HH:MM:SS.MU formats
-        if (preg_match('/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2}\.\d+)?$/', $value, $match)) {
+        // First see if it's in YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DD HH:MM:SS.MU formats
+        if (preg_match('/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2}(\.\d+)?)?$/', $value, $match)) {
             $format = 'Y-m-d';
             if (!empty($match[1])) {
-                $format .= ' H:i:s.u';
+                $format .= ' H:i:s';
+                if (!empty($match[2])) {
+                    $format .= '.u';
+                }
             }
             return [$value, $format];
         }

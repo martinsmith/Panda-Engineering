@@ -8,14 +8,15 @@
 namespace craft\helpers;
 
 use Craft;
+use craft\base\ElementContainerFieldInterface;
 use craft\base\ElementInterface;
-use craft\elements\Entry as EntryElement;
 use craft\errors\GqlException;
 use craft\gql\base\Directive;
 use craft\gql\ElementQueryConditionBuilder;
 use craft\gql\GqlEntityRegistry;
-use craft\models\EntryType as EntryTypeModel;
+use craft\models\EntryType;
 use craft\models\GqlSchema;
+use craft\models\Section;
 use craft\models\Site;
 use craft\services\Gql as GqlService;
 use GraphQL\Language\AST\ListValueNode;
@@ -139,25 +140,6 @@ class Gql
     }
 
     /**
-     * Return true if active schema can mutate entries.
-     *
-     * @param GqlSchema|null $schema The GraphQL schema. If none is provided, the active schema will be used.
-     * @return bool
-     * @since 3.5.0
-     */
-    public static function canMutateEntries(?GqlSchema $schema = null): bool
-    {
-        $allowedEntities = self::extractAllowedEntitiesFromSchema('edit', $schema);
-
-        // Singles don't have the `edit` action.
-        if (!isset($allowedEntities['entrytypes'])) {
-            $allowedEntities = self::extractAllowedEntitiesFromSchema('save', $schema);
-        }
-
-        return isset($allowedEntities['entrytypes']);
-    }
-
-    /**
      * Return true if active schema can mutate tags.
      *
      * @param GqlSchema|null $schema The GraphQL schema. If none is provided, the active schema will be used.
@@ -218,7 +200,10 @@ class Gql
     public static function canQueryEntries(?GqlSchema $schema = null): bool
     {
         $allowedEntities = self::extractAllowedEntitiesFromSchema('read', $schema);
-        return isset($allowedEntities['sections'], $allowedEntities['entrytypes']);
+        return (
+            isset($allowedEntities['sections']) ||
+            isset($allowedEntities['nestedentryfields'])
+        );
     }
 
     /**
@@ -368,27 +353,31 @@ class Gql
      */
     public static function applyDirectives(mixed $source, ResolveInfo $resolveInfo, mixed $value): mixed
     {
-        if (isset($resolveInfo->fieldNodes[0]->directives)) {
-            foreach ($resolveInfo->fieldNodes[0]->directives as $directive) {
-                /** @var Directive|false $directiveEntity */
-                $directiveEntity = GqlEntityRegistry::getEntity($directive->name->value);
-
-                // This can happen for built-in GraphQL directives in which case they will have been handled already, anyway
-                if (!$directiveEntity) {
-                    continue;
-                }
-
-                $arguments = [];
-
-                if (isset($directive->arguments[0])) {
-                    foreach ($directive->arguments as $argument) {
-                        $arguments[$argument->name->value] = self::_convertArgumentValue($argument->value, $resolveInfo->variableValues);
-                    }
-                }
-
-                $value = $directiveEntity::apply($source, $value, $arguments, $resolveInfo);
-            }
+        /** @phpstan-ignore-next-line */
+        if (!isset($resolveInfo->fieldNodes[0]->directives)) {
+            return $value;
         }
+        
+        foreach ($resolveInfo->fieldNodes[0]->directives as $directive) {
+            /** @var Directive|false $directiveEntity */
+            $directiveEntity = GqlEntityRegistry::getEntity($directive->name->value);
+
+            // This can happen for built-in GraphQL directives in which case they will have been handled already, anyway
+            if (!$directiveEntity) {
+                continue;
+            }
+
+            $arguments = [];
+
+            if (isset($directive->arguments[0])) {
+                foreach ($directive->arguments as $argument) {
+                    $arguments[$argument->name->value] = self::_convertArgumentValue($argument->value, $resolveInfo->variableValues);
+                }
+            }
+
+            $value = $directiveEntity::apply($source, $value, $arguments, $resolveInfo);
+        }
+
         return $value;
     }
 
@@ -464,9 +453,7 @@ class Gql
 
         $sites = Craft::$app->getSites()->getAllSites(true);
 
-        return array_filter($sites, static function(Site $site) use ($allowedSiteUids) {
-            return in_array($site->uid, $allowedSiteUids, true);
-        });
+        return array_filter($sites, static fn(Site $site) => in_array($site->uid, $allowedSiteUids, true));
     }
 
     /**
@@ -481,9 +468,7 @@ class Gql
         }
 
         if ($value instanceof ListValueNode) {
-            return array_map(function($node) {
-                return self::_convertArgumentValue($node);
-            }, iterator_to_array($value->values));
+            return array_map(fn($node) => self::_convertArgumentValue($node), iterator_to_array($value->values));
         }
 
         return $value->value;
@@ -525,9 +510,7 @@ class Gql
      */
     public static function eagerLoadComplexity(): callable
     {
-        return static function($childComplexity) {
-            return $childComplexity + GqlService::GRAPHQL_COMPLEXITY_EAGER_LOAD;
-        };
+        return static fn($childComplexity) => $childComplexity + GqlService::GRAPHQL_COMPLEXITY_EAGER_LOAD;
     }
 
     /**
@@ -538,9 +521,7 @@ class Gql
      */
     public static function singleQueryComplexity(): callable
     {
-        return static function($childComplexity) {
-            return $childComplexity + GqlService::GRAPHQL_COMPLEXITY_QUERY;
-        };
+        return static fn($childComplexity) => $childComplexity + GqlService::GRAPHQL_COMPLEXITY_QUERY;
     }
 
     /**
@@ -581,22 +562,65 @@ class Gql
      */
     public static function nPlus1Complexity(): callable
     {
-        return static function($childComplexity) {
-            return $childComplexity + GqlService::GRAPHQL_COMPLEXITY_NPLUS1;
-        };
+        return static fn($childComplexity) => $childComplexity + GqlService::GRAPHQL_COMPLEXITY_NPLUS1;
     }
 
     /**
      * Return all entry types a given (or loaded) schema contains.
      *
-     * @return EntryTypeModel[]
+     * @return EntryType[]
      */
     public static function getSchemaContainedEntryTypes(?GqlSchema $schema = null): array
     {
+        $entryTypes = [];
+
+        foreach (static::getSchemaContainedSections($schema) as $section) {
+            foreach ($section->getEntryTypes() as $entryType) {
+                $entryTypes[$entryType->uid] = $entryType;
+            }
+        }
+
+        foreach (static::getSchemaContainedNestedEntryFields($schema) as $field) {
+            foreach ($field->getFieldLayoutProviders() as $provider) {
+                if ($provider instanceof EntryType) {
+                    $entryTypes[$provider->uid] = $provider;
+                }
+            }
+        }
+
+        return array_values($entryTypes);
+    }
+
+    /**
+     * Returns all sections a given (or loaded) schema contains.
+     *
+     * @return Section[]
+     * @since 5.0.0
+     */
+    public static function getSchemaContainedSections(?GqlSchema $schema = null): array
+    {
         return array_filter(
-            Craft::$app->getSections()->getAllEntryTypes(),
-            static fn($entryType) => self::isSchemaAwareOf(EntryElement::gqlScopesByContext($entryType), $schema)
+            Craft::$app->getEntries()->getAllSections(),
+            fn(Section $section) => static::isSchemaAwareOf("sections.$section->uid", $schema),
         );
+    }
+
+    /**
+     * Returns all nested entry fields a given (or loaded) schema contains.
+     *
+     * @return ElementContainerFieldInterface[]
+     * @since 5.0.0
+     */
+    public static function getSchemaContainedNestedEntryFields(?GqlSchema $schema = null): array
+    {
+        $fieldsService = Craft::$app->getFields();
+        /** @var ElementContainerFieldInterface[] $fields */
+        $fields = array_merge(...array_map(
+            fn(string $type) => $fieldsService->getFieldsByType($type),
+            $fieldsService->getNestedEntryFieldTypes()
+        ));
+        return array_filter($fields, fn(ElementContainerFieldInterface $field) =>
+            static::isSchemaAwareOf("nestedentryfields.$field->uid", $schema));
     }
 
     /**
@@ -624,12 +648,11 @@ class Gql
      *
      * @param string $query
      * @return bool
-     * @since 4.9.6
+     * @since 5.1.8
      */
     public static function isIntrospectionQuery(string $query): bool
     {
         // strtok() won’t find a token if the string starts with it
-        /** @var string|false $tok */
         $tok = strtok(" $query", '{');
         if ($tok === false) {
             return false;

@@ -34,7 +34,7 @@ class ElementsController extends Controller
 
     /**
      * @var bool Whether to only do a dry run of the prune elements of type process.
-     * @since 4.13.0
+     * @since 5.6.0
      */
     public bool $dryRun = false;
 
@@ -107,7 +107,7 @@ class ElementsController extends Controller
      * Deletes all elements of a given type.
      *
      * @param class-string<ElementInterface> $type The element type to delete.
-     * @since 4.13.0
+     * @since 5.6.0
      */
     public function actionDeleteAllOfType(string $type): int
     {
@@ -119,7 +119,7 @@ class ElementsController extends Controller
 
         // exclude single entries
         if ($type === Entry::class) {
-            $singleSections = Craft::$app->getSections()->getSectionsByType(Section::TYPE_SINGLE);
+            $singleSections = Craft::$app->getEntries()->getSectionsByType(Section::TYPE_SINGLE);
             if (!empty($singleSections)) {
                 $singleEntryIds = Entry::find()
                     ->sectionId(array_map(fn(Section $section) => $section->id, $singleSections))

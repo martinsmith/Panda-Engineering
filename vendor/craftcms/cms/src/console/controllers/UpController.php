@@ -32,11 +32,6 @@ class UpController extends Controller
     public bool $noBackup = false;
 
     /**
-     * @var bool Whether to perform the action even if a mutex lock could not be acquired.
-     */
-    public bool $force = false;
-
-    /**
      * @inheritdoc
      */
     public bool $isolated = true;
@@ -48,7 +43,6 @@ class UpController extends Controller
     {
         return array_merge(parent::options($actionID), [
             'noBackup',
-            'force',
         ]);
     }
 
@@ -62,7 +56,9 @@ class UpController extends Controller
         $this->showLicensingIssues();
 
         try {
-            $pendingChanges = Craft::$app->getProjectConfig()->areChangesPending(force: true);
+            $projectConfig = Craft::$app->getProjectConfig();
+            $pendingChanges = $projectConfig->areChangesPending(force: true);
+            $writeYamlAutomatically = $projectConfig->writeYamlAutomatically;
 
             // Craft + plugin migrations
             $res = $this->run('migrate/all', [
@@ -75,6 +71,10 @@ class UpController extends Controller
             }
             $this->stdout("\n");
 
+            // Save and reset the project config
+            $projectConfig->saveModifiedConfigData();
+            $projectConfig->reset();
+
             // Project Config
             if ($pendingChanges) {
                 $res = $this->run('project-config/apply');
@@ -82,6 +82,9 @@ class UpController extends Controller
                     return $res;
                 }
                 $this->stdout("\n");
+
+                $projectConfig->flush();
+                $projectConfig->reset();
             }
 
             // Content migration
@@ -103,6 +106,10 @@ class UpController extends Controller
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
+        if ($writeYamlAutomatically && !$projectConfig->readOnly) {
+            $projectConfig->writeYamlFiles(true);
+        }
+
         return ExitCode::OK;
     }
 
@@ -112,7 +119,7 @@ class UpController extends Controller
         Craft::$app->getUpdates()->getUpdates(true);
         $this->stdout("done\n", Console::FG_GREEN);
 
-        $issues = App::licensingIssues([LicenseKeyStatus::Astray]);
+        $issues = App::licensingIssues([LicenseKeyStatus::Astray->value]);
 
         if (empty($issues)) {
             return true;

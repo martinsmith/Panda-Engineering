@@ -1,7 +1,8 @@
 fieldLayouts:
-  e77333b0-76f3-48c9-85a4-03a58fba08ec:
+  28d9bc2b-c1e2-44c0-b3ab-64a7fc2665c2:
     tabs:
       -
+        elementCondition: null
         elements:
           -
             autocapitalize: true
@@ -9,7 +10,9 @@ fieldLayouts:
             autocorrect: true
             class: null
             disabled: false
+            elementCondition: null
             id: null
+            inputType: null
             instructions: null
             label: null
             max: null
@@ -24,15 +27,18 @@ fieldLayouts:
             tip: null
             title: null
             type: craft\fieldlayoutelements\assets\AssetTitleField
+            uid: 573de788-55e6-4d84-881d-b7c71db219c2
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: 22843238-7380-4196-800e-3628432b6b3f
+        userCondition: null
 fs: stat
 handle: stat
-hasUrls: true
 name: Stat
 sortOrder: 3
 titleTranslationKeyFormat: null
 titleTranslationMethod: site
-url: $CLOUDFRONT_URL
+transformFs: null
+transformSubpath: ''

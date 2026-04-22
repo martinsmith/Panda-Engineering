@@ -1,19 +1,16 @@
 defaultPlacement: end
 enableVersioning: true
+entryTypes:
+  -
+    uid: 791a54fd-182a-4eca-b677-a52ea1ff20ad # Additional Pages
 handle: additionalPages
+maxAuthors: 1
 name: 'Additional Pages'
 previewTargets:
   -
-    __assoc__:
-      -
-        - label
-        - 'Primary entry page'
-      -
-        - urlFormat
-        - '{url}'
-      -
-        - refresh
-        - '1'
+    label: 'Primary entry page'
+    refresh: '1'
+    urlFormat: '{url}'
 propagationMethod: all
 siteSettings:
   08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering

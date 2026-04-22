@@ -101,7 +101,6 @@ class Container
                 $metaContainers::METACONTAINER_CACHE_TAG . $sourceId . $sourceBundleType,
             ],
         ]);
-
         $cache = Craft::$app->getCache();
         $result = $cache->getOrSet(
             self::CACHE_KEY . $cacheKey,

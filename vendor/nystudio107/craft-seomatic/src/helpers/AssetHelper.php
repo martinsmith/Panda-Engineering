@@ -20,7 +20,7 @@ use craft\services\ElementSources;
 /**
  * @author    nystudio107
  * @package   Seomatic
- * @since     4.1.18
+ * @since     5.1.18
  */
 class AssetHelper
 {

@@ -6,11 +6,12 @@ icon: globe
 layout: 2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666 # Staff
 level: 1
 newWindow: false
-parentId: null
+parent: null
 prevLabel: Globals
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: globals
 sortOrder: 2
-type: ''
+subnavBehaviour: null
+type: null
 url: globals

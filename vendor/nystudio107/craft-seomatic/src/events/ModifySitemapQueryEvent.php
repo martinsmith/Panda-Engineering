@@ -18,7 +18,7 @@ use yii\base\Event;
 /**
  * @author    nystudio107
  * @package   Seomatic
- * @since     4.1.9
+ * @since     5.1.10
  */
 class ModifySitemapQueryEvent extends Event
 {

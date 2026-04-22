@@ -1,20 +1,26 @@
 columnSuffix: null
-contentColumnType: string
-fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
 handle: serviceCapabilities
-instructions: ''
+instructions: null
 name: 'Service Capabilities'
 searchable: true
 settings:
-  contentTable: '{{%stc_servicecapabilities}}'
-  fieldLayout: row
-  maxRows: ''
-  minRows: '1'
-  placeholderKey: null
+  createButtonLabel: null
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
+        -
+          - uid
+          - 7a102528-858e-40f4-8074-30384764baf8 # Service Capabilities Block
+  includeTableView: false
+  maxEntries: null
+  minEntries: 1
+  pageSize: null
   propagationKeyFormat: null
   propagationMethod: none
-  selectionLabel: 'Add a Service'
-  staticField: ''
+  showCardsInGrid: false
+  viewMode: blocks
 translationKeyFormat: null
 translationMethod: site
-type: verbb\supertable\fields\SuperTableField
+type: craft\fields\Matrix

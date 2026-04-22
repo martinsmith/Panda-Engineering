@@ -2,6 +2,7 @@ fieldLayouts:
   89b4cf18-a493-4529-b1e1-6ebff8bc4434:
     tabs:
       -
+        elementCondition: null
         elements:
           -
             autocapitalize: true
@@ -9,7 +10,9 @@ fieldLayouts:
             autocorrect: true
             class: null
             disabled: false
+            elementCondition: null
             id: null
+            inputType: null
             instructions: null
             label: null
             max: null
@@ -24,41 +27,55 @@ fieldLayouts:
             tip: null
             title: null
             type: craft\fieldlayoutelements\entries\EntryTitleField
+            uid: effadac4-f9d1-4877-9420-8dbbf5b2876e
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: 318ceac4-1f0c-4b8b-b3db-39faa69fd25d # Hero
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: cb12b9d7-3bbe-49c7-8383-2fcb492b51a2
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: 8f1c1910-fa93-4ce9-a6fb-50f13a7989a4 # Page Title
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 0fd0c441-ed8a-4c9b-ad6a-97224eb6a67d
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: a7606d83-b448-42ce-b465-eb80ab40d4d0 # Page Text
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 13120d59-62f0-4b1d-9e2e-ed7324bf1b01
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: aa9a865b-e54c-4700-bc10-0433fa6fc090
+        userCondition: null
 handle: homepage
 hasTitleField: false
 name: Homepage
-section: 757524fa-302d-4167-8b35-fca944b11b9d # Homepage
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
 sortOrder: 1
 titleFormat: '{section.name|raw}'
 titleTranslationKeyFormat: null

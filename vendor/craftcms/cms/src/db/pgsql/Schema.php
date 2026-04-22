@@ -7,12 +7,12 @@
 
 namespace craft\db\pgsql;
 
-use Composer\Util\Platform;
 use Craft;
 use craft\db\Connection;
 use craft\db\ExpressionBuilder;
 use craft\db\ExpressionInterface;
 use craft\db\TableSchema;
+use craft\helpers\App;
 use mikehaertl\shellcommand\Command as ShellCommand;
 use yii\db\Exception;
 
@@ -42,6 +42,18 @@ class Schema extends \yii\db\pgsql\Schema
     public int $maxObjectNameLength = 63;
 
     /**
+     * Returns whether a table supports 4-byte characters.
+     *
+     * @param string $table The table to check
+     * @return bool
+     * @since 5.0.0
+     */
+    public function supportsMb4(string $table): bool
+    {
+        return true;
+    }
+
+    /**
      * Creates a query builder for the database.
      *
      * This method may be overridden by child classes to create a DBMS-specific query builder.
@@ -63,7 +75,7 @@ class Schema extends \yii\db\pgsql\Schema
      *
      * @param string $name
      * @return string
-     * @deprecated in 4.12.0
+     * @deprecated in 5.4.0
      */
     public function quoteDatabaseName(string $name): string
     {
@@ -82,7 +94,6 @@ class Schema extends \yii\db\pgsql\Schema
             parent::releaseSavepoint($name);
         } catch (Exception $e) {
             // Specifically look for a "No such savepoint" error.
-            /** @phpstan-ignore-next-line */
             if (in_array($e->getCode(), ['25P01', '3B001'], true)) {
                 Craft::warning('Tried to release a savepoint, but it does not exist: ' . $e->getMessage(), __METHOD__);
             } else {
@@ -147,7 +158,7 @@ class Schema extends \yii\db\pgsql\Schema
             ->addArg('--file=', '{file}')
             ->addArg('--schema=', '{schema}');
 
-        $ignoreTables = $ignoreTables ?? Craft::$app->getDb()->getIgnoredBackupTables();
+        $ignoreTables ??= Craft::$app->getDb()->getIgnoredBackupTables();
         $format = $this->getBackupFormat();
         $commandFromConfig = Craft::$app->getConfig()->getGeneral()->backupCommand;
 
@@ -267,7 +278,7 @@ class Schema extends \yii\db\pgsql\Schema
      * Whether `pg_restore` should be used for the restore command.
      *
      * @return bool
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public function usePgRestore(): bool
     {
@@ -378,14 +389,14 @@ ORDER BY i.relname, k';
      */
     private function _pgpasswordCommand(): string
     {
-        return Platform::isWindows() ? "set PGPASSWORD='{password}' && " : "PGPASSWORD='{password}' ";
+        return App::isWindows() ? "set PGPASSWORD='{password}' && " : "PGPASSWORD='{password}' ";
     }
 
     /**
      * Returns the backup format that should be used (`custom`, `directory`, `tar`, or `plain`).
      *
      * @return string|null
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public function getBackupFormat(): ?string
     {
@@ -396,7 +407,7 @@ ORDER BY i.relname, k';
      * Sets the backup format that should be used (`custom`, `directory`, `tar`, or `plain`).
      *
      * @param string|null $backupFormat
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public function setBackupFormat(?string $backupFormat): void
     {
@@ -407,7 +418,7 @@ ORDER BY i.relname, k';
      * Returns the restore format that should be used (`custom`, `directory`, `tar`, or `plain`).
      *
      * @return string|null
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public function getRestoreFormat(): ?string
     {
@@ -418,7 +429,7 @@ ORDER BY i.relname, k';
      * Sets the restore format that should be used (`custom`, `directory`, `tar`, or `plain`).
      *
      * @param string|null $restoreFormat
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public function setRestoreFormat(?string $restoreFormat): void
     {

@@ -30,7 +30,7 @@ class Service extends Component
                 return Craft::$app->getView()->renderTemplate('cp-nav/_layouts/navs', $variables);
             }
         } catch (Throwable $e) {
-            CpNav::error(Craft::t('app', '{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]));
+            CpNav::error('{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]);
         }
 
         return null;
@@ -89,7 +89,7 @@ JS;
                 $view->registerJs($js, View::POS_BEGIN);
             }
         } catch (Throwable $e) {
-            CpNav::error(Craft::t('app', '{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]));
+            CpNav::error('{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]);
         }
     }
 
@@ -216,7 +216,7 @@ JS;
                 Craft::$app->trigger(Application::EVENT_AFTER_REQUEST);
             }
         } catch (Throwable $e) {
-            CpNav::error(Craft::t('app', '{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]));
+            CpNav::error('{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]);
         }
     }
 
@@ -232,12 +232,19 @@ JS;
             $navigation->enabled = true;
             $navigation->url = $navItem['url'] ?? '';
             $navigation->prevUrl = $navItem['url'] ?? '';
-            $navigation->icon = $navItem['icon'] ?? $navItem['fontIcon'] ?? '';
             $navigation->type = $navItem['type'] ?? '';
             $navigation->newWindow = $navItem['external'] ?? false;
             $navigation->layoutId = $layoutId;
             $navigation->prevLevel = 1;
             $navigation->level = 1;
+
+            $fontIcon = $navItem['fontIcon'] ?? '';
+
+            if ($fontIcon) {
+                $navigation->icon = 'fontIcon:' . $fontIcon;
+            } else {
+                $navigation->icon = $navItem['icon'] ?? '';
+            }
 
             $navigationService->saveNavigation($navigation);
 

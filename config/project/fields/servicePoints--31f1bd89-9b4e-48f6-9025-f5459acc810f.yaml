@@ -1,0 +1,37 @@
+columnSuffix: null
+handle: servicePoints
+instructions: null
+name: 'Service Capabilities - Service Points'
+searchable: true
+settings:
+  addRowLabel: 'Add a point'
+  columns:
+    __assoc__:
+      -
+        - col1
+        -
+          __assoc__:
+            -
+              - heading
+              - 'Service Point'
+            -
+              - handle
+              - servicePoint
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+  defaults:
+    -
+      __assoc__:
+        -
+          - col1
+          - ''
+  maxRows: null
+  minRows: 1
+  staticRows: false
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Table

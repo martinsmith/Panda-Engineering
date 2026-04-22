@@ -44,13 +44,14 @@ class DeleteForSite extends ElementAction
 (() => {
     new Craft.ElementActionTrigger({
         type: $type,
-        validateSelection: \$selectedItems => {
-            for (let i = 0; i < \$selectedItems.length; i++) {
-                if (!Garnish.hasAttr(\$selectedItems.eq(i).find('.element'), 'data-deletable')) {
+        validateSelection: (selectedItems, elementIndex) => {
+            for (let i = 0; i < selectedItems.length; i++) {
+                if (!Garnish.hasAttr(selectedItems.eq(i).find('.element'), 'data-deletable-for-site')) {
                     return false;
                 }
             }
-            return true;
+
+            return elementIndex.settings.canDeleteElements(selectedItems);
         },
     });
 })();
@@ -80,11 +81,7 @@ JS, [static::class]);
      */
     public function getConfirmationMessage(): ?string
     {
-        if (isset($this->confirmationMessage)) {
-            return $this->confirmationMessage;
-        }
-
-        return Craft::t('app', 'Are you sure you want to delete the selected {type} for this site?', [
+        return $this->confirmationMessage ?? Craft::t('app', 'Are you sure you want to delete the selected {type} for this site?', [
             'type' => $this->elementType::pluralLowerDisplayName(),
         ]);
     }

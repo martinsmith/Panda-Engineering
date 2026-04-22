@@ -61,7 +61,7 @@ class ArgumentManager extends Component
 
     public function init(): void
     {
-        $handlers = [
+        $this->_argumentHandlers = [
             'relatedToEntries' => RelatedEntries::class,
             'relatedToAssets' => RelatedAssets::class,
             'relatedToCategories' => RelatedCategories::class,
@@ -71,13 +71,12 @@ class ArgumentManager extends Component
             'siteId' => SiteId::class,
         ];
 
-        $event = new RegisterGqlArgumentHandlersEvent([
-            'handlers' => $handlers,
-        ]);
-
-        $this->trigger(self::EVENT_DEFINE_GQL_ARGUMENT_HANDLERS, $event);
-
-        $this->_argumentHandlers = $event->handlers;
+        // Fire a 'defineGqlArgumentHandlers' event
+        if ($this->hasEventHandlers(self::EVENT_DEFINE_GQL_ARGUMENT_HANDLERS)) {
+            $event = new RegisterGqlArgumentHandlersEvent(['handlers' => $this->_argumentHandlers]);
+            $this->trigger(self::EVENT_DEFINE_GQL_ARGUMENT_HANDLERS, $event);
+            $this->_argumentHandlers = $event->handlers;
+        }
     }
 
     /**
@@ -147,9 +146,7 @@ class ArgumentManager extends Component
         if (isset($arguments['relatedToAll'])) {
             Craft::$app->getDeprecator()->log('graphql.arguments.relatedToAll', 'The `relatedToAll` argument has been deprecated. Use the `relatedTo` argument with the `["and", ...ids]` syntax instead.');
             $ids = (array)$arguments['relatedToAll'];
-            $ids = array_map(function($value) {
-                return ['element' => $value];
-            }, $ids);
+            $ids = array_map(fn($value) => ['element' => $value], $ids);
             $arguments['relatedTo'] = array_merge(['and'], $ids);
             unset($arguments['relatedToAll']);
         }

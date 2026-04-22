@@ -16,7 +16,7 @@ class m220211_113840_add_commerce_producttypes extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): void
     {
         if (!Craft::$app->config->general->allowAdminChanges) {
             return;
@@ -48,7 +48,7 @@ class m220211_113840_add_commerce_producttypes extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m220211_113840_add_commerce_producttypes cannot be reverted.\n";
         return false;

@@ -13,7 +13,7 @@ use Attribute;
  * Attribute AllowedInSandbox
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.17.0
+ * @since 5.9.0
  */
 #[Attribute]
 class AllowedInSandbox

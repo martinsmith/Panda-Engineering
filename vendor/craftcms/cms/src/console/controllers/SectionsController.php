@@ -13,13 +13,16 @@ use craft\elements\Entry;
 use craft\helpers\ArrayHelper;
 use craft\helpers\StringHelper;
 use craft\models\CategoryGroup_SiteSettings;
+use craft\models\EntryType;
 use craft\models\FieldLayout;
 use craft\models\Section;
 use craft\models\Section_SiteSettings;
 use craft\models\Site;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\console\ExitCode;
 use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * Manages sections.
@@ -52,6 +55,12 @@ class SectionsController extends Controller
      * @since 4.6.0
      */
     public ?bool $noVersioning = null;
+
+    /**
+     * @var string|null Comma-separated list of entry type handles to assign to the section.
+     * @since 5.0.0
+     */
+    public ?string $entryTypes = null;
 
     /**
      * @var string|null The entry URI format to set for each site.
@@ -111,6 +120,7 @@ class SectionsController extends Controller
                     'handle',
                     'type',
                     'noVersioning',
+                    'entryTypes',
                     'uriFormat',
                     'template',
                     'fromCategoryGroup',
@@ -134,18 +144,18 @@ class SectionsController extends Controller
             'previewTargets' => [],
         ]);
 
-        $validateAttribute = function($attributes, ?string &$error = null): bool {
-            $section = new Section($attributes);
+        $validateAttribute = function($attributes, ?string &$error = null, string $class = Section::class): bool {
+            $model = new $class($attributes);
             $attributeNames = array_keys($attributes);
-            if (!$section->validate($attributeNames)) {
-                $error = $section->getFirstError($attributeNames[0]);
+            if (!$model->validate($attributeNames)) {
+                $error = $model->getFirstError($attributeNames[0]);
                 return false;
             }
             return true;
         };
 
-        $getDefaultAttribute = function(string $attribute, string $value) use ($validateAttribute): ?string {
-            if ($validateAttribute([$attribute => $value])) {
+        $getDefaultAttribute = function(string $attribute, string $value, string $class = Section::class) use ($validateAttribute): ?string {
+            if ($validateAttribute([$attribute => $value], class: $class)) {
                 return $value;
             }
             return null;
@@ -248,36 +258,48 @@ class SectionsController extends Controller
             $section->previewTargets = [
                 [
                     'label' => Craft::t('app', 'Primary {type} page', [
-                        'type' => StringHelper::toLowerCase(Entry::displayName()),
+                        'type' => Entry::lowerDisplayName(),
                     ]),
                     'urlFormat' => '{url}',
                 ],
             ];
         }
 
-        try {
-            $this->do('Saving the section', function() use ($section) {
-                if (!Craft::$app->getSections()->saveSection($section)) {
-                    $message = ArrayHelper::firstValue($section->getFirstErrors()) ?? 'Unable to save the section';
-                    throw new InvalidConfigException($message);
+        $entryTypes = [];
+        $entriesService = Craft::$app->getEntries();
+
+        if (isset($this->entryTypes)) {
+            foreach (explode(',', $this->entryTypes) as $entryTypeHandle) {
+                $entryType = $entriesService->getEntryTypeByHandle($entryTypeHandle);
+                if (!$entryType) {
+                    throw new InvalidArgumentException("Invalid entry type handle: $entryTypeHandle");
                 }
-            });
-        } catch (InvalidConfigException) {
-            return ExitCode::UNSPECIFIED_ERROR;
-        }
-
-        if ($this->interactive) {
-            $entryType = $section->getEntryTypes()[0];
-            $entryTypeName = $this->prompt('Initial entry type name:', [
-                'default' => $entryType->name,
-            ]);
-            $entryTypeHandle = $this->prompt('Initial entry type handle:', [
-                'default' => $entryTypeName !== $entryType->name ? StringHelper::toHandle($entryTypeName) : $entryType->handle,
-            ]);
-
-            if ($entryTypeName !== $entryType->name || $entryTypeHandle !== $entryType->handle) {
-                $entryType->name = $entryTypeName;
-                $entryType->handle = $entryTypeHandle;
+                $entryTypes[] = $entryType;
+            }
+        } elseif ($this->interactive) {
+            /** @var EntryType[] $allEntryTypes */
+            $allEntryTypes = ArrayHelper::index($entriesService->getAllEntryTypes(), 'handle');
+            if (
+                !$this->fromCategoryGroup &&
+                !$this->fromTagGroup &&
+                !$this->fromGlobalSet &&
+                !empty($allEntryTypes) &&
+                $this->confirm('Have you already created an entry type for this section?')
+            ) {
+                $entryTypeHandle = $this->select("Which entry type should be used?", array_map(
+                    fn(EntryType $entryType) => $entryType->name,
+                    $allEntryTypes,
+                ));
+                $entryType = $allEntryTypes[$entryTypeHandle];
+            } else {
+                $entryType = new EntryType();
+                $entryType->name = $this->prompt('Entry type name:', [
+                    'default' => Inflector::singularize($section->name),
+                ]);
+                $entryType->handle = $this->prompt('Entry type handle:', [
+                    'validator' => fn(string $handle, ?string & $error = null) => $validateAttribute(compact('handle'), $error, EntryType::class),
+                    'default' => $getDefaultAttribute('handle', StringHelper::toHandle($entryType->name), EntryType::class),
+                ]);
                 $saveEntryType = true;
             }
 
@@ -286,21 +308,30 @@ class SectionsController extends Controller
                     $entryType->showStatusField = false;
                 }
 
-                $this->do('Saving the entry type', function() use ($entryType, $sourceFieldLayout) {
+                $this->do('Saving the entry type', function() use ($entryType, $sourceFieldLayout, $entriesService) {
                     if ($sourceFieldLayout) {
                         $fieldLayout = FieldLayout::createFromConfig($sourceFieldLayout->getConfig() ?? []);
-                        foreach ($fieldLayout->getTabs() as $tab) {
-                            $tab->uid = StringHelper::UUID();
-                            foreach ($tab->getElements() as $element) {
-                                $element->uid = StringHelper::UUID();
-                            }
-                        }
                         $entryType->setFieldLayout($fieldLayout);
                     }
 
-                    Craft::$app->getSections()->saveEntryType($entryType);
+                    $entriesService->saveEntryType($entryType);
                 });
             }
+
+            $entryTypes[] = $entryType;
+        }
+
+        $section->setEntryTypes($entryTypes);
+
+        try {
+            $this->do('Saving the section', function() use ($section, $entriesService) {
+                if (!$entriesService->saveSection($section)) {
+                    $message = ArrayHelper::firstValue($section->getFirstErrors()) ?? 'Unable to save the section';
+                    throw new InvalidConfigException($message);
+                }
+            });
+        } catch (InvalidConfigException) {
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->success('Section created.');
@@ -315,7 +346,7 @@ class SectionsController extends Controller
      */
     public function actionDelete(string $handle): int
     {
-        $sectionsService = Craft::$app->getSections();
+        $sectionsService = Craft::$app->getEntries();
         $section = $sectionsService->getSectionByHandle($handle);
 
         if (!$section) {

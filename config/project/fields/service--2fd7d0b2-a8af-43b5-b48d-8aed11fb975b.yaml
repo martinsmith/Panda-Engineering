@@ -1,0 +1,26 @@
+columnSuffix: null
+handle: service
+instructions: null
+name: 'Page Sections - ServicesList - Service'
+searchable: true
+settings:
+  createButtonLabel: null
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
+        -
+          - uid
+          - b1b59a79-2793-4a07-a3ea-32d6be7324f4 # Page Sections - ServicesList - Service Block
+  includeTableView: false
+  maxEntries: null
+  minEntries: null
+  pageSize: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  showCardsInGrid: false
+  viewMode: blocks
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Matrix

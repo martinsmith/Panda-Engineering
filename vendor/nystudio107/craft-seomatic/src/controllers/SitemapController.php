@@ -15,7 +15,6 @@ use nystudio107\seomatic\helpers\PluginTemplate;
 use nystudio107\seomatic\helpers\UrlHelper;
 use nystudio107\seomatic\Seomatic;
 use nystudio107\seomatic\services\Sitemaps;
-use Throwable;
 use yii\web\Response;
 
 /**
@@ -88,7 +87,7 @@ class SitemapController extends Controller
         $variables = [];
         try {
             $variables['sitemapBacklink'] = UrlHelper::siteUrl('/sitemap.xml');
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $variables['sitemapBacklink'] = '/sitemap.xml';
         }
 

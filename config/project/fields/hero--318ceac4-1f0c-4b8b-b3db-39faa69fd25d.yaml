@@ -1,36 +1,26 @@
 columnSuffix: null
-contentColumnType: string
-fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
 handle: hero
-instructions: ''
+instructions: null
 name: Hero
 searchable: true
 settings:
-  columns:
-    __assoc__:
-      -
-        - 4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a # Hero Image
+  createButtonLabel: null
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
         -
-          __assoc__:
-            -
-              - width
-              - 20%
-      -
-        - 2440d605-4546-4ad3-84b8-61d02fd259f6 # Hero Overlay Text
-        -
-          __assoc__:
-            -
-              - width
-              - 80%
-  contentTable: '{{%stc_hero}}'
-  fieldLayout: row
-  maxRows: ''
-  minRows: ''
-  placeholderKey: null
+          - uid
+          - 2bab1b4b-9c73-46db-a424-065a6e96c879 # Hero Block
+  includeTableView: false
+  maxEntries: 1
+  minEntries: 1
+  pageSize: null
   propagationKeyFormat: null
   propagationMethod: none
-  selectionLabel: ''
-  staticField: '1'
+  showCardsInGrid: false
+  viewMode: blocks
 translationKeyFormat: null
 translationMethod: site
-type: verbb\supertable\fields\SuperTableField
+type: craft\fields\Matrix

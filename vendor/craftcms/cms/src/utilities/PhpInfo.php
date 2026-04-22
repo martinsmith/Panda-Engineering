@@ -45,9 +45,9 @@ class PhpInfo extends Utility
     /**
      * @inheritdoc
      */
-    public static function iconPath(): ?string
+    public static function icon(): ?string
     {
-        return Craft::getAlias('@appicons/info-circle.svg');
+        return 'circle-info';
     }
 
     /**
@@ -129,7 +129,6 @@ class PhpInfo extends Utility
             $heading = substr($section, 0, strpos($section, '</h2>'));
 
             if (preg_match_all('#%S%(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?%E%#', $section, $matches, PREG_SET_ORDER) !== 0) {
-                /** @var array[] $matches */
                 foreach ($matches as $row) {
                     if (!isset($row[2])) {
                         continue;

@@ -7,6 +7,7 @@
 
 namespace craft\base;
 
+use craft\elements\db\EagerLoadInfo;
 use craft\web\twig\AllowedInSandbox;
 use DateTime;
 
@@ -18,6 +19,18 @@ use DateTime;
  */
 trait ElementTrait
 {
+    /**
+     * @var ElementInterface[]|null All elements that the element was queried with.
+     * @since 5.0.0
+     */
+    public ?array $elementQueryResult = null;
+
+    /**
+     * @var EagerLoadInfo|null Info about the eager loading setup used to query this element.
+     * @since 5.0.0
+     */
+    public ?EagerLoadInfo $eagerLoadInfo = null;
+
     /**
      * @var int|null The element’s ID
      */
@@ -48,6 +61,12 @@ trait ElementTrait
     public bool $isProvisionalDraft = false;
 
     /**
+     * @var bool Whether provisional changes have been loaded onto this element.
+     * @since 5.9.0
+     */
+    public bool $hasProvisionalChanges = false;
+
+    /**
      * @var string|null The element’s UID
      */
     #[AllowedInSandbox]
@@ -68,11 +87,6 @@ trait ElementTrait
      * @var int|null The element’s structure ID
      */
     public ?int $structureId = null;
-
-    /**
-     * @var int|null The element’s content row ID
-     */
-    public ?int $contentId = null;
 
     /**
      * @var bool Whether the element is enabled
@@ -136,6 +150,12 @@ trait ElementTrait
     public ?DateTime $dateDeleted = null;
 
     /**
+     * @var bool|null Whether the element was deleted along with its owner
+     * @since 5.0.0
+     */
+    public ?bool $deletedWithOwner = null;
+
+    /**
      * @var int|null The element’s structure’s root ID
      */
     public ?int $root = null;
@@ -177,11 +197,10 @@ trait ElementTrait
     public bool $propagating = false;
 
     /**
-     * @var bool Whether the element is currently being validated via BaseRelationField::validateRelatedElements()
-     * @since 4.5.10
-     * @deprecated in 4.5.13
+     * @var ElementInterface|null The element that this element is being propagated from.
+     * @since 5.0.0
      */
-    public bool $validatingRelatedElement = false;
+    public ?ElementInterface $propagatingFrom = null;
 
     /**
      * @var bool Whether all element attributes should be propagated across all its supported sites, even if that means
@@ -189,6 +208,13 @@ trait ElementTrait
      * @since 3.2.0
      */
     public bool $propagateAll = false;
+
+    /**
+     * @var bool Whether all required element attributes should be propagated across all its supported sites, but only if otherwise
+     * they wouldn’t validate.
+     * @since 5.9.0
+     */
+    public bool $propagateRequired = false;
 
     /**
      * @var int[] The site IDs that the element was just propagated to for the first time.
@@ -204,7 +230,7 @@ trait ElementTrait
 
     /**
      * @var bool Whether this is for a newly-created site.
-     * @since 4.14.9
+     * @since 5.6.10
      */
     public bool $isNewSite = false;
 
@@ -224,6 +250,12 @@ trait ElementTrait
      * @since 3.7.5
      */
     public bool $firstSave = false;
+
+    /**
+     * @var bool Whether the element is a draft that is about to be applied to the canonical element.
+     * @since 5.9.0
+     */
+    public bool $applyingDraft = false;
 
     /**
      * @var bool Whether recent changes to the canonical element are being merged into this element.
@@ -247,8 +279,30 @@ trait ElementTrait
     public bool $previewing = false;
 
     /**
+     * @var string|null The view mode used to show this element (e.g. `structure`, `table`, `thumbs`, `cards`).
+     * @since 5.6.0
+     */
+    public ?string $viewMode = null;
+
+    /**
+     * @var bool Whether the element should definitely be saved, if it’s a nested element being considered
+     * for saving by [[NestedElementManager]].
+     * @since 5.0.0
+     */
+    public bool $forceSave = false;
+
+    /**
      * @var bool Whether the element is being hard-deleted.
      * @since 3.2.0
      */
     public bool $hardDelete = false;
+
+    /**
+     * @var bool Whether the element’s search keywords should be indexed immediately.
+     *
+     * If `null`, the search index will only be updated immediately for console requests.
+     *
+     * @since 5.8.0
+     */
+    public ?bool $updateSearchIndexImmediately = null;
 }

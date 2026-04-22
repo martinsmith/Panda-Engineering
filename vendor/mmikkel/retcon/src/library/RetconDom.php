@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mmikkel
- * Date: 06/12/2017
- * Time: 18:23
- */
 
 namespace mmikkel\retcon\library;
 
@@ -18,6 +12,11 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use Twig\Markup;
 
+/**
+ * @author    Mats Mikkel Rummelhoff
+ * @package   Retcon
+ * @since     1.0.0
+ */
 class RetconDom
 {
 
@@ -44,7 +43,7 @@ class RetconDom
      */
     public function __construct($html)
     {
-        $html = str_replace("\xc2\xa0", ' ', (string)$html); // Make sure UTF-8 non-breaking spaces are replaced with regular spaces
+        $html = (string)$html; // Whatever it is, let's ensure it's a string
         $libxmlUseInternalErrors = libxml_use_internal_errors(true);
         $content = mb_convert_encoding($html, 'HTML-ENTITIES', Craft::$app->getView()->getTwig()->getCharset());
         $this->doc = new \DOMDocument();
@@ -63,9 +62,23 @@ class RetconDom
      */
     public function filter($selector, bool $asArray = true)
     {
-        if (\is_array($selector)) {
-            $selector = \implode(',', $selector);
+        if (!is_array($selector)) {
+            $selector = explode(',', $selector);
         }
+        $selector = array_reduce($selector, static function (array $carry, string $selector) {
+            $selector = trim($selector);
+            if (empty($selector)) {
+                return $carry;
+            }
+            if (str_starts_with($selector, 'body')) {
+                $selector = substr_replace($selector, 'html > retcon', 0, 4);
+            }
+            return [
+                ...$carry,
+                $selector
+            ];
+        }, []);
+        $selector = implode(',', $selector);
         $nodes = $this->crawler->filter($selector);
         if (!$asArray) {
             return $nodes;

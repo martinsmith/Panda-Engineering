@@ -2,6 +2,7 @@ fieldLayouts:
   7630bd15-a21b-4e37-ab1d-74d569312f74:
     tabs:
       -
+        elementCondition: null
         elements:
           -
             autocapitalize: true
@@ -9,7 +10,9 @@ fieldLayouts:
             autocorrect: true
             class: null
             disabled: false
+            elementCondition: null
             id: null
+            inputType: null
             instructions: null
             label: null
             max: null
@@ -24,36 +27,49 @@ fieldLayouts:
             tip: null
             title: null
             type: craft\fieldlayoutelements\entries\EntryTitleField
+            uid: 51e4b346-dfe6-40e7-9c5d-c4c8314cd3d2
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: 3e8173e2-82d1-4c5e-8d56-622c2f629efe # Content
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 832f922b-337e-41c2-9ff9-762962b94818
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: 71fd1954-bce1-4cc9-a095-3b7025c67d73
+        userCondition: null
       -
+        elementCondition: null
         elements:
           -
+            elementCondition: null
             fieldUid: b0591aa2-c0f2-4fdf-a019-4416ebc666d8 # Override Global SEO Per Page
             instructions: null
             label: null
             required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 3964d7f4-a7fa-4908-aed3-a7c0df43022b
+            userCondition: null
             warning: null
             width: 100
         name: SEOMatic
-        sortOrder: 2
+        uid: 6281241f-16ac-4757-8e8c-2b02d721113c
+        userCondition: null
 handle: additionalPages
 hasTitleField: true
 name: 'Additional Pages'
-section: d5259a57-656b-4fef-8dab-006f806df19c # Additional Pages
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
 sortOrder: 1
 titleFormat: null
 titleTranslationKeyFormat: null

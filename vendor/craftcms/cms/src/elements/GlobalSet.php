@@ -76,7 +76,7 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
     /**
      * @inheritdoc
      */
-    public static function hasContent(): bool
+    public static function isLocalized(): bool
     {
         return true;
     }
@@ -84,9 +84,10 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
     /**
      * @inheritdoc
      */
-    public static function isLocalized(): bool
+    protected static function defineFieldLayouts(?string $source): array
     {
-        return true;
+        // fetch them through the global set instances so $provider gets set
+        return array_map(fn(self $globalSet) => $globalSet->getFieldLayout(), self::findAll());
     }
 
     /**
@@ -142,30 +143,10 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
      * @inheritdoc
      * @since 3.3.0
      */
-    public static function gqlTypeNameByContext(mixed $context): string
-    {
-        /** @var self $context */
-        return $context->handle . '_GlobalSet';
-    }
-
-    /**
-     * @inheritdoc
-     * @since 3.3.0
-     */
     public static function gqlScopesByContext(mixed $context): array
     {
         /** @var self $context */
         return ['globalsets.' . $context->uid];
-    }
-
-    /**
-     * @inheritdoc
-     * @since 3.5.0
-     */
-    public static function gqlMutationNameByContext(mixed $context): string
-    {
-        /** @var self $context */
-        return 'save_' . $context->handle . '_GlobalSet';
     }
 
     /**
@@ -206,7 +187,7 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
         $behaviors = parent::defineBehaviors();
         $behaviors['fieldLayout'] = [
             'class' => FieldLayoutBehavior::class,
-            'elementType' => __CLASS__,
+            'elementType' => self::class,
         ];
         return $behaviors;
     }
@@ -246,6 +227,13 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
             'except' => [self::SCENARIO_ESSENTIALS],
         ];
 
+        $rules[] = [['fieldLayout'], function() {
+            $fieldLayout = $this->getFieldLayout();
+            if (!$fieldLayout->validate()) {
+                $this->addModelErrors($fieldLayout, 'fieldLayout');
+            }
+        }];
+
         return $rules;
     }
 
@@ -258,6 +246,14 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
         $scenarios[self::SCENARIO_SAVE_SET] = $scenarios[self::SCENARIO_DEFAULT];
 
         return $scenarios;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHandle(): ?string
+    {
+        return $this->handle;
     }
 
     /**
@@ -280,11 +276,19 @@ class GlobalSet extends Element implements FieldLayoutProviderInterface
 
     /**
      * @inheritdoc
+     */
+    public function getPostEditUrl(): ?string
+    {
+        return $this->getCpEditUrl();
+    }
+
+    /**
+     * @inheritdoc
      * @since 3.3.0
      */
     public function getGqlTypeName(): string
     {
-        return static::gqlTypeNameByContext($this);
+        return "{$this->handle}_GlobalSet";
     }
 
     // Events

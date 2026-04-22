@@ -19,7 +19,6 @@ use craft\image\SvgAllowedAttributes;
 use enshrined\svgSanitize\Sanitizer;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Format;
-use Imagine\Imagick\Imagick;
 use Imagine\Imagick\Imagine as ImagickImagine;
 use Throwable;
 use yii\base\Component;
@@ -252,7 +251,7 @@ class Images extends Component
      * The code was adapted from http://www.php.net/manual/en/function.imagecreatefromjpeg.php#64155.
      * It will first attempt to do it with available memory. If that fails,
      * Craft will bump the memory to amount defined by the
-     * <config4:phpMaxMemoryLimit> config setting, then try again.
+     * <config5:phpMaxMemoryLimit> config setting, then try again.
      *
      * @param string $filePath The path to the image file.
      * @param bool $toTheMax If set to true, will set the PHP memory to the config setting phpMaxMemoryLimit.

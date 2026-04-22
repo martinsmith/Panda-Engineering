@@ -17,6 +17,7 @@ use yii\db\ActiveQueryInterface;
  *
  * @property int $id ID
  * @property int $photoId Photo ID
+ * @property int $affiliatedSiteId Affiliated Site ID
  * @property bool $active Active
  * @property bool $pending Pending
  * @property bool $locked Locked
@@ -118,7 +119,7 @@ class User extends ActiveRecord
      * Returns whether any properties that affect the user's status have changed.
      *
      * @retrun bool
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public function haveIndexAttributesChanged(): bool
     {

@@ -1,12 +1,4 @@
 <?php
-/**
- * Retcon plugin for Craft CMS 3.x
- *
- * A collection of powerful Twig filters for modifying HTML
- *
- * @link      https://vaersaagod.no
- * @copyright Copyright (c) 2017 Mats Mikkel Rummelhoff
- */
 
 namespace mmikkel\retcon\services;
 
@@ -16,7 +8,6 @@ use craft\errors\ImageTransformException;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\ArrayHelper;
 use craft\helpers\StringHelper;
-use craft\helpers\Template as TemplateHelper;
 
 use mmikkel\retcon\helpers\RetconHelper;
 use mmikkel\retcon\library\RetconDom;
@@ -28,14 +19,6 @@ use Twig\Markup;
 use yii\base\Exception;
 
 /**
- * Retcon Service
- *
- * All of your plugin’s business logic should go in services, including saving data,
- * retrieving data, etc. They provide APIs that your controllers, template variables,
- * and other plugins can interact with.
- *
- * https://craftcms.com/docs/plugins/services
- *
  * @author    Mats Mikkel Rummelhoff
  * @package   Retcon
  * @since     1.0.0
@@ -362,14 +345,14 @@ class RetconService extends Component
      * @param string|string[] $selector
      * @param string|null $field
      * @param bool $overwrite
-     * @param bool $allowFilenameAsAltText TODO default to false in Retcon 3.0
+     * @param bool $allowFilenameAsAltText TODO default to false in Retcon 4.0
      * @return Markup|string
      * @throws SiteNotFoundException
      */
     public function autoAlt($input, $selector = 'img', string $field = null, bool $overwrite = false, bool $allowFilenameAsAltText = true)
     {
 
-        if (!$html = RetconHelper::getHtmlFromParam($input)) {
+        if (!$html = RetconHelper::getHtmlFromParam($input, true)) {
             return $input;
         }
 
@@ -401,7 +384,7 @@ class RetconService extends Component
                 }
                 $alt = $alt ?: $asset->title;
             }
-            // TODO: Stop using the filename as alt text in Retcon 3.0!
+            // TODO: Stop using the filename as alt text in Retcon 4.0!
             if (!$alt && $allowFilenameAsAltText) {
                 $alt = \pathinfo($src, PATHINFO_FILENAME);
             }
@@ -837,10 +820,13 @@ class RetconService extends Component
         }
 
         $excludedTagsQuery = '//' . implode('|//', $excludedTags);
+        $nbsp = "\u{00A0}";
+        $xpath = "//*[not(normalize-space(translate(., \"{$nbsp}\", ' ')))]";
 
-        $crawler->filterXPath('//*[not(normalize-space())]')->each(function (Crawler $crawler) use ($excludedTagsQuery) {
+        $crawler->filterXPath($xpath)->each(function (Crawler $crawler) use ($excludedTagsQuery) {
+            $node = $crawler->getNode(0);
             if (
-                ($node = $crawler->getNode(0)) === null ||
+                $node === null ||
                 !$node->parentNode instanceof \DOMNode ||
                 $crawler->filterXPath($excludedTagsQuery)->getNode(0) ||
                 @$crawler->closest('svg')

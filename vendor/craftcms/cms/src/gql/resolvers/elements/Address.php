@@ -16,7 +16,6 @@ use craft\elements\db\ElementQuery;
 use craft\elements\ElementCollection;
 use craft\gql\base\ElementResolver;
 use craft\helpers\Gql as GqlHelper;
-use Illuminate\Support\Collection;
 use yii\base\UnknownMethodException;
 
 /**
@@ -47,7 +46,7 @@ class Address extends ElementResolver
                 if (!empty($groupIds)) {
                     $condition[] = ['exists', (new Query())
                         ->from(['ugu' => Table::USERGROUPS_USERS])
-                        ->where('[[ugu.userId]] = [[addresses.ownerId]]')
+                        ->where('[[ugu.userId]] = [[addresses.primaryOwnerId]]')
                         ->andWhere(['in', 'ugu.groupId', $groupIds]),
                     ];
                 }
@@ -77,10 +76,6 @@ class Address extends ElementResolver
                     throw $e;
                 }
             }
-        }
-
-        if (!GqlHelper::canQueryUsers()) {
-            return Collection::empty();
         }
 
         return $query;

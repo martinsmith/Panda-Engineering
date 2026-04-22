@@ -9,8 +9,13 @@ namespace craft\helpers;
 
 use Craft;
 use craft\base\ComponentInterface;
+use craft\base\ElementInterface;
+use craft\base\Model;
 use craft\errors\MissingComponentException;
-use yii\base\InvalidArgumentException;
+use DateTime;
+use ReflectionClass;
+use ReflectionNamedType;
+use ReflectionProperty;
 use yii\base\InvalidConfigException;
 
 /**
@@ -167,54 +172,36 @@ class Component
      * @param string $label The label of the component
      * @return string
      * @since 3.5.0
+     * @deprecated in 5.0.0. [[Cp::iconSvg()]] or [[Cp::fallbackIconSvg()]] should be used instead.
      */
     public static function iconSvg(?string $icon, string $label): string
     {
         if ($icon === null) {
-            return self::_defaultIconSvg($label);
+            return Cp::fallbackIconSvg($label);
         }
 
-        if (stripos($icon, '<svg') === false) {
-            $icon = Craft::getAlias($icon);
-
-            if (!is_file($icon)) {
-                Craft::warning("Icon file doesn't exist: $icon", __METHOD__);
-                return self::_defaultIconSvg($label);
-            }
-
-            if (!FileHelper::isSvg($icon)) {
-                Craft::warning("Icon file is not an SVG: $icon", __METHOD__);
-                return self::_defaultIconSvg($label);
-            }
-
-            $icon = file_get_contents($icon);
-        }
-
-        // Namespace it
-        $ns = StringHelper::randomString(10);
-        $icon = Html::namespaceAttributes($icon, $ns, true);
-
-        // Add aria-hidden="true"
-        try {
-            $icon = Html::modifyTagAttributes($icon, [
-                'aria' => ['hidden' => 'true'],
-            ]);
-        } catch (InvalidArgumentException) {
-        }
-
-        return $icon;
+        return Cp::iconSvg($icon, $label);
     }
 
     /**
-     * Returns the default icon SVG for a given widget type.
+     * Return all DateTime attributes for given model.
      *
-     * @param string $label
-     * @return string
+     * @param Model|ElementInterface $model
+     * @return array
      */
-    private static function _defaultIconSvg(string $label): string
+    public static function datetimeAttributes(Model|ElementInterface $model): array
     {
-        return Craft::$app->getView()->renderTemplate('_includes/defaulticon.svg.twig', [
-            'label' => $label,
-        ]);
+        $datetimeAttributes = [];
+        foreach ((new ReflectionClass($model))->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            if (!$property->isStatic()) {
+                $type = $property->getType();
+                if ($type instanceof ReflectionNamedType && $type->getName() === DateTime::class) {
+                    $datetimeAttributes[] = $property->getName();
+                }
+            }
+        }
+
+        // Include datetimeAttributes() for now
+        return array_unique(array_merge($datetimeAttributes, $model->datetimeAttributes()));
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace verbb\cpnav\services;
 
+use verbb\cpnav\CpNav;
 use verbb\cpnav\events\LayoutEvent;
 use verbb\cpnav\events\ReorderLayoutsEvent;
 use verbb\cpnav\models\Layout;
@@ -79,7 +80,7 @@ class Layouts extends Component
 
         $layouts = $this->getAllLayouts();
 
-        if (Craft::$app->getEdition() == Craft::Solo) {
+        if (Craft::$app->getEdition() === Craft::Solo) {
             // Is there even a solo account?
             if ($solo = User::find()->status(null)->one()) {
                 foreach ($layouts as $layout) {
@@ -88,7 +89,7 @@ class Layouts extends Component
                     }
                 }
             }
-        } else if (Craft::$app->getEdition() == Craft::Pro) {
+        } else {
             if ($userId = Craft::$app->getUser()->id) {
                 $groups = Craft::$app->userGroups->getGroupsByUserId($userId);
 
@@ -118,7 +119,7 @@ class Layouts extends Component
         }
 
         if ($runValidation && !$layout->validate()) {
-            Craft::info('Layout not saved due to validation error.', __METHOD__);
+            CpNav::info('Layout not saved due to validation error.');
             return false;
         }
 
@@ -147,6 +148,10 @@ class Layouts extends Component
     {
         $layoutUid = $event->tokenMatches[0];
         $data = $event->newValue;
+
+        if (!$data) {
+            return;
+        }
 
         $transaction = Craft::$app->getDb()->beginTransaction();
 

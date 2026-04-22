@@ -69,9 +69,8 @@ abstract class BaseBatchedJob extends BaseJob
     {
         parent::init();
 
-        $this->ttr = $this->ttr ??
-            ($this instanceof RetryableJobInterface ? $this->getTtr() : null) ??
-            Craft::$app->getQueue()->ttr;
+        $this->ttr ??= ($this instanceof RetryableJobInterface ? $this->getTtr() : null)
+            ?? Craft::$app->getQueue()->ttr;
     }
 
     public function __sleep(): array
@@ -196,7 +195,7 @@ abstract class BaseBatchedJob extends BaseJob
     /**
      * Does things before the first item of the first batch.
      *
-     * @since 4.16.0
+     * @since 5.0.0
      */
     protected function before(): void
     {
@@ -205,7 +204,7 @@ abstract class BaseBatchedJob extends BaseJob
     /**
      * Does things after the last item of the last batch.
      *
-     * @since 4.16.0
+     * @since 5.0.0
      */
     protected function after(): void
     {
@@ -214,7 +213,7 @@ abstract class BaseBatchedJob extends BaseJob
     /**
      * Does things before the first item of the current batch.
      *
-     * @since 4.16.0
+     * @since 5.0.0
      */
     protected function beforeBatch(): void
     {
@@ -223,7 +222,7 @@ abstract class BaseBatchedJob extends BaseJob
     /**
      * Does things after the last item of the current batch.
      *
-     * @since 4.16.0
+     * @since 5.0.0
      */
     protected function afterBatch(): void
     {

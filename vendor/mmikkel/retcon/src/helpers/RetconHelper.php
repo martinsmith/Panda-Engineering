@@ -1,14 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mmikkel
- * Date: 06/12/2017
- * Time: 18:24
- */
 
 namespace mmikkel\retcon\helpers;
 
 use aelvan\imager\Imager;
+
+use craft\ckeditor\data\BaseChunk;
+use craft\ckeditor\data\FieldData as CkEditorFieldData;
+use craft\ckeditor\data\Markup as CkEditorMarkup;
 
 use spacecatninja\imagerx\ImagerX;
 
@@ -19,7 +17,6 @@ use mmikkel\retcon\Retcon;
 use Craft;
 use craft\base\PluginInterface;
 use craft\elements\Asset;
-use craft\helpers\App;
 use craft\helpers\FileHelper;
 use craft\helpers\Html;
 use craft\helpers\Image as ImageHelper;
@@ -27,7 +24,6 @@ use craft\helpers\ImageTransforms;
 use craft\helpers\StringHelper;
 use craft\helpers\Template as TemplateHelper;
 use craft\helpers\UrlHelper;
-use craft\redactor\FieldData as RedactorFieldData;
 use craft\htmlfield\HtmlFieldData;
 
 use Twig\Markup;
@@ -35,6 +31,11 @@ use Twig\Markup;
 use yii\base\Exception;
 use yii\helpers\Json;
 
+/**
+ * @author    Mats Mikkel Rummelhoff
+ * @package   Retcon
+ * @since     1.0.0
+ */
 class RetconHelper
 {
 
@@ -45,19 +46,31 @@ class RetconHelper
 
     /**
      * @param mixed $value
-     * @return null|string
+     * @param bool $preserveReferenceTags Whether to preserve reference tags in Redactor & CKEditor content or not
+     * @return string|null
      */
-    public static function getHtmlFromParam($value): ?string
+    public static function getHtmlFromParam(mixed $value, bool $preserveReferenceTags = false): ?string
     {
         if (empty($value)) {
             return null;
         }
-        if ($value instanceof RedactorFieldData || $value instanceof HtmlFieldData) {
-            $html = $value->getRawContent();
+        if ($preserveReferenceTags) {
+            if ($value instanceof CkEditorFieldData && class_exists(BaseChunk::class)) {
+                $html = $value->getChunks()->map(static function(BaseChunk $chunk) {
+                    if ($chunk instanceof CkEditorMarkup) {
+                        return $chunk->rawHtml;
+                    }
+                    return $chunk->getHtml();
+                })->join('');
+            } elseif ($value instanceof HtmlFieldData) {
+                $html = $value->getRawContent();
+            } else {
+                $html = (string)$value;
+            }
         } else {
             $html = (string)$value;
         }
-        if (!\preg_replace('/\s+/', '', $value)) {
+        if (empty($html) || !preg_replace('/\s+/', '', $value)) {
             return null;
         }
         return $html;
@@ -138,10 +151,10 @@ class RetconHelper
      * @throws \craft\errors\ImageException
      * @throws \spacecatninja\imagerx\exceptions\ImagerException
      */
-    public static function getTransformedImage(string $src, $transform, ?array $imagerTransformDefaults = null, ?array $imagerConfigOverrides = null)
+    public static function getTransformedImage(string $src, $transform, ?array $imagerTransformDefaults = null, ?array $imagerConfigOverrides = null): RetconTransformedImage|array|null
     {
 
-        // TODO: In Retcon 3.0, we should try to get the asset via RetconHelper::getAssetFromRef(), and transform that directly
+        // TODO: In Retcon 4.0, we should try to get the asset via RetconHelper::getAssetFromRef(), and transform that directly
         // I.e. via `$asset->getUrl($transform)` or by passing the asset to Imager
         $imageUrl = Craft::$app->getElements()->parseRefs($src);
 
@@ -187,7 +200,7 @@ class RetconHelper
         }
 
         /** @var RetconSettings $settings */
-        $settings = Retcon::$plugin->getSettings();
+        $settings = Retcon::getInstance()->getSettings();
 
         if (!$settings->baseTransformPath || !\is_string($settings->baseTransformPath)) {
             throw new Exception('No base transform URL found in settings. Please add a valid path to the `baseTransformPath` setting in /config/retcon.php');
@@ -348,7 +361,7 @@ class RetconHelper
         }
 
         /** @var RetconSettings $settings */
-        $settings = Retcon::$plugin->getSettings();
+        $settings = Retcon::getInstance()->getSettings();
         $basePath = $settings->baseTransformPath;
         $siteUrl = UrlHelper::siteUrl();
         $host = \parse_url($siteUrl, PHP_URL_HOST);
@@ -435,7 +448,7 @@ class RetconHelper
      * @param string $str
      * @return null|string|string[]
      */
-    public static function fixSlashes(string $str)
+    public static function fixSlashes(string $str): array|string|null
     {
         return preg_replace('~(^|[^:])//+~', '\\1/', $str);
     }
@@ -473,10 +486,10 @@ class RetconHelper
     /**
      * @return Imager|ImagerX|null
      */
-    public static function getImagerPlugin()
+    public static function getImagerPlugin(): Imager|ImagerX|null
     {
         /** @var RetconSettings $settings */
-        $settings = Retcon::$plugin->getSettings();
+        $settings = Retcon::getInstance()->getSettings();
         if (!$settings->useImager) {
             return null;
         }
@@ -490,10 +503,10 @@ class RetconHelper
 
     /**
      * @param string $key
-     * @param string|bool|array|null $attributes
+     * @param mixed $attributes
      * @return array
      */
-    public static function getNormalizedDomNodeAttributeValues(string $key, $attributes = null): array
+    public static function getNormalizedDomNodeAttributeValues(string $key, mixed $attributes = null): array
     {
 
         if ($attributes instanceof Markup) {
@@ -552,18 +565,6 @@ class RetconHelper
         }
 
         return $return;
-    }
-
-    /**
-     * @param string|null $value
-     * @return bool|string|null
-     */
-    public static function parseEnv(?string $value)
-    {
-        if (\version_compare(Craft::$app->getVersion(), '3.7.29', '<')) {
-            return Craft::parseEnv($value);
-        }
-        return App::parseEnv($value);
     }
 
 }

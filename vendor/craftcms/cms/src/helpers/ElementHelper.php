@@ -8,20 +8,25 @@
 namespace craft\helpers;
 
 use Craft;
-use craft\base\BlockElementInterface;
 use craft\base\Element;
+use craft\base\ElementActionInterface;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\base\FieldInterface;
+use craft\base\NestedElementInterface;
 use craft\db\Query;
 use craft\db\Table;
+use craft\elements\User as UserElement;
+use craft\errors\FieldNotFoundException;
 use craft\errors\OperationAbortedException;
 use craft\fieldlayoutelements\CustomField;
 use craft\i18n\Locale;
 use craft\services\ElementSources;
 use DateTime;
 use Throwable;
+use Twig\Markup;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 
 /**
  * Class ElementHelper
@@ -32,6 +37,8 @@ use yii\base\Exception;
 class ElementHelper
 {
     private const URI_MAX_LENGTH = 255;
+
+    private static ?UserElement $provisionalDraftUser = null;
 
     /**
      * Generates a new temporary slug.
@@ -66,7 +73,7 @@ class ElementHelper
      *
      * @param string $str The string
      * @param bool|null $ascii Whether the slug should be converted to ASCII. If null, it will depend on
-     * the <config4:limitAutoSlugsToAscii> config setting value.
+     * the <config5:limitAutoSlugsToAscii> config setting value.
      * @param string|null $language The language to pull ASCII character mappings for, if needed
      * @return string
      * @since 3.5.0
@@ -235,6 +242,7 @@ class ElementHelper
     private static function _isUniqueUri(string $testUri, ElementInterface $element): bool
     {
         $query = (new Query())
+            ->select(['elements.id', 'elements.type'])
             ->from(['elements_sites' => Table::ELEMENTS_SITES])
             ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[elements_sites.elementId]]')
             ->where([
@@ -263,7 +271,21 @@ class ElementHelper
             ]);
         }
 
-        return (int)$query->count() === 0;
+        $info = $query->all();
+
+        if (empty($info)) {
+            return true;
+        }
+
+        // Make sure the element(s) isn't owned by a draft/revision
+        foreach ($info as $row) {
+            $conflictingElement = Craft::$app->getElements()->getElementById($row['id'], $row['type'], $element->siteId);
+            if ($conflictingElement && !static::isDraftOrRevision($conflictingElement)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -437,11 +459,34 @@ class ElementHelper
      * @param ElementInterface $element
      * @return ElementInterface
      * @since 3.2.0
-     * @deprecated in 4.12.0. Use [[ElementInterface::getRootOwner()]] instead.
+     * @deprecated in 5.4.0. Use [[ElementInterface::getRootOwner()]] instead.
      */
     public static function rootElement(ElementInterface $element): ElementInterface
     {
         return $element->getRootOwner();
+    }
+
+    /**
+     * Returns the root element of a given element, unless the element or any of its owners are not canonical.
+     *
+     * @param ElementInterface $element
+     * @return ElementInterface|null
+     * @since 5.0.0
+     */
+    public static function rootElementIfCanonical(ElementInterface $element): ?ElementInterface
+    {
+        if (!$element->getIsCanonical()) {
+            return null;
+        }
+
+        if ($element instanceof NestedElementInterface) {
+            $owner = $element->getOwner();
+            if ($owner) {
+                return static::rootElementIfCanonical($owner);
+            }
+        }
+
+        return $element;
     }
 
     /**
@@ -458,7 +503,7 @@ class ElementHelper
         }
 
         // Defer to the owner element, if there is one
-        if ($element instanceof BlockElementInterface) {
+        if ($element instanceof NestedElementInterface) {
             $owner = $element->getOwner();
             if ($owner) {
                 return static::isDraft($owner);
@@ -482,7 +527,7 @@ class ElementHelper
         }
 
         // Defer to the owner element, if there is one
-        if ($element instanceof BlockElementInterface) {
+        if ($element instanceof NestedElementInterface) {
             $owner = $element->getOwner();
             if ($owner) {
                 return static::isRevision($owner);
@@ -506,7 +551,7 @@ class ElementHelper
         }
 
         // Defer to the owner element, if there is one
-        if ($element instanceof BlockElementInterface) {
+        if ($element instanceof NestedElementInterface) {
             $owner = $element->getOwner();
             if ($owner) {
                 return static::isDraftOrRevision($owner);
@@ -624,12 +669,19 @@ class ElementHelper
      * @param class-string<ElementInterface> $elementType The element type class
      * @param string $sourceKey The source key/path
      * @param string $context The context
+     * @param bool $withDisabled Whether disabled sources should be included
+     * @param string|null $page The page to fetch sources for
      * @return array|null The source definition, or null if it cannot be found
      */
-    public static function findSource(string $elementType, string $sourceKey, string $context = ElementSources::CONTEXT_INDEX): ?array
-    {
+    public static function findSource(
+        string $elementType,
+        string $sourceKey,
+        string $context = ElementSources::CONTEXT_INDEX,
+        bool $withDisabled = false,
+        ?string $page = null,
+    ): ?array {
         $path = explode('/', $sourceKey);
-        $sources = Craft::$app->getElementSources()->getSources($elementType, $context);
+        $sources = Craft::$app->getElementSources()->getSources($elementType, $context, $withDisabled, $page);
         $rootSource = null;
 
         while ($path) {
@@ -725,41 +777,6 @@ class ElementHelper
     }
 
     /**
-     * Returns the content column name for a given field.
-     *
-     * @param FieldInterface $field
-     * @param string|null $columnKey
-     * @return string|null
-     * @since 3.7.0
-     */
-    public static function fieldColumnFromField(FieldInterface $field, ?string $columnKey = null): ?string
-    {
-        if ($field::hasContentColumn()) {
-            return static::fieldColumn($field->columnPrefix, $field->handle, $field->columnSuffix, $columnKey);
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the content column name based on the given field attributes.
-     *
-     * @param string|null $columnPrefix
-     * @param string $handle
-     * @param string|null $columnSuffix
-     * @param string|null $columnKey
-     * @return string
-     * @since 3.7.0
-     */
-    public static function fieldColumn(?string $columnPrefix, string $handle, ?string $columnSuffix, ?string $columnKey = null): string
-    {
-        return ($columnPrefix ?? Craft::$app->getContent()->fieldColumnPrefix) .
-            $handle .
-            ($columnKey ? "_$columnKey" : '') .
-            ($columnSuffix ? "_$columnSuffix" : '');
-    }
-
-    /**
      * Returns whether the attribute on the given element is empty.
      *
      * @param ElementInterface $element
@@ -775,7 +792,12 @@ class ElementHelper
             foreach ($fieldLayout->getTabs() as $tab) {
                 foreach ($tab->getElements() as $layoutElement) {
                     if ($layoutElement instanceof CustomField && $layoutElement->attribute() === $attribute) {
-                        return $layoutElement->getField()->isValueEmpty($element->getFieldValue($attribute), $element);
+                        try {
+                            $field = $layoutElement->getField();
+                        } catch (FieldNotFoundException) {
+                            continue;
+                        }
+                        return $field->isValueEmpty($element->getFieldValue($attribute), $element);
                     }
                 }
             }
@@ -785,11 +807,11 @@ class ElementHelper
     }
 
     /**
-     * Returns the HTML for a given attribute value, to be shown in an element index view.
+     * Returns the HTML for a given attribute value, to be shown in table and card views.
      *
      * @param mixed $value The field value
      * @return string
-     * @since 4.3.0
+     * @since 5.0.0
      */
     public static function attributeHtml(mixed $value): string
     {
@@ -815,6 +837,10 @@ class ElementHelper
             ]);
         }
 
+        if ($value instanceof Markup) {
+            return (string)$value;
+        }
+
         try {
             $value = (string)$value;
         } catch (Throwable) {
@@ -822,6 +848,47 @@ class ElementHelper
         }
 
         return Html::encode(StringHelper::stripHtml($value));
+    }
+
+    /**
+     * Returns the HTML for a link attribute based on provided URL.
+     *
+     * @param string|null $url
+     * @return string
+     * @since 5.5.0
+     */
+    public static function linkAttributeHtml(?string $url): string
+    {
+        return Html::beginTag('a',  [
+            'href' => $url,
+            'rel' => 'noopener',
+            'target' => '_blank',
+            'title' => Craft::t('app', 'Visit webpage'),
+            'aria-label' => Craft::t('app', 'View'),
+        ]) .
+        Html::tag('span', Cp::iconSvg('world'), [
+            'class' => ['cp-icon', 'small', 'inline-flex'],
+        ]) .
+        Html::endTag('a');
+    }
+
+    /**
+     * Returns the HTML for URI attribute based on a value (text) and a URL it's supposed to link to.
+     *
+     * @param string|null $value
+     * @param string|null $url
+     * @return string
+     * @since 5.5.0
+     */
+    public static function uriAttributeHtml(?string $value, ?string $url): string
+    {
+        return Html::a(Html::tag('span', $value, ['dir' => 'ltr']), $url, [
+            'href' => $url,
+            'rel' => 'noopener',
+            'target' => '_blank',
+            'class' => 'go',
+            'title' => Craft::t('app', 'Visit webpage'),
+        ]);
     }
 
     /**
@@ -842,11 +909,275 @@ class ElementHelper
     }
 
     /**
+     * Returns a generic editor URL for the given element.
+     *
+     * @param ElementInterface $element
+     * @param bool $withParams Whether to include the necessary query string params
+     * @return string
+     * @since 5.0.0
+     */
+    public static function elementEditorUrl(ElementInterface $element, bool $withParams = true): string
+    {
+        $url = sprintf('edit/%s', $element->getCanonicalId());
+
+        if ($element->slug && !static::isTempSlug($element->slug)) {
+            $url .= "-$element->slug";
+        }
+
+        if ($withParams) {
+            return static::addElementEditorUrlParams($url, $element);
+        }
+
+        return UrlHelper::cpUrl($url);
+    }
+
+    /**
+     * Ensures the given element edit URL includes the necessary query string params.
+     *
+     * @param string $url
+     * @param ElementInterface $element
+     * @return string
+     * @since 5.0.0
+     */
+    public static function addElementEditorUrlParams(string $url, ElementInterface $element): string
+    {
+        $params = [];
+
+        if (Craft::$app->getIsMultiSite()) {
+            $params['site'] = $element->getSite()->handle;
+        }
+
+        if ($element->getIsDraft() && !$element->isProvisionalDraft) {
+            $params['draftId'] = $element->draftId;
+        } elseif ($element->getIsRevision()) {
+            $params['revisionId'] = $element->revisionId;
+        }
+
+        return UrlHelper::cpUrl($url, $params);
+    }
+
+    /**
+     * Returns the URL that users should be redirected to after editing the given element.
+     *
+     * @param ElementInterface $element
+     * @return string
+     * @since 5.2.0
+     */
+    public static function postEditUrl(ElementInterface $element): string
+    {
+        if ($element instanceof NestedElementInterface) {
+            // redirect to the owner's edit page, if possible
+            $ownerEditUrl = $element->getOwner()?->getCpEditUrl();
+            if ($ownerEditUrl) {
+                return $ownerEditUrl;
+            }
+        }
+
+        return $element->getPostEditUrl() ?? Craft::$app->getConfig()->getGeneral()->getPostCpLoginRedirect();
+    }
+
+    /**
+     * Returns a generic URL for viewing an element’s revisions.
+     *
+     * @param ElementInterface $element
+     * @return string
+     * @since 5.9.7
+     */
+    public static function elementRevisionsUrl(ElementInterface $element): string
+    {
+        $url = sprintf('revisions/%s', $element->getCanonicalId());
+
+        if ($element->slug && !static::isTempSlug($element->slug)) {
+            $url .= "-$element->slug";
+        }
+
+        return UrlHelper::cpUrl($url);
+    }
+
+    /**
+     * Returns an element action’s JavaScript configuration.
+     *
+     * @param ElementActionInterface $action
+     * @return array
+     * @since 5.0.0
+     */
+    public static function actionConfig(ElementActionInterface $action): array
+    {
+        return [
+            'type' => $action::class,
+            'destructive' => $action->isDestructive(),
+            'download' => $action->isDownload(),
+            'name' => $action->getTriggerLabel(),
+            'trigger' => $action->getTriggerHtml(),
+            'confirm' => $action->getConfirmationMessage(),
+            'settings' => $action->getSettings() ?: null,
+        ];
+    }
+
+    /**
+     * Renders the given elements using their partial templates.
+     *
+     * If no partial template exists for an element, its string representation will be output instead.
+     *
+     * @param ElementInterface[] $elements
+     * @param array $variables
+     * @return Markup
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @since 5.0.0
+     */
+    public static function renderElements(array $elements, array $variables = []): Markup
+    {
+        $output = array_map(fn(ElementInterface $element) => (string)$element->render($variables), $elements);
+        return new Markup(implode("\n", $output), Craft::$app->charset);
+    }
+
+    /**
+     * Swaps out any canonical elements with provisional drafts, when they exist.
+     *
+     * @template T of ElementInterface
+     * @param T[] $elements
+     * @since 5.2.0
+     */
+    public static function swapInProvisionalDrafts(array &$elements): void
+    {
+        /** @var T[] $drafts */
+        $drafts = self::provisionalDrafts($elements);
+
+        if (empty($drafts)) {
+            return;
+        }
+
+        // array_filter() preserves keys, so it's safe to loop through it rather than $elements here
+        foreach ($elements as $i => $element) {
+            if (isset($drafts[$element->id])) {
+                $draft = $drafts[$element->id];
+                $draft->setCanonical($element);
+
+                // retain canonical element structure data => ['root', 'lft', 'rgt', 'level']
+                if ($element->structureId !== null) {
+                    $draft->structureId = $element->structureId;
+                    $draft->root = $element->root;
+                    $draft->lft = $element->lft;
+                    $draft->rgt = $element->rgt;
+                    $draft->level = $element->level;
+                }
+
+                // retain the canonical element's ownerId
+                if ($element instanceof NestedElementInterface && $draft instanceof NestedElementInterface) {
+                    $draft->setOwnerId($element->getOwnerId());
+                }
+
+                $elements[$i] = $draft;
+            }
+        }
+    }
+
+    /**
+     * Swaps out any canonical elements with provisional drafts, when they exist.
+     *
+     * @template T of ElementInterface
+     * @param T[] $elements
+     * @since 5.9.0
+     */
+    public static function loadProvisionalChanges(array $elements): void
+    {
+        $drafts = self::provisionalDrafts($elements);
+
+        if (empty($drafts)) {
+            return;
+        }
+
+        // array_filter() preserves keys, so it's safe to loop through it rather than $elements here
+        foreach ($elements as $element) {
+            if (isset($drafts[$element->id])) {
+                $draft = $drafts[$element->id];
+                $element->hasProvisionalChanges = true;
+
+                foreach ($draft->getModifiedAttributes() as $name) {
+                    if ($element->canSetProperty($name)) {
+                        $element->$name = $draft->$name;
+                    }
+                }
+
+                foreach ($draft->getModifiedFields() as $handle) {
+                    $element->setFieldValue($handle, $draft->getFieldValue($handle));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param ElementInterface[] $elements
+     * @return ElementInterface[]
+     */
+    private static function provisionalDrafts(array $elements): array
+    {
+        $user = self::$provisionalDraftUser ?? Craft::$app->getUser()->getIdentity();
+        if (!$user) {
+            return [];
+        }
+
+        // filter out drafts and revisions
+        // (don't just exclude derivative elements though! see https://github.com/craftcms/cms/issues/16626)
+        $canonicalElements = array_filter(
+            $elements,
+            fn(ElementInterface $element) => !$element->getIsDraft() && !$element->getIsRevision(),
+        );
+
+        if (empty($canonicalElements)) {
+            return [];
+        }
+
+        $first = reset($canonicalElements);
+
+        return $first::find()
+            ->draftOf($canonicalElements)
+            ->draftCreator($user)
+            ->provisionalDrafts()
+            ->siteId($first->siteId)
+            ->status(null)
+            ->indexBy('canonicalId')
+            ->all();
+    }
+
+    /**
+     * Returns whether the given element is a multi-site element.
+     *
+     * @param ElementInterface $element
+     * @return bool
+     * @throws Exception
+     * @since 5.8.0
+     */
+    public static function isMultiSite(ElementInterface $element): bool
+    {
+        // Site info
+        $supportedSites = self::supportedSitesForElement($element, true);
+        if (count($supportedSites) <= 1) {
+            return false;
+        }
+
+        $propSites = array_filter($supportedSites, fn($site) => $site['propagate']);
+        return count($propSites) > 1;
+    }
+
+    /**
+     * Sets user to be used for swapping in provisional drafts.
+     *
+     * @param UserElement|null $user
+     * @since 5.8.0
+     */
+    public static function setProvisionalDraftUser(?UserElement $user): void
+    {
+        self::$provisionalDraftUser = $user;
+    }
+
+    /**
      * Removes values from a posted element query criteria, which would typically not be user-editable.
      *
      * @param array $criteria
      * @return array
-     * @since 4.17.4
+     * @since 5.9.9
      */
     public static function cleanseQueryCriteria(array $criteria): array
     {

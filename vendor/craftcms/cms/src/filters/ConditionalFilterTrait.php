@@ -11,7 +11,7 @@ namespace craft\filters;
  * Filter for ensuring the user should be able to access the configured utility.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.13.0
+ * @since 5.5.0
  */
 trait ConditionalFilterTrait
 {

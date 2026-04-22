@@ -2,6 +2,7 @@ fieldLayouts:
   828c4148-c906-43c7-bafc-ee36c8922d01:
     tabs:
       -
+        elementCondition: null
         elements:
           -
             autocapitalize: true
@@ -9,7 +10,9 @@ fieldLayouts:
             autocorrect: true
             class: null
             disabled: false
+            elementCondition: null
             id: null
+            inputType: null
             instructions: null
             label: null
             max: null
@@ -24,32 +27,43 @@ fieldLayouts:
             tip: null
             title: null
             type: craft\fieldlayoutelements\entries\EntryTitleField
+            uid: 276fe09a-0492-4b28-bba0-ee4d5dc0d70c
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: 6af18bea-6a01-4de3-9c52-9162e75f7ebb # Page Introduction
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: 621088a5-3aa9-44c8-b696-dd407745be4f
+            userCondition: null
             warning: null
             width: 100
           -
+            elementCondition: null
             fieldUid: d1cec1dd-df52-4e68-a979-c893e6af1616 # Profile
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: c8290878-5631-4c87-bd9e-7f81b150317e
+            userCondition: null
             warning: null
             width: 100
         name: 'Tab 1'
-        sortOrder: 1
+        uid: 9752ef77-9855-481f-a0eb-7453093c7562
+        userCondition: null
 handle: pandaTeam
 hasTitleField: true
 name: 'Panda Team'
-section: 88b867e8-471b-4a2a-a9cf-87a800ace135 # Panda Team
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
 sortOrder: 1
 titleFormat: '{section.name|raw}'
 titleTranslationKeyFormat: null

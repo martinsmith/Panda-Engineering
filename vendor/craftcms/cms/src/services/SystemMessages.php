@@ -10,6 +10,7 @@ namespace craft\services;
 use Craft;
 use craft\db\Query;
 use craft\db\Table;
+use craft\enums\CmsEdition;
 use craft\events\RegisterEmailMessagesEvent;
 use craft\helpers\ArrayHelper;
 use craft\models\SystemMessage;
@@ -84,7 +85,7 @@ class SystemMessages extends Component
         $language = Craft::$app->language;
         $i18n = Craft::$app->getI18n();
         if (!in_array($language, $i18n->getSiteLocaleIds())) {
-            Craft::$app->language = $i18n->getPrimarySiteLocaleId();
+            Craft::$app->language = Craft::$app->getSites()->getPrimarySite()->language;
         }
 
         $messages = [
@@ -114,14 +115,15 @@ class SystemMessages extends Component
             ],
         ];
 
-        // Give plugins a chance to add additional messages
-        $event = new RegisterEmailMessagesEvent([
-            'messages' => $messages,
-        ]);
-        $this->trigger(self::EVENT_REGISTER_MESSAGES, $event);
+        // Fire a 'registerMessages' event
+        if ($this->hasEventHandlers(self::EVENT_REGISTER_MESSAGES)) {
+            $event = new RegisterEmailMessagesEvent(['messages' => $messages]);
+            $this->trigger(self::EVENT_REGISTER_MESSAGES, $event);
+            $messages = $event->messages;
+        }
 
         // Sort them all by key
-        $messages = ArrayHelper::index($event->messages, 'key');
+        $messages = ArrayHelper::index($messages, 'key');
 
         // Make sure they're SystemMessage objects
         foreach ($messages as $key => $message) {
@@ -199,6 +201,8 @@ class SystemMessages extends Component
             return null;
         }
 
+        $message = clone $default;
+
         if ($language === null) {
             $language = Craft::$app->getSites()->getPrimarySite()->language;
         }
@@ -209,27 +213,26 @@ class SystemMessages extends Component
             $languageId = $language;
         }
 
-        // Fetch the customization (if there is one)
-        $override = $this->_createMessagesQuery()
-            ->select(['subject', 'body'])
-            ->where(['key' => $key])
-            ->andWhere([
-                'or',
-                ['language' => [$language, $languageId]],
-                ['like', 'language', "$languageId%", false],
-            ])
-            ->orderBy(new Expression('case when ([[language]] = :language) then 0 when ([[language]] = :languageId) then 1 else 2 end', [
-                'language' => $language,
-                'languageId' => $languageId,
-            ]))
-            ->one();
+        if (Craft::$app->edition->value >= CmsEdition::Pro->value) {
+            // Fetch the customization (if there is one)
+            $override = $this->_createMessagesQuery()
+                ->select(['subject', 'body'])
+                ->where(['key' => $key])
+                ->andWhere([
+                    'or',
+                    ['language' => [$language, $languageId]],
+                    ['like', 'language', "$languageId%", false],
+                ])
+                ->orderBy(new Expression('case when ([[language]] = :language) then 0 when ([[language]] = :languageId) then 1 else 2 end', [
+                    'language' => $language,
+                    'languageId' => $languageId,
+                ]))
+                ->one();
 
-        // Combine them to create the final message
-        $message = clone $default;
-
-        if ($override) {
-            $message->subject = $override['subject'];
-            $message->body = $override['body'];
+            if ($override) {
+                $message->subject = $override['subject'];
+                $message->body = $override['body'];
+            }
         }
 
         return $message;

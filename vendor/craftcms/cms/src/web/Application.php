@@ -59,12 +59,10 @@ use yii\web\UnauthorizedHttpException;
  * @property-read Request $request The request component
  * @property-read Response $response The response component
  * @property-read Session $session The session component
- * @property-read UrlManager $urlManager The URL manager for this application
  * @property-read User $user The user component
  * @method Request getRequest() Returns the request component.
  * @method Response getResponse() Returns the response component.
  * @method Session getSession() Returns the session component.
- * @method UrlManager getUrlManager() Returns the URL manager for this application.
  * @method User getUser() Returns the user component.
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0.0
@@ -107,6 +105,11 @@ class Application extends \yii\web\Application
         }
 
         $this->_postInit();
+
+        // If there's an invalid token on the request, throw an exception now
+        if ($this->getRequest()->getHasInvalidToken()) {
+            throw new BadRequestHttpException('Invalid token');
+        }
 
         // Process resource requests before we do anything to establish the user session
         $this->_processResourceRequest();
@@ -179,6 +182,7 @@ class Application extends \yii\web\Application
                 $this->getDb()->enableReplicas = false;
             }
 
+            $isCpRequest = $request->getIsCpRequest();
             $response = $this->getResponse();
             $headers = $response->getHeaders();
             $generalConfig = $this->getConfig()->getGeneral();
@@ -196,7 +200,7 @@ class Application extends \yii\web\Application
             // Tell bots not to index/follow control panel and tokenized pages
             if (
                 $generalConfig->disallowRobots ||
-                $request->getIsCpRequest() ||
+                $isCpRequest ||
                 $request->getToken() !== null ||
                 $request->getIsPreview() ||
                 ($request->getIsActionRequest() && !($request->getIsLoginRequest() && $request->getIsGet()))
@@ -205,7 +209,7 @@ class Application extends \yii\web\Application
             }
 
             // Prevent some possible XSS attack vectors
-            if ($request->getIsCpRequest()) {
+            if ($isCpRequest) {
                 $headers->add('Content-Security-Policy', "frame-ancestors 'self'");
                 $headers->set('X-Frame-Options', 'SAMEORIGIN');
                 $headers->set('X-Content-Type-Options', 'nosniff');
@@ -236,7 +240,7 @@ class Application extends \yii\web\Application
             if (!$this->getUpdates()->getIsCraftSchemaVersionCompatible()) {
                 $this->_unregisterDebugModule();
 
-                if ($request->getIsCpRequest()) {
+                if ($isCpRequest) {
                     $version = $this->getInfo()->version;
 
                     throw new HttpException(200, Craft::t('app', 'Craft CMS does not support backtracking to this version. Please update to Craft CMS {version} or later.', [
@@ -273,12 +277,13 @@ class Application extends \yii\web\Application
                 return $this->_processUpdateLogic($request) ?: $response;
             }
 
-            if ($request->getIsCpRequest() && !$request->getIsActionRequest()) {
+            if (!$request->getIsActionRequest()) {
                 $userSession = $this->getUser();
 
                 // If this is a plugin template request, make sure the user has access to the plugin
                 // If this is a non-login, non-validate, non-setPassword control panel request, make sure the user has access to the control panel
                 if (
+                    $isCpRequest &&
                     ($firstSeg = $request->getSegment(1)) !== null &&
                     ($plugin = $this->getPlugins()->getPlugin($firstSeg)) !== null
                 ) {
@@ -290,20 +295,31 @@ class Application extends \yii\web\Application
                     }
                 }
 
-                if (!$userSession->getIsGuest() && !$this->getCanTestEditions()) {
-                    // Are there are any licensing issues cached?
-                    $licenseIssues = App::licensingIssues([
-                        LicenseKeyStatus::Trial,
-                        LicenseKeyStatus::Astray,
-                        'wrong_edition',
-                    ]);
-                    if (!empty($licenseIssues)) {
-                        $hash = App::licensingIssuesHash($licenseIssues);
-                        if ($this->_showLicensingIssuesScreen($hash)) {
-                            return $this->runAction('app/licensing-issues', [
-                                'issues' => $licenseIssues,
-                                'hash' => $hash,
-                            ]);
+                if (!$userSession->getIsGuest()) {
+                    // See if the user is expected to have 2FA enabled
+                    if (!$generalConfig->disable2fa) {
+                        $auth = $this->getAuth();
+                        $user = $userSession->getIdentity();
+                        if ($auth->is2faRequired($user) && !$auth->hasActiveMethod($user)) {
+                            return $this->runAction('users/setup-2fa');
+                        }
+                    }
+
+                    if ($isCpRequest && !$this->getCanTestEditions()) {
+                        // Are there are any licensing issues cached?
+                        $licenseIssues = App::licensingIssues([
+                            LicenseKeyStatus::Trial->value,
+                            LicenseKeyStatus::Astray->value,
+                            'wrong_edition',
+                        ]);
+                        if (!empty($licenseIssues)) {
+                            $hash = App::licensingIssuesHash($licenseIssues);
+                            if ($this->_showLicensingIssuesScreen($hash)) {
+                                return $this->runAction('app/licensing-issues', [
+                                    'issues' => $licenseIssues,
+                                    'hash' => $hash,
+                                ]);
+                            }
                         }
                     }
                 }
@@ -448,7 +464,7 @@ class Application extends \yii\web\Application
             return;
         }
 
-        $svg = rawurlencode(file_get_contents(dirname(__DIR__) . '/icons/c-debug.svg'));
+        $svg = rawurlencode(file_get_contents(dirname(__DIR__) . '/icons/custom-icons/c-debug.svg'));
         DebugModule::setYiiLogo("data:image/svg+xml;charset=utf-8,$svg");
 
         // Determine the base path using reflection in case it wasn't loaded from @vendor

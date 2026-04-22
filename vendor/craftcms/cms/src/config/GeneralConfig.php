@@ -9,6 +9,7 @@ namespace craft\config;
 
 use Closure;
 use Craft;
+use craft\attributes\EnvName;
 use craft\helpers\ConfigHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Localization;
@@ -71,11 +72,16 @@ class GeneralConfig extends BaseConfig
      *
      * The array can contain the following keys:
      *
-     * - `alwaysShowFocusRings` - Whether focus rings should always be shown when an element has focus.
      * - `useShapes` – Whether shapes should be used to represent statuses.
      * - `underlineLinks` – Whether links should be underlined.
+     * - `disableAutofocus` – Whether inputs should make use of the `autofocus` attribute.
      * - `notificationDuration` – How long notifications should be shown before they disappear automatically (in
      *   milliseconds). Set to `0` to show them indefinitely.
+     * - `notificationPosition` – Where notifications should be shown on the screen (`'start-start'` for top-left,
+     *   `'start-end'` for top-right, `'end-start'` for bottom-left, or `'end-end'` for bottom-right, when using an
+     *   LTR orientation).
+     * - `slideoutPosition` – Where slideouts should be shown on the screen (`'start'` for left, or `'end'`
+     *   for right, when using an LTR orientation).
      *
      * ```php
      * ->accessibilityDefaults([
@@ -87,10 +93,12 @@ class GeneralConfig extends BaseConfig
      * @since 3.6.4
      */
     public array $accessibilityDefaults = [
-        'alwaysShowFocusRings' => false,
         'useShapes' => false,
         'underlineLinks' => false,
+        'disableAutofocus' => false,
         'notificationDuration' => 5000,
+        'notificationPosition' => 'end-start',
+        'slideoutPosition' => 'end',
     ];
 
     /**
@@ -211,7 +219,7 @@ class GeneralConfig extends BaseConfig
     /**
      * @var bool Whether Craft should allow system and plugin updates in the control panel, and plugin installation from the Plugin Store.
      *
-     * This setting will automatically be disabled if <config4:allowAdminChanges> is disabled.
+     * This setting will automatically be disabled if <config5:allowAdminChanges> is disabled.
      *
      * ::: code
      * ```php Static Config
@@ -372,14 +380,14 @@ class GeneralConfig extends BaseConfig
     public bool $allowUppercaseInSlug = false;
 
     /**
-     * @var bool Whether users should automatically be logged in after activating their account or resetting their password.
+     * @var bool Whether users should automatically be logged in after activating their account.
      *
      * ::: code
      * ```php Static Config
      * ->autoLoginAfterAccountActivation(true)
      * ```
      * ```shell Environment Override
-     * CRAFT_ALLOW_AUTO_LOGIN_AFTER_ACCOUNT_ACTIVATION=true
+     * CRAFT_AUTO_LOGIN_AFTER_ACCOUNT_ACTIVATION=true
      * ```
      * :::
      *
@@ -393,6 +401,9 @@ class GeneralConfig extends BaseConfig
      * Note that drafts *will* be autosaved while Live Preview is open, regardless of this setting.
      *
      * ::: code
+     *  ```php Static Config
+     *  ->autosaveDrafts(false)
+     *  ```
      * ```shell Environment Override
      * CRAFT_AUTOSAVE_DRAFTS=false
      * ```
@@ -471,7 +482,7 @@ class GeneralConfig extends BaseConfig
      *  :::
      *
      * @group Environment
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public ?string $backupCommandFormat = null;
 
@@ -481,7 +492,7 @@ class GeneralConfig extends BaseConfig
      * It will be determined automatically if left blank.
      *
      * ::: tip
-     * The base control panel URL should **not** include the [control panel trigger word](config4:cpTrigger) (e.g. `/admin`).
+     * The base control panel URL should **not** include the [control panel trigger word](config5:cpTrigger) (e.g. `/admin`).
      * :::
      *
      * ::: code
@@ -654,14 +665,14 @@ class GeneralConfig extends BaseConfig
      * the front-end website.
      *
      * This can be set to `null` if you have a dedicated hostname for the control panel (e.g. `cms.my-project.tld`), or you are running Craft in
-     * [Headless Mode](config4:headlessMode). If you do that, you will need to ensure that the control panel is being served from its own web root
+     * [Headless Mode](config5:headlessMode). If you do that, you will need to ensure that the control panel is being served from its own web root
      * directory on your server, with an `index.php` file that defines the `CRAFT_CP` PHP constant.
      *
      * ```php
      * define('CRAFT_CP', true);
      * ```
      *
-     * Alternatively, you can set the <config4:baseCpUrl> config setting, but then you will run the risk of losing access to portions of your
+     * Alternatively, you can set the <config5:baseCpUrl> config setting, but then you will run the risk of losing access to portions of your
      * control panel due to URI conflicts with actual folders/files in your main web root.
      *
      * (For example, if you have an `assets/` folder, that would conflict with the `/assets` page in the control panel.)
@@ -680,7 +691,7 @@ class GeneralConfig extends BaseConfig
     public ?string $cpTrigger = 'admin';
 
     /**
-     * @var string The name of CSRF token used for CSRF validation if <config4:enableCsrfProtection> is set to `true`.
+     * @var string The name of CSRF token used for CSRF validation if <config5:enableCsrfProtection> is set to `true`.
      *
      * ::: code
      * ```php Static Config
@@ -753,7 +764,7 @@ class GeneralConfig extends BaseConfig
      * @var string|null The default locale the control panel should use for date/number formatting, for users who haven’t set
      * a preferred language or formatting locale.
      *
-     * If this is `null`, the <config4:defaultCpLanguage> config setting will determine which locale is used for date/number formatting by default.
+     * If this is `null`, the <config5:defaultCpLanguage> config setting will determine which locale is used for date/number formatting by default.
      *
      * ::: code
      * ```php Static Config
@@ -848,16 +859,16 @@ class GeneralConfig extends BaseConfig
      *
      * ::: code
      * ```php Static Config
-     * ->defaultTemplateExtensions(['html', 'twig', 'txt'])
+     * ->defaultTemplateExtensions(['twig', 'html', 'txt'])
      * ```
      * ```shell Environment Override
-     * CRAFT_DEFAULT_TEMPLATE_EXTENSIONS=html,twig,txt
+     * CRAFT_DEFAULT_TEMPLATE_EXTENSIONS=twig,html,txt
      * ```
      * :::
      *
      * @group System
      */
-    public array $defaultTemplateExtensions = ['html', 'twig'];
+    public array $defaultTemplateExtensions = ['twig', 'html'];
 
     /**
      * @var mixed The default amount of time tokens can be used before expiring.
@@ -940,6 +951,24 @@ class GeneralConfig extends BaseConfig
      * @group System
      */
     public bool $devMode = false;
+
+    /**
+     * @var bool Whether two-step verification features should be disabled.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->disable2fa()
+     * ```
+     * ```shell Environment Override
+     * CRAFT_DISABLE_2FA=true
+     * ```
+     * :::
+     *
+     * @group Users
+     * @since 5.6.0
+     */
+    #[EnvName('DISABLE_2FA')]
+    public bool $disable2fa = false;
 
     /**
      * @var string[]|string|null Array of plugin handles that should be disabled, regardless of what the project config says.
@@ -1033,19 +1062,19 @@ class GeneralConfig extends BaseConfig
      * :::
      *
      * ::: tip
-     * As of Craft 4.17.0, the `@transform` directive can be optionally included for each GraphQL schema,
+     * As of Craft 5.9.0, the `@transform` directive can be optionally included for each GraphQL schema,
      * unless this setting is set to `true`.
      * :::
      *
      * @group GraphQL
      * @since 3.6.0
-     * @deprecated in 4.17.0
+     * @deprecated in 5.9.0
      */
     public bool $disableGraphqlTransformDirective = false;
 
 
     /**
-     * @var bool Whether CSRF values should be injected via JavaScript for greater cache-ability.
+     * @var bool Whether CSRF values should be injected via JavaScript for greater cache-ability. This setting can be overridden by passing an `async` option into the `csrfInput()` function.
      *
      *  ::: code
      *  ```php Static Config
@@ -1057,7 +1086,7 @@ class GeneralConfig extends BaseConfig
      *  :::
      *
      * @group Security
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public bool $asyncCsrfInputs = false;
 
@@ -1080,7 +1109,7 @@ class GeneralConfig extends BaseConfig
     public bool $enableBasicHttpAuth = false;
 
     /**
-     * @var bool Whether to use a cookie to persist the CSRF token if <config4:enableCsrfProtection> is enabled. If false, the CSRF token will be
+     * @var bool Whether to use a cookie to persist the CSRF token if <config5:enableCsrfProtection> is enabled. If false, the CSRF token will be
      * stored in session under the `csrfTokenName` config setting name. Note that while storing CSRF tokens in session increases security,
      * it requires starting a session for every page that a CSRF token is needed, which may degrade site performance.
      *
@@ -1244,7 +1273,7 @@ class GeneralConfig extends BaseConfig
      *
      * @see enableTwigSandbox()
      * @group Security
-     * @since 4.17.0
+     * @since 5.9.0
      */
     public bool $enableTwigSandbox = false;
 
@@ -1267,7 +1296,7 @@ class GeneralConfig extends BaseConfig
     public string $errorTemplatePrefix = '';
 
     /**
-     * @var string[]|null List of file extensions that will be merged into the <config4:allowedFileExtensions> config setting.
+     * @var string[]|null List of file extensions that will be merged into the <config5:allowedFileExtensions> config setting.
      *
      * ::: code
      * ```php Static Config
@@ -1320,7 +1349,7 @@ class GeneralConfig extends BaseConfig
      *
      * ::: tip
      * File extensions listed here won’t immediately be allowed to be uploaded. You will also need to list them with
-     * the <config4:extraAllowedFileExtensions> config setting.
+     * the <config5:extraAllowedFileExtensions> config setting.
      * :::
      *
      * @group Assets
@@ -1461,11 +1490,11 @@ class GeneralConfig extends BaseConfig
      * - Front-end routing will skip checks for element and template requests.
      * - Front-end responses will be JSON-formatted rather than HTML by default.
      * - Twig will be configured to escape unsafe strings for JavaScript/JSON rather than HTML by default for front-end requests.
-     * - The <config4:loginPath>, <config4:logoutPath>, <config4:setPasswordPath>, and <config4:verifyEmailPath> settings will be ignored.
+     * - The <config5:loginPath>, <config5:logoutPath>, <config5:setPasswordPath>, and <config5:verifyEmailPath> settings will be ignored.
      *
      * ::: tip
      * With Headless Mode enabled, users may only set passwords and verify email addresses via the control panel. Be sure to grant “Access the control
-     * panel” permission to all content editors and administrators. You’ll also need to set the <config4:baseCpUrl> config setting if the control
+     * panel” permission to all content editors and administrators. You’ll also need to set the <config5:baseCpUrl> config setting if the control
      * panel is located on a different domain than your front end.
      * :::
      *
@@ -1586,10 +1615,12 @@ class GeneralConfig extends BaseConfig
     public mixed $invalidLoginWindowDuration = 3600;
 
     /**
-     * @var mixed The URI Craft should redirect to when user token validation fails. A token is used on things like setting and resetting user account
-     * passwords. Note that this only affects front-end site requests.
+     * @var mixed The URI Craft should redirect to when user token validation fails. User tokens are used for
+     * email verification and password resets. If `null`, <config5:loginPath> will be used by default.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
+     *
+     * Note that this only affects front-end site requests.
      *
      * ::: code
      * ```php Static Config
@@ -1605,7 +1636,7 @@ class GeneralConfig extends BaseConfig
      * @see getInvalidUserTokenPath()
      * @group Routing
      */
-    public mixed $invalidUserTokenPath = '';
+    public mixed $invalidUserTokenPath = null;
 
     /**
      * @var string[]|null List of headers where proxies store the real client IP.
@@ -1657,7 +1688,7 @@ class GeneralConfig extends BaseConfig
      * :::
      *
      * @group GraphQL
-     * @since 4.11.0
+     * @since 5.3.0
      */
     public bool $lazyGqlTypes = false;
 
@@ -1682,11 +1713,34 @@ class GeneralConfig extends BaseConfig
     public bool $limitAutoSlugsToAscii = false;
 
     /**
+     * @var array Custom locale aliases, which will be included when fetching all known locales.
+     *
+     * Each locale alias should be defined as an array with the following keys:
+     *
+     * - `id`: The alias locale ID
+     * - `aliasOf`: The original locale ID
+     * - `displayName`: The locale alias’s display name _(optional)_
+     *
+     *  ::: code
+     *  ```php Static Config
+     *  ->localeAliases([
+     *     'smj' => [
+     *         'aliasOf' => 'sv',
+     *         'displayName' => 'Lule Sámi',
+     *     ],
+     * ])
+     *  ```
+     *  :::
+     *
+     * @since 5.0.0
+     * @group System
+     */
+    public array $localeAliases = [];
+
+    /**
      * @var mixed The URI Craft should use for user login on the front end.
      *
      * This can be set to `false` to disable front-end login.
-     *
-     * Note that this config setting is ignored when <config4:headlessMode> is enabled.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
@@ -1709,8 +1763,6 @@ class GeneralConfig extends BaseConfig
      *
      * This can be set to `false` to disable front-end logout.
      *
-     * Note that this config setting is ignored when <config4:headlessMode> is enabled.
-     *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
      * ::: code
@@ -1728,7 +1780,7 @@ class GeneralConfig extends BaseConfig
     public mixed $logoutPath = 'logout';
 
     /**
-     * @var int The maximum dimension size to use when caching images from external sources to use in transforms. Set to `0` to never cache them.
+     * @var int The maximum dimension size to use when caching images from external sources to use in transforms. Set to `0` to never cache them. Defaults to `0` as of 5.9.0. Earlier versions default to `2000`.
      *
      * ::: code
      * ```php Static Config
@@ -1741,7 +1793,7 @@ class GeneralConfig extends BaseConfig
      *
      * @group Image Handling
      */
-    public int $maxCachedCloudImageSize = 2000;
+    public int $maxCachedCloudImageSize = 0;
 
     /**
      * @var int The maximum allowed GraphQL queries that can be executed in a single batched request. Set to `0` to allow any number of queries.
@@ -1924,7 +1976,7 @@ class GeneralConfig extends BaseConfig
      *
      * ::: tip
      * Even when this is set to `true`, the script name could still be included in some action URLs.
-     * If you want to ensure that `index.php` is fully omitted from **all** generated URLs, set the <config4:pathParam>
+     * If you want to ensure that `index.php` is fully omitted from **all** generated URLs, set the <config5:pathParam>
      * config setting to `null`.
      * :::
      *
@@ -1954,16 +2006,16 @@ class GeneralConfig extends BaseConfig
      * @var string The string preceding a number which Craft will look for when determining if the current request is for a particular page in
      * a paginated list of pages.
      *
-     * Example Value | Example URI
-     * ------------- | -----------
-     * `p` | `/news/p5`
-     * `page` | `/news/page5`
-     * `page/` | `/news/page/5`
-     * `?page` | `/news?page=5`
+     * | Example Value | Example URI |
+     * | --- | --- |
+     * | `p` | `/news/p5` |
+     * | `page` | `/news/page5` |
+     * | `page/` | `/news/page/5` |
+     * | `?page` | `/news?page=5` |
      *
-     * ::: tip
-     * If you want to set this to `?p` (e.g. `/news?p=5`), you’ll also need to change your <config4:pathParam> setting which defaults to `p`.
-     * If your server is running Apache, you’ll need to update the redirect code in your `.htaccess` file to match your new `pathParam` value.
+     * ::: warning
+     * Craft may override this setting if it conflicts with <config5:pathParam>. If you want to set this to `?p` (e.g. `/news?p=5`), you’ll also need to change your <config5:pathParam> setting (which defaults to `p`).
+     * Then, if your server is running Apache, you’ll need to update the redirect code in your `.htaccess` file to match your new `pathParam` value.
      * :::
      *
      * ::: code
@@ -1979,6 +2031,36 @@ class GeneralConfig extends BaseConfig
      * @group Routing
      */
     public string $pageTrigger = 'p';
+
+    /**
+     * @var string The path within the `templates` folder where element partial templates will live.
+     *
+     * Partial templates are used to render elements when calling [[\craft\elements\db\ElementQuery::render()]],
+     * [[\craft\elements\ElementCollection::render()]], or [[\craft\base\Element::render()]].
+     *
+     * For example, you could render all the entries within a Matrix field like so:
+     *
+     * ```twig
+     * {{ entry.myMatrixField.render() }}
+     * ```
+     *
+     * The full path to a partial template will also include the element type handle (e.g. `asset` or `entry`) and the
+     * field layout provider’s handle (e.g. the volume handle or entry type handle). For an entry of type `article`,
+     * that would be: `_partials/entry/article.twig`.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->partialTemplatesPath('_cp/partials')
+     * ```
+     * ```shell Environment Override
+     * CRAFT_PARTIAL_TEMPLATES_PATH=_cp/partials
+     * ```
+     * :::
+     *
+     * @group System
+     * @since 5.0.0
+     */
+    public string $partialTemplatesPath = '_partials';
 
     /**
      * @var string|null The query string param that Craft will check when determining the request’s path.
@@ -2082,7 +2164,7 @@ class GeneralConfig extends BaseConfig
     /**
      * @var mixed The path users should be redirected to after logging in from the front-end site.
      *
-     * This setting will also come into effect if the user visits the login page (as specified by the <config4:loginPath> config setting) when
+     * This setting will also come into effect if the user visits the login page (as specified by the <config5:loginPath> config setting) when
      * they are already logged in.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
@@ -2121,7 +2203,7 @@ class GeneralConfig extends BaseConfig
     public mixed $postLogoutRedirect = '';
 
     /**
-     * @var bool Whether the <config4:gqlTypePrefix> config setting should have an impact on `query`, `mutation`, and `subscription` types.
+     * @var bool Whether the <config5:gqlTypePrefix> config setting should have an impact on `query`, `mutation`, and `subscription` types.
      *
      * ::: code
      * ```php Static Config
@@ -2257,7 +2339,7 @@ class GeneralConfig extends BaseConfig
     /**
      * @var mixed The amount of time content preview tokens can be used before expiring.
      *
-     * Defaults to <config4:defaultTokenDuration> value.
+     * Defaults to <config5:defaultTokenDuration> value.
      *
      * See [[ConfigHelper::durationInSeconds()]] for a list of supported value types.
      *
@@ -2306,7 +2388,7 @@ class GeneralConfig extends BaseConfig
      * See [[ConfigHelper::durationInSeconds()]] for a list of supported value types.
      *
      * ::: tip
-     * Users will only be purged when [garbage collection](https://craftcms.com/docs/4.x/gc.html) is run.
+     * Users will only be purged when [garbage collection](https://craftcms.com/docs/5.x/system/gc.html) is run.
      * :::
      *
      * ::: code
@@ -2373,7 +2455,7 @@ class GeneralConfig extends BaseConfig
     /**
      * @var bool Whether SVG thumbnails should be rasterized.
      *
-     * This will only work if ImageMagick is installed, and <config4:imageDriver> is set to either `auto` or `imagick`.
+     * This will only work if ImageMagick is installed, and <config5:imageDriver> is set to either `auto` or `imagick`.
      *
      * ::: code
      * ```php Static Config
@@ -2601,7 +2683,7 @@ class GeneralConfig extends BaseConfig
      * :::
      *
      * @group System
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public bool $safeMode = false;
 
@@ -2721,12 +2803,10 @@ class GeneralConfig extends BaseConfig
     /**
      * @var mixed The URI or URL that Craft should use for Set Password forms on the front end.
      *
-     * This setting is ignored when <config4:headlessMode> is enabled, unless it’s set to an absolute URL.
-     *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
      * ::: tip
-     * You might also want to set <config4:invalidUserTokenPath> in case a user clicks on an expired password reset link.
+     * You might also want to set <config5:invalidUserTokenPath> in case a user clicks on an expired password reset link.
      * :::
      *
      * ::: code
@@ -2751,7 +2831,7 @@ class GeneralConfig extends BaseConfig
      * If this is set, Craft will redirect [.well-known/change-password requests](https://w3c.github.io/webappsec-change-password-url/) to this URI.
      *
      * ::: tip
-     * You’ll also need to set [setPasswordPath](config4:setPasswordPath), which determines the URI and template path for the Set Password form
+     * You’ll also need to set [setPasswordPath](config5:setPasswordPath), which determines the URI and template path for the Set Password form
      * where the user resets their password after following the link in the Password Reset email.
      * :::
      *
@@ -2914,6 +2994,24 @@ class GeneralConfig extends BaseConfig
     public mixed $softDeleteDuration = 2592000;
 
     /**
+     * @var bool Whether entries’ statuses should be stored statically, and only get updated on entry save, or when the
+     * `update-statuses` command is executed.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->staticStatuses()
+     * ```
+     * ```shell Environment Override
+     * CRAFT_STATIC_STATUSES=true
+     * ```
+     * :::
+     *
+     * @group System
+     * @since 5.7.0
+     */
+    public bool $staticStatuses = false;
+
+    /**
      * @var bool Whether user IP addresses should be stored/logged by the system.
      *
      * ::: code
@@ -2929,6 +3027,42 @@ class GeneralConfig extends BaseConfig
      * @since 3.1.0
      */
     public bool $storeUserIps = false;
+
+    /**
+     * @var string|null The URL to a CSS file that should be included when rendering system templates on the front end,
+     * such as the Login and Set Password templates.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->systemTemplateCss('/css/cp-theme.css');
+     * ```
+     * ```shell Environment Override
+     * CRAFT_SYSTEM_TEMPLATE_CSS=/css/cp-theme.css
+     * ```
+     * :::
+     *
+     * @group System
+     * @since 5.6.0
+     */
+    public ?string $systemTemplateCss = null;
+
+    /**
+     * @var string|null The handle of the filesystem that should be used for storing temporary asset uploads. A local temp folder will
+     * be used by default.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->tempAssetUploadFs('$TEMP_ASSET_UPLOADS_FS')
+     * ```
+     * ```shell Environment Override
+     * CRAFT_TEMP_ASSET_UPLOAD_FS=tempAssetUploads
+     * ```
+     * :::
+     *
+     * @group Assets
+     * @since 5.0.0
+     */
+    public ?string $tempAssetUploadFs = null;
 
     /**
      * @var string|array|null|false Configures Craft to send all system emails to either a single email address or an array of email addresses
@@ -3018,8 +3152,9 @@ class GeneralConfig extends BaseConfig
      * The symbols are as follows:
      *
      * | Symbol | Example | Category |
-     * | `$` | `$Date Field$` | Site |
-     * | `@` | `@Entry Type@` | Application |
+     * | --- | --- | --- |
+     * | `$` | `$Date Field$` | Site (front-end, `site.php`) |
+     * | `@` | `@Entry Type@` | Application (Craft, `app.php`) |
      * | `%` | `%Object Template% | Other (plugin or custom source) |
      *
      * Translations _may_ be nested or surrounded by multiple symbols.
@@ -3104,6 +3239,33 @@ class GeneralConfig extends BaseConfig
     public bool $useEmailAsUsername = false;
 
     /**
+     * @var bool Whether the [`IDNA_NONTRANSITIONAL_TO_UNICODE`](https://www.php.net/manual/en/intl.constants.php#constant.idna-nontransitional-to-unicode)
+     * flag should be passed to [idn_to_utf8()](https://www.php.net/manual/en/function.idn-to-utf8.php) when converting
+     * email addresses from IDNA ASCII to Unicode.
+     *
+     * `INTL_IDNA_VARIANT_UTS46` by default, which uses the UTS 46 algorithm, consistent with the requirements of the
+     * IDNA2008 protocol and mostly compatible with IDNA2003 (deprecated in PHP 7.2).
+     *
+     * There are a handful of characters which result in different resolution of IDNs between IDNA2008 and IDNA2003,
+     * including ß, ς, and joiner characters (ZWJ and ZWNJ). ([More info](https://unicode.org/reports/tr46/#Deviations))
+     *
+     * For example, `ß` will be converted to `ss` by default. Enabling this setting will ensure it gets preserved as `ß`.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->useIdnaNontransitionalToUnicode(true)
+     * ```
+     * ```shell Environment Override
+     * CRAFT_USE_IDNA_NONTRANSITIONAL_TO_UNICODE=true
+     * ```
+     * :::
+     *
+     * @group System
+     * @since 5.9.0
+     */
+    public bool $useIdnaNontransitionalToUnicode = false;
+
+    /**
      * @var bool Whether [iFrame Resizer options](http://davidjbradshaw.github.io/iframe-resizer/#options) should be used for Live Preview.
      *
      * Using iFrame Resizer makes it possible for Craft to retain the preview’s scroll position between page loads, for cross-origin web pages.
@@ -3112,13 +3274,13 @@ class GeneralConfig extends BaseConfig
      * than the iframe document itself. This can lead to some unexpected CSS issues, however, because the previewed viewport height will be taller
      * than the visible portion of the iframe.
      *
-     * If you have a [decoupled front end](https://craftcms.com/docs/4.x/entries.html#previewing-decoupled-front-ends), you will need to include
+     * If you have a [decoupled front end](https://craftcms.com/docs/5.x/reference/element-types/entries.html#previewing-decoupled-front-ends), you will need to include
      * [iframeResizer.contentWindow.min.js](https://raw.github.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.contentWindow.min.js) on your
      * page as well for this to work. You can conditionally include it for only Live Preview requests by checking if the requested URL contains a
      * `x-craft-live-preview` query string parameter.
      *
      * ::: tip
-     * You can customize the behavior of iFrame Resizer via the <config4:previewIframeResizerOptions> config setting.
+     * You can customize the behavior of iFrame Resizer via the <config5:previewIframeResizerOptions> config setting.
      * :::
      *
      * ::: code
@@ -3138,7 +3300,7 @@ class GeneralConfig extends BaseConfig
     /**
      * @var bool Whether Craft should specify the path using `PATH_INFO` or as a query string parameter when generating URLs.
      *
-     * This setting only takes effect if <config4:omitScriptNameInUrls> is set to `false`.
+     * This setting only takes effect if <config5:omitScriptNameInUrls> is set to `false`.
      *
      * ::: code
      * ```php Static Config
@@ -3260,8 +3422,6 @@ class GeneralConfig extends BaseConfig
     /**
      * @var mixed The URI or URL that Craft should use for email verification links on the front end.
      *
-     * This setting is ignored when <config4:headlessMode> is enabled, unless it’s set to an absolute URL.
-     *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
      * ::: code
@@ -3355,9 +3515,9 @@ class GeneralConfig extends BaseConfig
      *
      * The array can contain the following keys:
      *
-     * - `alwaysShowFocusRings` - Whether focus rings should always be shown when an element has focus.
      * - `useShapes` – Whether shapes should be used to represent statuses.
      * - `underlineLinks` – Whether links should be underlined.
+     * - `disableAutofocus` – Whether search inputs should be focused on page load.
      * - `notificationDuration` – How long notifications should be shown before they disappear automatically (in
      *   milliseconds). Set to `0` to show them indefinitely.
      *
@@ -3544,7 +3704,7 @@ class GeneralConfig extends BaseConfig
     /**
      * Whether Craft should allow system and plugin updates in the control panel, and plugin installation from the Plugin Store.
      *
-     * This setting will automatically be disabled if <config4:allowAdminChanges> is disabled.
+     * This setting will automatically be disabled if <config5:allowAdminChanges> is disabled.
      *
      * ```php
      * ->allowUpdates(false)
@@ -3623,7 +3783,7 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
-     * Whether users should automatically be logged in after activating their account or resetting their password.
+     * Whether users should automatically be logged in after activating their account.
      *
      * ```php
      * ->autoLoginAfterAccountActivation(true)
@@ -3707,7 +3867,7 @@ class GeneralConfig extends BaseConfig
      * @param string $value
      * @return self
      * @see $backupCommandFormat
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public function backupCommandFormat(string $value): self
     {
@@ -3721,7 +3881,7 @@ class GeneralConfig extends BaseConfig
      * It will be determined automatically if left blank.
      *
      * ::: tip
-     * The base control panel URL should **not** include the [control panel trigger word](config4:cpTrigger) (e.g. `/admin`).
+     * The base control panel URL should **not** include the [control panel trigger word](config5:cpTrigger) (e.g. `/admin`).
      * :::
      *
      * ```php
@@ -3920,14 +4080,14 @@ class GeneralConfig extends BaseConfig
      * the front-end website.
      *
      * This can be set to `null` if you have a dedicated hostname for the control panel (e.g. `cms.my-project.tld`), or you are running Craft in
-     * [Headless Mode](config4:headlessMode). If you do that, you will need to ensure that the control panel is being served from its own web root
+     * [Headless Mode](config5:headlessMode). If you do that, you will need to ensure that the control panel is being served from its own web root
      * directory on your server, with an `index.php` file that defines the `CRAFT_CP` PHP constant.
      *
      * ```php
      * define('CRAFT_CP', true);
      * ```
      *
-     * Alternatively, you can set the <config4:baseCpUrl> config setting, but then you will run the risk of losing access to portions of your
+     * Alternatively, you can set the <config5:baseCpUrl> config setting, but then you will run the risk of losing access to portions of your
      * control panel due to URI conflicts with actual folders/files in your main web root.
      *
      * (For example, if you have an `assets/` folder, that would conflict with the `/assets` page in the control panel.)
@@ -3949,7 +4109,7 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
-     * The name of CSRF token used for CSRF validation if <config4:enableCsrfProtection> is set to `true`.
+     * The name of CSRF token used for CSRF validation if <config5:enableCsrfProtection> is set to `true`.
      *
      * ```php
      * ->csrfTokenName('MY_CSRF')
@@ -4050,7 +4210,7 @@ class GeneralConfig extends BaseConfig
      * The default locale the control panel should use for date/number formatting, for users who haven’t set
      * a preferred language or formatting locale.
      *
-     * If this is `null`, the <config4:defaultCpLanguage> config setting will determine which locale is used for date/number formatting by default.
+     * If this is `null`, the <config5:defaultCpLanguage> config setting will determine which locale is used for date/number formatting by default.
      *
      * ```php
      * ->defaultCpLocale('en-US')
@@ -4163,7 +4323,7 @@ class GeneralConfig extends BaseConfig
      * The template file extensions Craft will look for when matching a template path to a file on the front end.
      *
      * ```php
-     * ->defaultTemplateExtensions(['html', 'twig', 'txt'])
+     * ->defaultTemplateExtensions(['twig', 'html', 'txt'])
      * ```
      *
      * @group System
@@ -4272,6 +4432,30 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
+     * Whether two-step verification features should be disabled.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->disable2fa()
+     * ```
+     * ```shell Environment Override
+     * CRAFT_DISABLE_2FA=true
+     * ```
+     * :::
+     *
+     * @group Users
+     * @param bool $value
+     * @return self
+     * @see $disable2fa
+     * @since 5.6.0
+     */
+    public function disable2fa(bool $value = true): self
+    {
+        $this->disable2fa = $value;
+        return $this;
+    }
+
+    /**
      * Array of plugin handles that should be disabled, regardless of what the project config says.
      *
      * ```php
@@ -4372,7 +4556,7 @@ class GeneralConfig extends BaseConfig
      * ```
      *
      * ::: tip
-     * As of Craft 4.17.0, the `@transform` directive can be optionally included for each GraphQL schema,
+     * As of Craft 5.9.0, the `@transform` directive can be optionally included for each GraphQL schema,
      * unless this setting is set to `true`.
      * :::
      *
@@ -4398,7 +4582,7 @@ class GeneralConfig extends BaseConfig
      * @param bool $value
      * @return self
      * @see $asyncCsrfInputs
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public function asyncCsrfInputs(bool $value = true): self
     {
@@ -4426,7 +4610,7 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
-     * Whether to use a cookie to persist the CSRF token if <config4:enableCsrfProtection> is enabled. If false, the CSRF token will be
+     * Whether to use a cookie to persist the CSRF token if <config5:enableCsrfProtection> is enabled. If false, the CSRF token will be
      * stored in session under the `csrfTokenName` config setting name. Note that while storing CSRF tokens in session increases security,
      * it requires starting a session for every page that a CSRF token is needed, which may degrade site performance.
      *
@@ -4604,7 +4788,7 @@ class GeneralConfig extends BaseConfig
      * @param bool $value
      * @return self
      * @see $enableTwigSandbox
-     * @since 4.17.0
+     * @since 5.9.0
      */
     public function enableTwigSandbox(bool $value = true): self
     {
@@ -4634,7 +4818,7 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
-     * List of file extensions that will be merged into the <config4:allowedFileExtensions> config setting.
+     * List of file extensions that will be merged into the <config5:allowedFileExtensions> config setting.
      *
      * ```php
      * ->extraAllowedFileExtensions(['mbox', 'xml'])
@@ -4706,7 +4890,7 @@ class GeneralConfig extends BaseConfig
      *
      * ::: tip
      * File extensions listed here won’t immediately be allowed to be uploaded. You will also need to list them with
-     * the <config4:extraAllowedFileExtensions> config setting.
+     * the <config5:extraAllowedFileExtensions> config setting.
      * :::
      *
      * @group Assets
@@ -4871,11 +5055,11 @@ class GeneralConfig extends BaseConfig
      * - Front-end routing will skip checks for element and template requests.
      * - Front-end responses will be JSON-formatted rather than HTML by default.
      * - Twig will be configured to escape unsafe strings for JavaScript/JSON rather than HTML by default for front-end requests.
-     * - The <config4:loginPath>, <config4:logoutPath>, <config4:setPasswordPath>, and <config4:verifyEmailPath> settings will be ignored.
+     * - The <config5:loginPath>, <config5:logoutPath>, <config5:setPasswordPath>, and <config5:verifyEmailPath> settings will be ignored.
      *
      * ::: tip
      * With Headless Mode enabled, users may only set passwords and verify email addresses via the control panel. Be sure to grant “Access the control
-     * panel” permission to all content editors and administrators. You’ll also need to set the <config4:baseCpUrl> config setting if the control
+     * panel” permission to all content editors and administrators. You’ll also need to set the <config5:baseCpUrl> config setting if the control
      * panel is located on a different domain than your front end.
      * :::
      *
@@ -5006,10 +5190,12 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
-     * The URI Craft should redirect to when user token validation fails. A token is used on things like setting and resetting user account
-     * passwords. Note that this only affects front-end site requests.
+     * The URI Craft should redirect to when user token validation fails. User tokens are used for
+     * email verification and password resets. If `null`, <config5:loginPath> will be used by default.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
+     *
+     * Note that this only affects front-end site requests.
      *
      * ```php
      * // 1 day
@@ -5082,7 +5268,7 @@ class GeneralConfig extends BaseConfig
      * @param bool $value
      * @return self
      * @see $lazyGqlTypes
-     * @since 4.11.0
+     * @since 5.3.0
      */
     public function lazyGqlTypes(bool $value = true): self
     {
@@ -5114,11 +5300,29 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
+     * Custom locale aliases, which will be included when fetching all known locales.
+     *
+     * Each item in the array should have a key that defines the custom locale ID, and its value should be set
+     * to an array with the following keys:
+     *
+     * - `aliasOf`: The original locale ID
+     * - `displayName`: The locale alias’s display name _(optional)_
+     *
+     * @param array $value
+     * @return self
+     * @group System
+     * @since 5.0.0
+     */
+    public function localeAliases(array $value): self
+    {
+        $this->localeAliases = $value;
+        return $this;
+    }
+
+    /**
      * The URI Craft should use for user login on the front end.
      *
      * This can be set to `false` to disable front-end login.
-     *
-     * Note that this config setting is ignored when <config4:headlessMode> is enabled.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
@@ -5142,8 +5346,6 @@ class GeneralConfig extends BaseConfig
      * The URI Craft should use for user logout on the front end.
      *
      * This can be set to `false` to disable front-end logout.
-     *
-     * Note that this config setting is ignored when <config4:headlessMode> is enabled.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
@@ -5413,16 +5615,16 @@ class GeneralConfig extends BaseConfig
      * The string preceding a number which Craft will look for when determining if the current request is for a particular page in
      * a paginated list of pages.
      *
-     * Example Value | Example URI
-     * ------------- | -----------
-     * `p` | `/news/p5`
-     * `page` | `/news/page5`
-     * `page/` | `/news/page/5`
-     * `?page` | `/news?page=5`
+     * | Example Value | Example URI |
+     * | --- | --- |
+     * | `p` | `/news/p5` |
+     * | `page` | `/news/page5` |
+     * | `page/` | `/news/page/5` |
+     * | `?page` | `/news?page=5` |
      *
-     * ::: tip
-     * If you want to set this to `?p` (e.g. `/news?p=5`), you’ll also need to change your <config4:pathParam> setting which defaults to `p`.
-     * If your server is running Apache, you’ll need to update the redirect code in your `.htaccess` file to match your new `pathParam` value.
+     * ::: warning
+     * Craft may override this setting if it conflicts with <config5:pathParam>. If you want to set this to `?p` (e.g. `/news?p=5`), you’ll also need to change your <config5:pathParam> setting (which defaults to `p`).
+     * Then, if your server is running Apache, you’ll need to update the redirect code in your `.htaccess` file to match your new `pathParam` value.
      * :::
      *
      * ```php
@@ -5438,6 +5640,43 @@ class GeneralConfig extends BaseConfig
     public function pageTrigger(string $value): self
     {
         $this->pageTrigger = $value;
+        return $this;
+    }
+
+    /**
+     * The path within the `templates` folder where element partial templates will live.
+     *
+     * Partial templates are used to render elements when calling [[\craft\elements\db\ElementQuery::render()]],
+     * [[\craft\elements\ElementCollection::render()]], or [[\craft\base\Element::render()]].
+     *
+     * For example, you could render all the entries within a Matrix field like so:
+     *
+     * ```twig
+     * {{ entry.myMatrixField.render() }}
+     * ```
+     *
+     * The full path to a partial template will also include the element type handle (e.g. `asset` or `entry`) and the
+     * field layout provider’s handle (e.g. the volume handle or entry type handle). For an entry of type `article`,
+     * that would be: `_partials/entry/article.twig`.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->partialTemplatesPath('_cp/partials')
+     * ```
+     * ```shell Environment Override
+     * CRAFT_PARTIAL_TEMPLATES_PATH=_cp/partials
+     * ```
+     * :::
+     *
+     * @group System
+     * @param string $value
+     * @return self
+     * @see $partialTemplatesPath
+     * @since 5.0.0
+     */
+    public function partialTemplatesPath(string $value): self
+    {
+        $this->partialTemplatesPath = $value;
         return $this;
     }
 
@@ -5556,7 +5795,7 @@ class GeneralConfig extends BaseConfig
     /**
      * The path users should be redirected to after logging in from the front-end site.
      *
-     * This setting will also come into effect if the user visits the login page (as specified by the <config4:loginPath> config setting) when
+     * This setting will also come into effect if the user visits the login page (as specified by the <config5:loginPath> config setting) when
      * they are already logged in.
      *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
@@ -5599,7 +5838,7 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
-     * Whether the <config4:gqlTypePrefix> config setting should have an impact on `query`, `mutation`, and `subscription` types.
+     * Whether the <config5:gqlTypePrefix> config setting should have an impact on `query`, `mutation`, and `subscription` types.
      *
      * ```php
      * ->prefixGqlRootTypes(false)
@@ -5762,7 +6001,7 @@ class GeneralConfig extends BaseConfig
     /**
      * The amount of time content preview tokens can be used before expiring.
      *
-     * Defaults to <config4:defaultTokenDuration> value.
+     * Defaults to <config5:defaultTokenDuration> value.
      *
      * See [[ConfigHelper::durationInSeconds()]] for a list of supported value types.
      *
@@ -5815,7 +6054,7 @@ class GeneralConfig extends BaseConfig
      * See [[ConfigHelper::durationInSeconds()]] for a list of supported value types.
      *
      * ::: tip
-     * Users will only be purged when [garbage collection](https://craftcms.com/docs/4.x/gc.html) is run.
+     * Users will only be purged when [garbage collection](https://craftcms.com/docs/5.x/system/gc.html) is run.
      * :::
      *
      * ```php
@@ -5887,7 +6126,7 @@ class GeneralConfig extends BaseConfig
     /**
      * Whether SVG thumbnails should be rasterized.
      *
-     * This will only work if ImageMagick is installed, and <config4:imageDriver> is set to either `auto` or `imagick`.
+     * This will only work if ImageMagick is installed, and <config5:imageDriver> is set to either `auto` or `imagick`.
      *
      * ```php
      * ->rasterizeSvgThumbs(true)
@@ -6154,7 +6393,7 @@ class GeneralConfig extends BaseConfig
      * @param bool $value
      * @return self
      * @see $safeMode
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public function safeMode(bool $value = true): self
     {
@@ -6298,12 +6537,10 @@ class GeneralConfig extends BaseConfig
     /**
      * The URI or URL that Craft should use for Set Password forms on the front end.
      *
-     * This setting is ignored when <config4:headlessMode> is enabled, unless it’s set to an absolute URL.
-     *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
      * ::: tip
-     * You might also want to set <config4:invalidUserTokenPath> in case a user clicks on an expired password reset link.
+     * You might also want to set <config5:invalidUserTokenPath> in case a user clicks on an expired password reset link.
      * :::
      *
      * ```php
@@ -6330,7 +6567,7 @@ class GeneralConfig extends BaseConfig
      * If this is set, Craft will redirect [.well-known/change-password requests](https://w3c.github.io/webappsec-change-password-url/) to this URI.
      *
      * ::: tip
-     * You’ll also need to set [setPasswordPath](config4:setPasswordPath), which determines the URI and template path for the Set Password form
+     * You’ll also need to set [setPasswordPath](config5:setPasswordPath), which determines the URI and template path for the Set Password form
      * where the user resets their password after following the link in the Password Reset email.
      * :::
      *
@@ -6516,6 +6753,31 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
+     * Whether entries’ statuses should be stored statically, and only get updated on entry save, or when the
+     * `update-statuses` command is executed.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->staticStatuses()
+     * ```
+     * ```shell Environment Override
+     * CRAFT_STATIC_STATUSES=true
+     * ```
+     * :::
+     *
+     * @group System
+     * @param bool $value
+     * @return self
+     * @see $staticStatuses
+     * @since 5.7.0
+     */
+    public function staticStatuses(bool $value = true): self
+    {
+        $this->staticStatuses = $value;
+        return $this;
+    }
+
+    /**
      * Whether user IP addresses should be stored/logged by the system.
      *
      * ```php
@@ -6531,6 +6793,51 @@ class GeneralConfig extends BaseConfig
     public function storeUserIps(bool $value = true): self
     {
         $this->storeUserIps = $value;
+        return $this;
+    }
+
+    /**
+     * The URL to a CSS file that should be included when rendering system templates on the front end,
+     * such as the Login and Set Password templates.
+     *
+     * ::: code
+     * ```php Static Config
+     * ->systemTemplateCss('/css/cp-theme.css');
+     * ```
+     * ```shell Environment Override
+     * CRAFT_SYSTEM_TEMPLATE_CSS=/css/cp-theme.css
+     * ```
+     * :::
+     *
+     * @group System
+     * @param string|null $value
+     * @return self
+     * @see $systemTemplateCss
+     * @since 5.6.0
+     */
+    public function systemTemplateCss(?string $value): self
+    {
+        $this->systemTemplateCss = $value;
+        return $this;
+    }
+
+    /**
+     * The handle of the filesystem that should be used for storing temporary asset uploads. A local temp folder will
+     * be used by default.
+     *
+     *  ```php
+     *  ->tempAssetUploadFs('$TEMP_ASSET_UPLOADS_FS')
+     *  ```
+     *
+     * @group Assets
+     * @param string|null $value
+     * @return self
+     * @see $tempAssetUploadFs
+     * @since 5.0.0
+     */
+    public function tempAssetUploadFs(string|null $value): self
+    {
+        $this->tempAssetUploadFs = $value;
         return $this;
     }
 
@@ -6627,8 +6934,9 @@ class GeneralConfig extends BaseConfig
      * The symbols are as follows:
      *
      * | Symbol | Example | Category |
-     * | `$` | `$Date Field$` | Site |
-     * | `@` | `@Entry Type@` | Application |
+     * | --- | --- | --- |
+     * | `$` | `$Date Field$` | Site (front-end, `site.php`) |
+     * | `@` | `@Entry Type@` | Application (Craft, `app.php`) |
      * | `%` | `%Object Template% | Other (plugin or custom source) |
      *
      * Translations _may_ be nested or surrounded by multiple symbols.
@@ -6732,6 +7040,35 @@ class GeneralConfig extends BaseConfig
     }
 
     /**
+     * Whether the [`IDNA_NONTRANSITIONAL_TO_UNICODE`](https://www.php.net/manual/en/intl.constants.php#constant.idna-nontransitional-to-unicode)
+     * flag should be passed to [idn_to_utf8()](https://www.php.net/manual/en/function.idn-to-utf8.php) when converting
+     * email addresses from IDNA ASCII to Unicode.
+     *
+     * `INTL_IDNA_VARIANT_UTS46` by default, which uses the UTS 46 algorithm, consistent with the requirements of the
+     * IDNA2008 protocol and mostly compatible with IDNA2003 (deprecated in PHP 7.2).
+     *
+     * There are a handful of characters which result in different resolution of IDNs between IDNA2008 and IDNA2003,
+     * including ß, ς, and joiner characters (ZWJ and ZWNJ). ([More info](https://unicode.org/reports/tr46/#Deviations))
+     *
+     * For example, `ß` will be converted to `ss` by default. Enabling this setting will ensure it gets preserved as `ß`.
+     *
+     * ```php
+     * ->useIdnaNontransitionalToUnicode(true)
+     * ```
+     *
+     * @group System
+     * @param bool $value
+     * @return self
+     * @see $useIdnaNontransitionalToUnicode
+     * @since 5.9.0
+     */
+    public function useIdnaNontransitionalToUnicode(bool $value = false): self
+    {
+        $this->useIdnaNontransitionalToUnicode = $value;
+        return $this;
+    }
+
+    /**
      * Whether [iFrame Resizer options](http://davidjbradshaw.github.io/iframe-resizer/#options) should be used for Live Preview.
      *
      * Using iFrame Resizer makes it possible for Craft to retain the preview’s scroll position between page loads, for cross-origin web pages.
@@ -6740,13 +7077,13 @@ class GeneralConfig extends BaseConfig
      * than the iframe document itself. This can lead to some unexpected CSS issues, however, because the previewed viewport height will be taller
      * than the visible portion of the iframe.
      *
-     * If you have a [decoupled front end](https://craftcms.com/docs/4.x/entries.html#previewing-decoupled-front-ends), you will need to include
+     * If you have a [decoupled front end](https://craftcms.com/docs/5.x/reference/element-types/entries.html#previewing-decoupled-front-ends), you will need to include
      * [iframeResizer.contentWindow.min.js](https://raw.github.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.contentWindow.min.js) on your
      * page as well for this to work. You can conditionally include it for only Live Preview requests by checking if the requested URL contains a
      * `x-craft-live-preview` query string parameter.
      *
      * ::: tip
-     * You can customize the behavior of iFrame Resizer via the <config4:previewIframeResizerOptions> config setting.
+     * You can customize the behavior of iFrame Resizer via the <config5:previewIframeResizerOptions> config setting.
      * :::
      *
      * ```php
@@ -6768,7 +7105,7 @@ class GeneralConfig extends BaseConfig
     /**
      * Whether Craft should specify the path using `PATH_INFO` or as a query string parameter when generating URLs.
      *
-     * This setting only takes effect if <config4:omitScriptNameInUrls> is set to `false`.
+     * This setting only takes effect if <config5:omitScriptNameInUrls> is set to `false`.
      *
      * ```php
      * ->usePathInfo(true)
@@ -6906,8 +7243,6 @@ class GeneralConfig extends BaseConfig
     /**
      * The URI or URL that Craft should use for email verification links on the front end.
      *
-     * This setting is ignored when <config4:headlessMode> is enabled, unless it’s set to an absolute URL.
-     *
      * See [[ConfigHelper::localizedValue()]] for a list of supported value types.
      *
      * ```php
@@ -6994,10 +7329,10 @@ class GeneralConfig extends BaseConfig
      * Returns the localized Invalid User Token Path value.
      *
      * @param string|null $siteHandle The site handle the value should be defined for. Defaults to the current site.
-     * @return string
+     * @return string|null
      * @see invalidUserTokenPath
      */
-    public function getInvalidUserTokenPath(?string $siteHandle = null): string
+    public function getInvalidUserTokenPath(?string $siteHandle = null): ?string
     {
         $path = ConfigHelper::localizedValue($this->invalidUserTokenPath, $siteHandle);
         return is_string($path) ? trim($path, '/') : $path;

@@ -7,9 +7,10 @@
 {% endblock %}
 
 {% block content %}
-{% if entry.hero.heroImage|length %}
-<div class="hero" style="background-image: url({{ entry.hero.heroImage.one().url }})">
-  <div>{{ entry.hero.heroOverlayText }}</div>
+{% set heroBlock = entry.hero.one() %}
+{% if heroBlock and heroBlock.heroImage|length %}
+<div class="hero" style="background-image: url({{ heroBlock.heroImage.one().url }})">
+  <div>{{ heroBlock.heroOverlayText }}</div>
 </div>
 {% endif %}
 <main>
@@ -30,7 +31,10 @@
           <li>
             <a href="{{ item.url }}">
               <h2>{{ item.title }}</h2>
-              <img src="{{ item.hero.heroImage.one.url('summaries') }}" alt="{{ item.hero.heroImage.one.title }}">
+              {% set itemHero = item.hero.one() %}
+              {% if itemHero and itemHero.heroImage|length %}
+              <img src="{{ itemHero.heroImage.one.url('summaries') }}" alt="{{ itemHero.heroImage.one.title }}">
+              {% endif %}
             </a>
           </li>
           {% endfor %}

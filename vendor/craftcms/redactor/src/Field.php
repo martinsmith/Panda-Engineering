@@ -9,6 +9,8 @@ namespace craft\redactor;
 
 use Craft;
 use craft\base\ElementInterface;
+use craft\base\FieldInterface;
+use craft\base\MergeableFieldInterface;
 use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\Entry;
@@ -36,7 +38,7 @@ use yii\base\InvalidConfigException;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0
  */
-class Field extends HtmlField
+class Field extends HtmlField implements MergeableFieldInterface
 {
     /**
      * @event RegisterPluginPathsEvent The event that is triggered when registering paths that contain Redactor plugins.
@@ -231,6 +233,14 @@ class Field extends HtmlField
     }
 
     /**
+     * @inheritdoc
+     */
+    public static function icon(): string
+    {
+        return '@craft/redactor/icon-mask.svg';
+    }
+
+    /**
      * Registers a Redactor plugin's JS & CSS files.
      *
      * @param string $plugin
@@ -352,6 +362,32 @@ class Field extends HtmlField
     }
 
     /**
+     * @innheritdoc
+     */
+    public function canMergeFrom(FieldInterface $outgoingField, ?string &$reason): bool
+    {
+        if (!$outgoingField instanceof self) {
+            $reason = 'Redactor fields can only be merged from other Redactor fields.';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @innheritdoc
+     */
+    public function canMergeInto(FieldInterface $persistingField, ?string &$reason): bool
+    {
+        if (!$persistingField instanceof HtmlField) {
+            $reason = 'Redactor fields can only be merged into other HTML-based fields.';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function createFieldData(string $content, ?int $siteId): HtmlFieldData
@@ -362,7 +398,7 @@ class Field extends HtmlField
     /**
      * @inheritdoc
      */
-    protected function inputHtml(mixed $value, ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         // register the asset/redactor bundles
         $view = Craft::$app->getView();
@@ -467,7 +503,7 @@ class Field extends HtmlField
     /**
      * @inheritdoc
      */
-    public function serializeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ?ElementInterface $element): mixed
     {
         if ($value instanceof HtmlFieldData) {
             $value = $value->getRawContent();
@@ -493,7 +529,7 @@ class Field extends HtmlField
      * @param ElementInterface|null $element The element the field is associated with, if there is one
      * @return array
      */
-    private function _getLinkOptions(ElementInterface $element = null): array
+    private function _getLinkOptions(?ElementInterface $element): array
     {
         $linkOptions = [];
 
@@ -553,10 +589,10 @@ class Field extends HtmlField
      * @param ElementInterface|null $element The element the field is associated with, if there is one
      * @return array
      */
-    private function _getSectionSources(ElementInterface $element = null): array
+    private function _getSectionSources(?ElementInterface $element): array
     {
         $sources = [];
-        $sections = Craft::$app->getSections()->getAllSections();
+        $sections = Craft::$app->getEntries()->getAllSections();
         $showSingles = false;
 
         // Get all sites
@@ -592,7 +628,7 @@ class Field extends HtmlField
      * @param ElementInterface|null $element The element the field is associated with, if there is one
      * @return array
      */
-    private function _getCategorySources(ElementInterface $element = null): array
+    private function _getCategorySources(?ElementInterface $element): array
     {
         $sources = [];
 

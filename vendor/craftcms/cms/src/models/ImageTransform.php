@@ -114,7 +114,7 @@ class ImageTransform extends Model
 
     /**
      * @var int|null The image transform index ID (if one was passed to the request).
-     * @since 4.11.0
+     * @since 5.3.0
      */
     public ?int $indexId = null;
 
@@ -175,6 +175,7 @@ class ImageTransform extends Model
         $rules = parent::defineRules();
         $rules[] = [['id', 'width', 'height', 'quality'], 'number', 'integerOnly' => true];
         $rules[] = [['parameterChangeTime'], DateTimeValidator::class];
+        $rules[] = [['name', 'handle'], 'trim'];
         $rules[] = [['handle'], 'string', 'max' => 255];
         $rules[] = [['name', 'handle', 'mode', 'position'], 'required'];
         $rules[] = [['handle'], 'string', 'max' => 255];

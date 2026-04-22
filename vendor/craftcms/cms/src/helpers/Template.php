@@ -69,7 +69,7 @@ class Template
      * @param string $name
      * @return bool
      * @since 4.4.0
-     * @deprecated in 4.17.9
+     * @deprecated in 5.9.15
      */
     public static function fallbackExists(string $name): bool
     {
@@ -82,7 +82,7 @@ class Template
      * @param string $name
      * @throws UnknownPropertyException if `$name` isn’t defined as a fallback variable.
      * @since 4.4.0
-     * @deprecated in 4.17.9
+     * @deprecated in 5.9.15
      */
     public static function fallback(string $name): mixed
     {

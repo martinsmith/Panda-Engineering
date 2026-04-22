@@ -5,9 +5,10 @@
 
 
 {% block content %}
-{% if entry.hero.heroImage|length %}
-<div class="hero" style="background-image: url({{ entry.hero.heroImage.one().url }})">
-  <div>{{ entry.hero.heroOverlayText }}</div>
+{% set heroBlock = entry.hero.one() %}
+{% if heroBlock and heroBlock.heroImage|length %}
+<div class="hero" style="background-image: url({{ heroBlock.heroImage.one().url }})">
+  <div>{{ heroBlock.heroOverlayText }}</div>
 </div>
 {% endif %}
 <main>

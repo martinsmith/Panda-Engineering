@@ -1,0 +1,90 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  a88271cc-1751-4a16-9983-d545ab3e53da:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 87ff484a-e88c-48b0-8815-a96efaf1d6f0
+            handle: null
+            instructions: null
+            label: 'Service Title'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: ef5037b6-92d1-48d3-8e2c-412a008ed86e
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 2bf32af3-2504-449b-9e7f-9a3548253ff8
+            handle: null
+            instructions: null
+            label: 'Service Image'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: b5f51b38-990e-4c18-a134-db12e3d5b0d7
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 257dfff7-f54a-4ee8-81fb-635a85dda547
+            handle: null
+            instructions: null
+            label: 'Service Summary'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 860a634b-1b89-444e-8dbe-67bf9f450ba4
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 31f1bd89-9b4e-48f6-9025-f5459acc810f
+            handle: null
+            instructions: null
+            label: 'Service Points'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: fa1bed6e-40bb-43f1-92f9-eac5149f8a3c
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: 59d30ab7-e3cc-4501-880b-abe0a42cb6f0
+        userCondition: null
+    thumbFieldKey: null
+handle: serviceCapabilitiesBlock
+hasTitleField: false
+icon: null
+name: 'Service Capabilities Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

@@ -18,23 +18,23 @@ class Permissions
 
     public static function getBaseNavItems(): array
     {
-        $craftPro = Craft::$app->getEdition() === Craft::Pro;
+        $craftSolo = Craft::$app->getEdition() === Craft::Solo;
         $generalConfig = Craft::$app->getConfig()->getGeneral();
 
         $navItems = [
             [
                 'label' => Craft::t('app', 'Dashboard'),
                 'url' => 'dashboard',
-                'fontIcon' => 'gauge',
+                'icon' => 'gauge',
                 'type' => 'craft',
             ],
         ];
 
-        if (Craft::$app->getSections()->getAllSections()) {
+        if (Craft::$app->getEntries()->getAllSections()) {
             $navItems[] = [
                 'label' => Craft::t('app', 'Entries'),
                 'url' => 'entries',
-                'fontIcon' => 'section',
+                'icon' => 'newspaper',
                 'type' => 'craft',
             ];
         }
@@ -43,7 +43,7 @@ class Permissions
             $navItems[] = [
                 'label' => Craft::t('app', 'Globals'),
                 'url' => 'globals',
-                'fontIcon' => 'globe',
+                'icon' => 'globe',
                 'type' => 'craft',
             ];
         }
@@ -52,7 +52,7 @@ class Permissions
             $navItems[] = [
                 'label' => Craft::t('app', 'Categories'),
                 'url' => 'categories',
-                'fontIcon' => 'tree',
+                'icon' => 'sitemap',
                 'type' => 'craft',
             ];
         }
@@ -61,16 +61,16 @@ class Permissions
             $navItems[] = [
                 'label' => Craft::t('app', 'Assets'),
                 'url' => 'assets',
-                'fontIcon' => 'asset',
+                'icon' => 'image',
                 'type' => 'craft',
             ];
         }
 
-        if ($craftPro) {
+        if (!$craftSolo) {
             $navItems[] = [
                 'label' => Craft::t('app', 'Users'),
                 'url' => 'users',
-                'fontIcon' => 'users',
+                'icon' => 'user-group',
                 'type' => 'craft',
             ];
         }
@@ -104,7 +104,7 @@ class Permissions
             }
         }
 
-        if ($craftPro && $generalConfig->enableGql) {
+        if ($generalConfig->enableGql) {
             $subNavItems = [];
 
             if ($generalConfig->allowAdminChanges) {
@@ -128,7 +128,7 @@ class Permissions
             $navItems[] = [
                 'label' => Craft::t('app', 'GraphQL'),
                 'url' => 'graphql',
-                'icon' => '@appicons/graphql.svg',
+                'icon' => 'graphql',
                 'type' => 'craft',
                 'subnav' => $subNavItems,
             ];
@@ -147,7 +147,7 @@ class Permissions
             $navItems[] = [
                 'url' => 'utilities',
                 'label' => Craft::t('app', 'Utilities'),
-                'fontIcon' => 'tool',
+                'icon' => 'wrench',
                 'type' => 'craft',
                 'badgeCount' => $badgeCount,
             ];
@@ -157,7 +157,7 @@ class Permissions
             $navItems[] = [
                 'url' => 'settings',
                 'label' => Craft::t('app', 'Settings'),
-                'fontIcon' => 'settings',
+                'icon' => 'gear',
                 'type' => 'craft',
             ];
         }
@@ -165,7 +165,7 @@ class Permissions
         $navItems[] = [
             'url' => 'plugin-store',
             'label' => Craft::t('app', 'Plugin Store'),
-            'fontIcon' => 'plugin',
+            'icon' => 'plug',
             'type' => 'craft',
         ];
 
@@ -174,21 +174,21 @@ class Permissions
 
     public static function getPermissionMap(): array
     {
-        $craftPro = Craft::$app->getEdition() === Craft::Pro;
+        $craftSolo = Craft::$app->getEdition() === Craft::Solo;
         $isAdmin = Craft::$app->getUser()->getIsAdmin();
         $generalConfig = Craft::$app->getConfig()->getGeneral();
 
         // Prepare a key-may of permission-handling
         $permissionMap = [
-            'entries' => (bool)Craft::$app->getSections()->getTotalEditableSections(),
+            'entries' => (bool)Craft::$app->getEntries()->getTotalEditableSections(),
             'globals' => (bool)Craft::$app->getGlobals()->getEditableSets(),
             'categories' => (bool)Craft::$app->getCategories()->getEditableGroupIds(),
             'assets' => (bool)Craft::$app->getVolumes()->getTotalViewableVolumes(),
-            'users' => $craftPro && Craft::$app->getUser()->checkPermission('editUsers'),
+            'users' => !$craftSolo && Craft::$app->getUser()->checkPermission('editUsers'),
 
             'utilities' => (bool)Craft::$app->getUtilities()->getAuthorizedUtilityTypes(),
 
-            'graphql' => $isAdmin && $craftPro && $generalConfig->enableGql,
+            'graphql' => $isAdmin && $generalConfig->enableGql,
             'settings' => $isAdmin && $generalConfig->allowAdminChanges,
             'plugin-store' => $isAdmin,
         ];

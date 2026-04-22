@@ -1,7 +1,9 @@
-{% requireAdmin %}
+{% requireAdmin false %}
 
 {% extends "_layouts/cp" %}
 {% set title = "Plugins"|t('app') %}
+{% set readOnly = not craft.app.config.general.allowAdminChanges %}
+
 {% do view.registerAssetBundle("craft\\web\\assets\\plugins\\PluginsAsset") %}
 
 {% set crumbs = [
@@ -17,6 +19,9 @@
 
 {% set disabledPlugins = craft.app.config.general.disabledPlugins %}
 
+{% if readOnly %}
+    {% set contentNotice = readOnlyNotice() %}
+{% endif %}
 
 {% block content %}
   {% if info|length %}
@@ -24,17 +29,104 @@
       <table id="plugins" class="data fullwidth">
         <tbody>
         {% for handle, config in info %}
-          {% set pluginStoreUrl = url('plugin-store/' ~ handle) %}
+          {% set pluginStoreUrl = not config.private ? url('plugin-store/' ~ handle) : null %}
           {% set forceDisabled = disabledPlugins == '*' or handle in disabledPlugins %}
-          <tr id="plugin-{{ handle }}" data-name="{{ config.name }}" data-handle="{{ handle }}">
+
+          {% set actionItems = [
+            {
+              icon: 'clipboard',
+              label: 'Copy plugin handle'|t('app'),
+              attributes: {
+                data: {
+                  action: 'copy-plugin-handle',
+                },
+              },
+            },
+            {
+              icon: 'clipboard',
+              label: 'Copy package name'|t('app'),
+              attributes: {
+                data: {
+                  action: 'copy-package-name',
+                },
+              },
+            },
+            {type: 'hr'},
+          ] %}
+          {% if not config.isInstalled %}
+            {% set actionItems = actionItems|push(
+              {
+                icon: 'plus',
+                label: 'Install'|t('app'),
+                action: 'plugins/install-plugin',
+                params: {pluginHandle: handle},
+                disabled: forceDisabled
+              },
+              {
+                icon: 'minus',
+                label: 'Remove'|t('app'),
+                action: 'pluginstore/remove',
+                params: {packageName: config.packageName},
+                destructive: true,
+                confirm: 'Are you sure you want to remove {plugin}?'|t('app', {
+                  plugin: config.name,
+                }),
+              },
+            ) %}
+          {% else %}
+            {% if config.isEnabled %}
+              {% set actionItems = actionItems|push(
+                {
+                  icon: 'circle-dashed',
+                  label: 'Disable'|t('app'),
+                  action: 'plugins/disable-plugin',
+                  params: {pluginHandle: handle},
+                },
+                {
+                  icon: 'xmark',
+                  label: 'Uninstall'|t('app'),
+                  action: 'plugins/uninstall-plugin',
+                  params: {pluginHandle: handle},
+                  destructive: true,
+                  confirm: 'Are you sure you want to uninstall {plugin}? You will lose all of its associated data.'|t('app', {
+                  plugin: config.name,
+                }),
+                }
+              ) %}
+            {% else %}
+              {% set actionItems = actionItems|push({
+                icon: 'circle',
+                label: 'Enable'|t('app'),
+                action: 'plugins/enable-plugin',
+                params: {pluginHandle: handle},
+                disabled: forceDisabled,
+              }) %}
+            {% endif %}
+          {% endif %}
+
+          {% tag 'tr' with {
+            id: "plugin-#{handle}",
+            data: {
+              name: config.name,
+              handle: handle,
+              'package-name': config.packageName,
+            },
+          } %}
             <th>
               <div class="plugin-infos">
-                <a class="icon" href="{{ pluginStoreUrl }}" title="{{ 'View {plugin} in the Plugin Store'|t('app', {plugin: config.name}) }}" title="{{ 'View {plugin} in the Plugin Store'|t('app', {plugin: config.name}) }}">
+                {% set pluginIcon %}
                   {{ svg(craft.app.plugins.getPluginIconSvg(handle), sanitize=true, namespace=true) }}
                   {% if config.licenseKeyStatus == 'valid' or config.licenseIssues is not empty %}
                     <span class="license-key-status {{ config.licenseIssues is empty ? 'valid' }}"></span>
                   {% endif %}
-                </a>
+                {% endset %}
+                {% if pluginStoreUrl %}
+                  <a class="icon" href="{{ pluginStoreUrl }}" title="{{ 'View {plugin} in the Plugin Store'|t('app', {plugin: config.name}) }}" title="{{ 'View {plugin} in the Plugin Store'|t('app', {plugin: config.name}) }}">
+                    {{ pluginIcon }}
+                  </a>
+                {% else %}
+                  <span class="icon">{{ pluginIcon }}</span>
+                {% endif %}
                 <div class="plugin-details">
                   <div class="plugin-id">
                     <h2>{{ config.name }}</h2>
@@ -79,7 +171,7 @@
                             }) }}
                           </li>
                         {% endif %}
-                        {% if config.hasCpSettings %}
+                        {% if config.hasCpSettings and (not readOnly or config.hasReadOnlyCpSettings) %}
                           <li class="link-settings">
                             {{ tag('a', {
                               href: url('settings/plugins/'~config.moduleId),
@@ -93,18 +185,20 @@
                   {% set showLicenseKey = config.licenseKey or config.licenseKeyStatus != 'unknown' %}
                   <div class="flex license-key{% if not showLicenseKey %} hidden{% endif %}">
                     <div class="pane">
-                      <input class="text code{% if config.licenseIssues is not empty %} error{% endif %}" size="29" value="{{ config.licenseKey[0:1] == '$' ? config.licenseKey : (config.licenseKey|replace('/.{4}/', '$0-')|trim('-')) }}" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" readonly>
+                      <input class="text code{% if config.licenseIssues is not empty %} error{% endif %}" size="29" value="{{ config.licenseKey[0:1] == '$' ? config.licenseKey : (config.licenseKey|replace('/.{4}/', '$0-')|trim('-')) }}" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" readonly{% if readOnly %} disabled{% endif %}>
                     </div>
-                    {{ tag('a', {
-                      text: 'Buy now'|t('app'),
-                      class: [
-                        'btn',
-                        config.licenseIssues is not empty ? 'submit',
-                        config.licenseKeyStatus != 'trial' ? 'hidden',
-                      ]|filter,
-                      href: url('plugin-store/buy/'~handle~'/'~config.edition),
-                    }) }}
-                    <div class="spinner hidden"></div>
+                    {% if not readOnly %}
+                      {{ tag('a', {
+                        text: 'Buy now'|t('app'),
+                        class: [
+                          'btn',
+                          config.licenseIssues is not empty ? 'submit',
+                          config.licenseKeyStatus != 'trial' ? 'hidden',
+                        ]|filter,
+                        href: url('plugin-store/buy/'~handle~'/'~config.edition),
+                      }) }}
+                      <div class="spinner hidden"></div>
+                      {% endif %}
                   </div>
                   {% for issue in config.licenseIssues %}
                     <p class="error">
@@ -139,41 +233,37 @@
                 <span class="status on"></span>{{ "Installed"|t('app') }}
               {% elseif config.isInstalled %}
                 <span class="status off"></span>{{ "Disabled"|t('app') }}
+                {% if forceDisabled %}
+                  <span class="info">
+                    {{ '{plugin} is disabled by the {setting} config setting.'|t({
+                      plugin: config.name,
+                      setting: 'disabledPlugins',
+                    }) }}
+                  </span>
+                {% endif %}
               {% else %}
-                <span class="status"></span><span class="light">{{ "Not installed"|t('app') }}</span>
+                <span class="status disabled"></span><span class="light">{{ "Not installed"|t('app') }}</span>
+                {% if forceDisabled %}
+                  <span class="info">
+                    {{ '{plugin} can’t be installed due to the {setting} config setting.'|t({
+                      plugin: config.name,
+                      setting: 'disabledPlugins',
+                    }) }}
+                  </span>
+                {% endif %}
               {% endif %}
             </td>
-            <td class="nowrap thin" data-title="{{ 'Action'|t('app') }}">
-              <form method="post" accept-charset="UTF-8">
-                {{ hiddenInput('pluginHandle', handle) }}
-                {{ csrfInput() }}
-                <div class="btngroup">
-                  <button type="button" class="btn menubtn" data-icon="settings" aria-label="{{ 'Settings'|t('app') }}"></button>
-                  <div class="menu" data-align="right">
-                    <ul>
-                      {% if not config.isInstalled %}
-                        {% if forceDisabled %}
-                          <li><a class="disabled" title="{{ '{plugin} can’t be installed due to the {setting} config setting.'|t({plugin: config.name, setting: 'disabledPlugins'}) }}">{{ 'Install'|t('app') }}</a></li>
-                        {% else %}
-                          <li><a class="formsubmit" data-action="plugins/install-plugin">{{ 'Install'|t('app') }}</a></li>
-                        {% endif %}
-                        <li><a class="formsubmit error" data-action="pluginstore/remove" data-param="packageName" data-value="{{ config.packageName }}">{{ 'Remove'|t('app') }}</a></li>
-                      {% else %}
-                        {% if config.isEnabled %}
-                          <li><a class="formsubmit" data-action="plugins/disable-plugin">{{ 'Disable'|t('app') }}</a></li>
-                          <li><a class="formsubmit error" data-action="plugins/uninstall-plugin" data-confirm="{{ 'Are you sure you want to uninstall {plugin}? You will lose all of its associated data.'|t('app', { plugin: config.name }) }}">{{ 'Uninstall'|t('app') }}</a></li>
-                        {% elseif forceDisabled %}
-                          <li><a class="disabled" title="{{ '{plugin} is disabled by the {setting} config setting.'|t({plugin: config.name, setting: 'disabledPlugins'}) }}">{{ 'Enable'|t('app') }}</a></li>
-                        {% else %}
-                          <li><a class="formsubmit" data-action="plugins/enable-plugin">{{ 'Enable'|t('app') }}</a></li>
-                        {% endif %}
-                      {% endif %}
-                    </ul>
-                  </div>
-                </div>
-              </form>
-            </td>
-          </tr>
+            {% if not readOnly %}
+              <td class="nowrap thin" data-title="{{ 'Actions'|t('app') }}">
+                {{ disclosureMenu(actionItems, {
+                  buttonAttributes: {
+                    class: ['action-btn', 'hairline'],
+                    hiddenLabel: 'Actions'|t('app'),
+                  },
+                }) }}
+              </td>
+            {% endif %}
+          {% endtag %}
         {% endfor %}
         </tbody>
       </table>

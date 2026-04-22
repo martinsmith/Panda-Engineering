@@ -84,9 +84,9 @@ class Restore extends ElementAction
 (() => {
     new Craft.ElementActionTrigger({
         type: $type,
-        validateSelection: \$selectedItems => {
-            for (let i = 0; i < \$selectedItems.length; i++) {
-                if (!Garnish.hasAttr(\$selectedItems.eq(i).find('.element'), $attribute)) {
+        validateSelection: (selectedItems, elementIndex) => {
+            for (let i = 0; i < selectedItems.length; i++) {
+                if (!Garnish.hasAttr(selectedItems.eq(i).find('.element'), $attribute)) {
                     return false;
                 }
             }

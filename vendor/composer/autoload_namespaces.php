@@ -7,8 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Sunra\\PhpSimple\\HtmlDomParser' => array($vendorDir . '/sunra/php-simple-html-dom-parser/Src'),
-    'ParsedownExtra' => array($vendorDir . '/erusev/parsedown-extra'),
-    'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'ML\\IRI' => array($vendorDir . '/ml/iri'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'DaveChild\\TextStatistics' => array($vendorDir . '/davechild/textstatistics/src'),
     '' => array($vendorDir . '/mofodojodino/profanity-filter/src'),

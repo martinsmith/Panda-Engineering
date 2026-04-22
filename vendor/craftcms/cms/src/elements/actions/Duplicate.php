@@ -10,6 +10,7 @@ namespace craft\elements\actions;
 use Craft;
 use craft\base\ElementAction;
 use craft\base\ElementInterface;
+use craft\base\NestedElementInterface;
 use craft\elements\db\ElementQueryInterface;
 use Throwable;
 
@@ -25,6 +26,12 @@ class Duplicate extends ElementAction
      * @var bool Whether to also duplicate the selected elements’ descendants
      */
     public bool $deep = false;
+
+    /**
+     * @var bool Whether to duplicate the selected elements as drafts
+     * @since 5.9.0
+     */
+    public bool $asDrafts = false;
 
     /**
      * @var string|null The message that should be shown after the elements get deleted
@@ -48,21 +55,31 @@ class Duplicate extends ElementAction
     public function getTriggerHtml(): ?string
     {
         // Only enable for duplicatable elements, per canDuplicate()
-        Craft::$app->getView()->registerJsWithVars(fn($type) => <<<JS
+        Craft::$app->getView()->registerJsWithVars(fn($type, $attr) => <<<JS
 (() => {
-    new Craft.ElementActionTrigger({
-        type: $type,
-        validateSelection: \$selectedItems => {
-            for (let i = 0; i < \$selectedItems.length; i++) {
-                if (!Garnish.hasAttr(\$selectedItems.eq(i).find('.element'), 'data-duplicatable')) {
-                    return false;
-                }
-            }
-            return true;
-        },
-    });
+  new Craft.ElementActionTrigger({
+    type: $type,
+    validateSelection: (selectedItems, elementIndex) => {
+      for (let i = 0; i < selectedItems.length; i++) {
+        if (!Garnish.hasAttr(selectedItems.eq(i).find('.element'), $attr)) {
+          return false;
+        }
+      }
+
+      return elementIndex.settings.canDuplicateElements(selectedItems);
+    },
+    beforeActivate: async (selectedItems, elementIndex) => {
+      await elementIndex.settings.onBeforeDuplicateElements(selectedItems);
+    },
+    afterActivate: async (selectedItems, elementIndex) => {
+      await elementIndex.settings.onDuplicateElements(selectedItems);
+    },
+  });
 })();
-JS, [static::class]);
+JS, [
+            static::class,
+            $this->asDrafts ? 'data-duplicatable-as-draft' : 'data-duplicatable',
+        ]);
 
         return null;
     }
@@ -100,7 +117,7 @@ JS, [static::class]);
     /**
      * @param ElementQueryInterface $query
      * @param ElementInterface[] $elements
-     * @param int[] $duplicatedElementIds
+     * @param array<int|string, bool> $duplicatedElementIds
      * @param int $successCount
      * @param int $failCount
      * @param ElementInterface|null $newParent
@@ -112,7 +129,11 @@ JS, [static::class]);
         $user = Craft::$app->getUser()->getIdentity();
 
         foreach ($elements as $element) {
-            if (!$elementsService->canDuplicate($element, $user)) {
+            $allowed = $this->asDrafts
+                ? $elementsService->canDuplicateAsDraft($element, $user)
+                : $elementsService->canDuplicate($element, $user);
+
+            if (!$allowed) {
                 continue;
             }
 
@@ -123,8 +144,23 @@ JS, [static::class]);
                 continue;
             }
 
+            $attributes = [
+                'isProvisionalDraft' => false,
+                'draftId' => null,
+            ];
+
+            // If the element was loaded for a non-primary owner, set its primary owner to it
+            if ($element instanceof NestedElementInterface) {
+                $attributes['primaryOwner'] = $element->getOwner();
+                $attributes['sortOrder'] = null; // clear our sort order too
+            }
+
             try {
-                $duplicate = $elementsService->duplicateElement($element);
+                $duplicate = $elementsService->duplicateElement(
+                    $element,
+                    $attributes,
+                    asUnpublishedDraft: $this->asDrafts,
+                );
             } catch (Throwable) {
                 // Validation error
                 $failCount++;

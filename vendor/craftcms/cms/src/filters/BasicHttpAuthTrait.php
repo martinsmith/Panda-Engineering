@@ -14,7 +14,7 @@ use yii\web\UnauthorizedHttpException;
  * Trait BasicHttpAuthTrait
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.13.0
+ * @since 5.5.0
  */
 trait BasicHttpAuthTrait
 {

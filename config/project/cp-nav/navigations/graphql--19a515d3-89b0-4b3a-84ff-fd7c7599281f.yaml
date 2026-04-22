@@ -6,11 +6,12 @@ icon: '@app/icons/graphql.svg'
 layout: 2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666 # Staff
 level: 1
 newWindow: false
-parentId: null
+parent: null
 prevLabel: GraphQL
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: graphql
 sortOrder: 7
+subnavBehaviour: null
 type: craft
 url: graphql

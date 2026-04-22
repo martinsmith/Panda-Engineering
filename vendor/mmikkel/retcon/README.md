@@ -2,7 +2,7 @@
 
 Retcon is a tiny Craft CMS plugin adding a series of powerful Twig filters for modifying HTML content. **Here are some of the things Retcon can do:**
 
-* Add attributes (e.g. `class="foobar"`, `style="color:red;"` or `data-foo`) using CSS selectors (e.g. `'img'`, `'div.foobar'`, `'p:first-child'` etc)  
+* Add attributes (e.g. `class="foobar"`, `style="color:red;"` or `data-foo`) using [CSS selectors](#selectors) (e.g. `'img'`, `'div.foobar'`, `'p:first-child'` etc)  
 * Append values to existing attributes
 * Remove attributes completely (e.g. removing all inline `style` attributes)
 * Transform inline images (it even uses [Imager](https://github.com/aelvan/Imager-Craft), if installed)
@@ -17,49 +17,11 @@ Retcon is a tiny Craft CMS plugin adding a series of powerful Twig filters for m
 
 ## Requirements
 
-This plugin requires Craft CMS 3.7.0 or 4.0.0-beta.4.  
-
-## Installation
-
-To install the plugin, follow these instructions.
-
-1. Open your terminal and go to your Craft project:
-
-`cd /path/to/project`
-
-2. Add Retcon as a dependency to your project using Composer:
-
-`composer require mmikkel/retcon`
-
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Retcon, or use the `craft` executable:
-
-`./craft plugin/install retcon`
-
-Alternatively, Retcon can be installed from the Craft CMS Plugin Store inside the Craft Control Panel.
+This plugin requires Craft CMS 5.0+  
 
 ## How does it work?
 
 Retcon uses PHP's native [DOMDocument](http://php.net/manual/en/class.domdocument.php) class to parse and modify HTML. Additionally, [Masterminds' HTML5 library](https://github.com/Masterminds/html5-php) is used for HTML5 support, and Symfony's [DomCrawler](https://symfony.com/doc/3.3/components/dom_crawler.html) and [CssSelector](https://symfony.com/doc/3.3/components/css_selector.html) components are used to enable the powerful jQuery-like selector syntax.
-
-## Changes in Retcon 2.x
-
-Retcon 2.x is almost completely backwards compatible with Retcon 1.x. These are the big changes:
-
-* Symfony's [DomCrawler](https://symfony.com/doc/3.3/components/dom_crawler.html) and [CssSelector](https://symfony.com/doc/3.3/components/css_selector.html) components have been added for _much_ more powerful selector capabilities (almost all CSS selectors work). Retcon is basically jQuery now! **Note: all existing selectors in your code will still work, if you're upgrading from Retcon 1.x.**
-
-* Retcon now has full HTML5 support, courtesy of [Masterminds](https://github.com/Masterminds/html5-php).
-
-* The `autoAlt` method now uses the Asset's native `alt` (Craft 4 only) or `title` attributes for the `alt` attribute, if Retcon is fed HTML with Craft CMS [reference tags](https://docs.craftcms.com/v2/reference-tags.html) (typically, content from a Redactor or CKEditor field).  
-
-* The `transform`, `lazy` and `srcset` now takes an optional `$selector` parameter (`'img'` by default)
-
-* The `lazy` method has new default values for its `$className` and `$attributeName` parameters. The new defaults are `'lazyload'` and `'src'` (i.e. `'data-src'`). This change is done to mirror the defaults in the popular [lazysizes](https://github.com/aFarkas/lazysizes) library.
-
-* The new `removeEmpty` method removes empty nodes (i.e., nodes that have no text content). Those pesky clients hitting Enter again and again won't know what hit them.
-
-* The `replace` method has been removed. So sorry, it just didn't belong...  
-
-* A new `dimensions` filter has been added, which can add missing `width` and `height` attributes to image nodes (Retcon 2.7+).  
 
 ## Basic usage
 
@@ -145,13 +107,40 @@ public function init() {
 
 ### Selectors
 
-A "selector" in Retcon is the same thing as a selector in CSS – i.e. something like `'img'`, `'.foo'` or `h3 + p`.
+A "selector" in Retcon is the same thing as a selector in CSS; i.e. something like `'img'`, `'.foo'` or `h3 + p`.
 
-In Retcon 2.x, _almost all CSS selectors_ will work – see the [CssSelector](https://symfony.com/doc/3.3/components/css_selector.html) docs for further details on selectors.
+_Retcon's selector support is close to full parity with CSS_, but not every selector will work. See the [CssSelector](https://symfony.com/doc/7.0/components/css_selector.html#limitations-of-the-cssselector-component) docs for further details.
 
 #### Multiple selectors
 
 Multiple selectors can be defined as a comma-separated string (i.e. `'p, span'`) or as an array (i.e. `['p', 'span']`).
+
+#### Selecting top level nodes only
+
+*New (Retcon 3.1.0+ only)*:  
+
+If you need to limit your selection to top-level nodes only, the `'body'` element selector can be used in conjunction with the child combinator (`'>'`). As an example:    
+
+```twig
+{# Make all top level <p> tags red #}
+{% apply retconAttr('body > p', { style: 'color: red;' }) %} 
+    <p>I wanna be red</p>
+    <div>
+        <p>I wanna be left alone</p>
+    </div>
+{% endapply %}
+```
+
+Result:  
+
+```html
+<p style="color: red;">I wanna be red</p>
+<div>
+    <p>I wanna be left alone</p>
+</div>
+```
+
+_The body element selector is supported for all filters._  
 
 ### Methods
 

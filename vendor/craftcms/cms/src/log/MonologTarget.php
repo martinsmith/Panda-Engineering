@@ -89,7 +89,7 @@ class MonologTarget extends PsrTarget
 
         parent::__construct($config);
 
-        $this->formatter = $this->formatter ?? new LineFormatter(
+        $this->formatter ??= new LineFormatter(
             format: "%datetime% [%channel%.%level_name%] [%extra.yii_category%] %message% %context% %extra%\n",
             dateFormat: 'Y-m-d H:i:s',
             allowInlineLineBreaks: $this->allowLineBreaks,
@@ -173,7 +173,7 @@ class MonologTarget extends PsrTarget
                 $level = $message[1];
                 $psrLevel = is_int($level) ? $levelMap->get($level) : $level;
 
-                return Logger::toMonologLevel($psrLevel) >= $monologLevel;
+                return Logger::toMonologLevel($psrLevel)->value >= $monologLevel->value;
             });
 
         return $messages->all();
@@ -227,7 +227,7 @@ class MonologTarget extends PsrTarget
      * Returns the log target’s name.
      *
      * @return string
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getName(): string
     {
@@ -249,7 +249,7 @@ class MonologTarget extends PsrTarget
      * Returns whether the log target should allow line breaks.
      *
      * @return bool
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getAllowLineBreaks(): bool
     {
@@ -271,7 +271,7 @@ class MonologTarget extends PsrTarget
      * Returns the log level.
      *
      * @return string
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getLevel(): string
     {
@@ -293,7 +293,7 @@ class MonologTarget extends PsrTarget
      * Returns the maximum number of log files to store.
      *
      * @return int
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getMaxFiles(): int
     {
@@ -315,7 +315,7 @@ class MonologTarget extends PsrTarget
      * Returns whether logs should show microseconds in timestamps.
      *
      * @return bool
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getUseMicrosecondTimestamps(): bool
     {
@@ -337,7 +337,7 @@ class MonologTarget extends PsrTarget
      * Returns the log formatter.
      *
      * @return FormatterInterface|null
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getFormatter(): ?FormatterInterface
     {
@@ -359,7 +359,7 @@ class MonologTarget extends PsrTarget
      * Returns the log processor.
      *
      * @return ProcessorInterface|null
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public function getProcessor(): ?ProcessorInterface
     {

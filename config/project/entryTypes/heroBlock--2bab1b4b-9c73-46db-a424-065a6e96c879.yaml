@@ -1,0 +1,58 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  fe7990c5-245e-446c-b37a-87587e10471b:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a
+            handle: null
+            instructions: null
+            label: 'Hero Image'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: c7703e9c-1444-47b9-8e42-7b242ded0294
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 2440d605-4546-4ad3-84b8-61d02fd259f6 # Hero - Hero Overlay Text
+            handle: null
+            instructions: null
+            label: 'Hero Overlay Text'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 65a5ea59-190f-4ae6-bd93-d60ed09fdec8
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: 9ec3acf4-ebfe-4d39-9961-2add03d126f8
+        userCondition: null
+    thumbFieldKey: null
+handle: heroBlock
+hasTitleField: false
+icon: null
+name: 'Hero Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

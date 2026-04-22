@@ -20,17 +20,22 @@
       {% set children = entry.children().level(2) %}
         <ul>
           {% for content in children.all() %}
+          {% set profile = content.profileDetails.one() %}
+          {% if profile %}
           <li>
-              <h3>{{ content.profileDetails.firstName }} {{ content.profileDetails.surname }} {{ content.profileDetails.qualifications }}</h3>
-              <h4>{{ content.profileDetails.positionTitle }}</h4>
+              <h3>{{ profile.firstName }} {{ profile.surname }} {{ profile.qualifications }}</h3>
+              <h4>{{ profile.positionTitle }}</h4>
               <figure>
                 <a href="{{ content.url }}">
-                <img src="{{ content.profileDetails.profilePicture.one().url('profilePictures') }}" alt="{{ content.profileDetails.profilePicture.one().title }}">
+                {% if profile.profilePicture|length %}
+                <img src="{{ profile.profilePicture.one().url('profilePictures') }}" alt="{{ profile.profilePicture.one().title }}">
+                {% endif %}
               </a>
             </figure>
-              <p class="email">Email: <a href="mailto:{{ content.profileDetails.emailAddress }}">{{ content.profileDetails.emailAddress }}</a></p>
-              <p class="pLink">More about <a href="{{ content.url }}">{{ content.profileDetails.firstName }}</a></p>
+              <p class="email">Email: <a href="mailto:{{ profile.emailAddress }}">{{ profile.emailAddress }}</a></p>
+              <p class="pLink">More about <a href="{{ content.url }}">{{ profile.firstName }}</a></p>
           </li>
+          {% endif %}
           {% endfor %}
         </ul>
       </div>

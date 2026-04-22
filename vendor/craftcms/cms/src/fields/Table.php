@@ -8,6 +8,7 @@
 namespace craft\fields;
 
 use Craft;
+use craft\base\CrossSiteCopyableFieldInterface;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\fields\data\ColorData;
@@ -38,7 +39,7 @@ use yii\validators\EmailValidator;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0.0
  */
-class Table extends Field
+class Table extends Field implements CrossSiteCopyableFieldInterface
 {
     private static array $typeOptions;
 
@@ -53,7 +54,15 @@ class Table extends Field
     /**
      * @inheritdoc
      */
-    public static function valueType(): string
+    public static function icon(): string
+    {
+        return 'table';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function phpType(): string
     {
         return 'array|null';
     }
@@ -81,6 +90,14 @@ class Table extends Field
         }
 
         return self::$typeOptions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function dbType(): array|string|null
+    {
+        return Schema::TYPE_JSON;
     }
 
     /**
@@ -119,12 +136,6 @@ class Table extends Field
      * @var array|null The default row values that new elements should have
      */
     public ?array $defaults = [[]];
-
-    /**
-     * @var string The type of database column the field should have in the content table
-     * @phpstan-var 'auto'|Schema::TYPE_STRING|Schema::TYPE_TEXT|'mediumtext'
-     */
-    public string $columnType = Schema::TYPE_TEXT;
 
     /**
      * @inheritdoc
@@ -179,6 +190,9 @@ class Table extends Field
                 }
             }
         }
+
+        // remove unused settings
+        unset($config['columnType']);
 
         parent::__construct($config);
     }
@@ -268,15 +282,20 @@ class Table extends Field
     /**
      * @inheritdoc
      */
-    public function getContentColumnType(): string
+    public function getSettingsHtml(): ?string
     {
-        return $this->columnType;
+        return $this->settingsHtml(false);
     }
 
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml(): ?string
+    public function getReadOnlySettingsHtml(): ?string
+    {
+        return $this->settingsHtml(true);
+    }
+
+    private function settingsHtml(bool $readOnly): string
     {
         $columnSettings = [
             'heading' => [
@@ -364,6 +383,7 @@ class Table extends Field
             'cols' => $columnSettings,
             'rows' => $this->columns,
             'errors' => $this->getErrors('columns'),
+            'readOnly' => $readOnly,
         ]);
 
         $defaultsField = Cp::editableTableFieldHtml([
@@ -375,8 +395,13 @@ class Table extends Field
             'allowReorder' => true,
             'allowDelete' => true,
             'cols' => $columns,
-            'rows' => $this->defaults,
+            'rows' => array_map(function(array $row) {
+                // make sure the row has a UUID
+                $row['rowId'] ??= StringHelper::uuid();
+                return $row;
+            }, $this->defaults ?? []),
             'initJs' => false,
+            'static' => $readOnly,
             'includeRowId' => true,
         ]);
 
@@ -384,6 +409,7 @@ class Table extends Field
             'field' => $this,
             'columnsField' => $columnsField,
             'defaultsField' => $defaultsField,
+            'readOnly' => $readOnly,
         ]);
     }
 
@@ -417,7 +443,7 @@ class Table extends Field
     /**
      * @inheritdoc
      */
-    protected function inputHtml(mixed $value, ?ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         Craft::$app->getView()->registerAssetBundle(TimepickerAsset::class);
         return $this->_getInputHtml($value, $element, false);
@@ -459,7 +485,7 @@ class Table extends Field
     /**
      * @inheritdoc
      */
-    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?ElementInterface $element): mixed
     {
         return $this->_normalizeValueInternal($value, $element, false);
     }
@@ -467,7 +493,7 @@ class Table extends Field
     /**
      * @inheritdoc
      */
-    public function normalizeValueFromRequest(mixed $value, ?ElementInterface $element = null): mixed
+    public function normalizeValueFromRequest(mixed $value, ?ElementInterface $element): mixed
     {
         return $this->_normalizeValueInternal($value, $element, true);
     }
@@ -591,7 +617,7 @@ class Table extends Field
     /**
      * @inheritdoc
      */
-    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ?ElementInterface $element): mixed
     {
         if (!is_array($value) || empty($this->columns)) {
             return null;
@@ -609,11 +635,14 @@ class Table extends Field
 
                 $value = $row[$colId];
 
-                if (is_string($value) && !$supportsMb4) {
-                    $value = StringHelper::emojiToShortcodes(StringHelper::escapeShortcodes($value));
+                if (is_string($value)) {
+                    $value = StringHelper::escapeShortcodes($value);
+                    if (!$supportsMb4) {
+                        $value = StringHelper::emojiToShortcodes($value);
+                    }
                 }
 
-                $serializedRow[$colId] = parent::serializeValue($value ?? null);
+                $serializedRow[$colId] = parent::serializeValue($value ?? null, null);
             }
             $serialized[] = $serializedRow;
         }
@@ -762,7 +791,7 @@ class Table extends Field
                     if (!$fromRequest) {
                         $value = StringHelper::unescapeShortcodes(StringHelper::shortcodesToEmoji($value));
                     }
-                    return trim(preg_replace('/\R/u', "\n", $value));
+                    return trim(StringHelper::convertLineBreaks($value));
                 }
                 // no break
             case 'date':

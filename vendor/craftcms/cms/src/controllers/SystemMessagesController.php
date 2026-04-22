@@ -8,6 +8,7 @@
 namespace craft\controllers;
 
 use Craft;
+use craft\enums\CmsEdition;
 use craft\filters\UtilityAccess;
 use craft\models\SystemMessage;
 use craft\utilities\SystemMessages;
@@ -46,7 +47,7 @@ class SystemMessagesController extends Controller
             return false;
         }
 
-        Craft::$app->requireEdition(Craft::Pro);
+        Craft::$app->requireEdition(CmsEdition::Pro);
 
         return true;
     }

@@ -82,7 +82,7 @@ class Navigations extends Component
         }
 
         if ($runValidation && !$navigation->validate()) {
-            Craft::info('Navigation not saved due to validation error.', __METHOD__);
+            CpNav::info('Navigation not saved due to validation error.');
             return false;
         }
 
@@ -163,7 +163,6 @@ class Navigations extends Component
             $navigationRecord->customIcon = $data['customIcon'] ?? '';
             $navigationRecord->type = $data['type'] ?? '';
             $navigationRecord->newWindow = $data['newWindow'] ?? false;
-            $navigationRecord->subnavBehaviour = $data['subnavBehaviour'] ?? null;
             $navigationRecord->uid = $navigationUid;
 
             $navigationRecord->save(false);
@@ -329,7 +328,6 @@ class Navigations extends Component
                 'customIcon',
                 'type',
                 'newWindow',
-                'subnavBehaviour',
                 'dateUpdated',
                 'dateCreated',
                 'uid',

@@ -2,18 +2,23 @@ fieldLayouts:
   ea7f7daa-fc8d-4b79-923b-9caabafeca72:
     tabs:
       -
+        elementCondition: null
         elements:
           -
+            elementCondition: null
             fieldUid: cfb263fc-777f-4e2c-806b-beefa017645d # Brand
             instructions: null
             label: null
-            required: '0'
+            required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
+            uid: f0527740-7afd-4ca9-b5ab-ad464662f6ed
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: e21282a7-b22f-4f2e-b9c7-59d2b02f037b
+        userCondition: null
 handle: brand
 name: Brand
 sortOrder: 0

@@ -26,7 +26,7 @@ class Pdf extends AssetPreviewHandler
     {
         $url = $this->asset->getUrl();
 
-        if ($url === null || !$this->asset->getVolume()->getFs()->hasUrls) {
+        if ($url === null) {
             throw new NotSupportedException('Preview not supported.');
         }
 

@@ -22,7 +22,7 @@ use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\validators\HandleValidator;
 use HTMLPurifier_Config;
-use yii\db\Schema;
+use League\Uri\Uri;
 
 /**
  * Base HTML Field
@@ -35,7 +35,7 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public static function valueType(): string
+    public static function phpType(): string
     {
         return sprintf('%s|null', HtmlFieldData::class);
     }
@@ -66,24 +66,19 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
     public bool $removeNbsp = false;
 
     /**
-     * @var string The type of database column the field should have in the content table
+     * Constructor
      */
-    public string $columnType = Schema::TYPE_TEXT;
-
-    /**
-     * @inheritdoc
-     */
-    public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
+    public function __construct($config = [])
     {
-        return strip_tags((string)$value);
+        // remove unused settings
+        unset($config['columnType']);
+
+        parent::__construct($config);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getContentColumnType(): array|string
+    public function getPreviewHtml(mixed $value, ElementInterface $element): string
     {
-        return $this->columnType;
+        return strip_tags((string)$value);
     }
 
     /**
@@ -97,14 +92,13 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
         $attributes[] = 'removeEmptyTags';
         $attributes[] = 'removeNbsp';
         $attributes[] = 'purifyHtml';
-        $attributes[] = 'columnType';
         return $attributes;
     }
 
     /**
      * @inheritdoc
      */
-    public function normalizeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         if ($value === null || $value instanceof HtmlFieldData) {
             return $value;
@@ -180,7 +174,7 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function serializeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ?ElementInterface $element): mixed
     {
         /** @var HtmlFieldData|string|null $value */
         if (!$value) {
@@ -265,14 +259,44 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
                     if ($query) {
                         // Decode any HTML entities, e.g. &amp;
                         $query = Html::decode($query);
-                        if (mb_strpos($parsed, $query) !== false) {
-                            $url .= $query;
+                        // split the query into parts
+                        $queryParts = explode('&', ltrim($query, '?'));
+                        foreach ($queryParts as $key => $queryPart) {
+                            // if the $queryPart is a part of the parsed url, update the URL
+                            // otherwise, we'll add it after the ref ({} portion of the URL)
+                            if (mb_strpos($parsed, $queryPart) !== false) {
+                                $url = UrlHelper::urlWithParams($url, $queryPart);
+                                unset($queryParts[$key]);
+                            }
+                        }
+                        $queryParts = array_values($queryParts);
+                        if (empty($queryParts)) {
                             $query = '';
+                        } else {
+                            $query = '?' . implode('&', $queryParts);
                         }
                     }
-                    if ($hash && mb_strpos($parsed, $hash) !== false) {
-                        $url .= $hash;
-                        $hash = '';
+
+                    // if we have a $hash
+                    if ($hash) {
+                        // and there's a hash in the $parsed URL, and they match - add $hash to the $url and empty $hash
+                        if (mb_strpos($parsed, $hash) !== false) {
+                            $url .= $hash;
+                            $hash = '';
+                        } elseif (mb_strpos($parsed, '#') !== false) {
+                            // if the $parsed URL has a hash, use it and discard the "new" hash
+                            try {
+                                $uri = Uri::new($parsed);
+                                $hash = $uri->getFragment();
+                                if ($hash) {
+                                    $url .= '#' . $hash;
+                                }
+                            } catch (\Exception $e) {
+                                // oh, well
+                            }
+                            $hash = '';
+                        }
+                        // otherwise, use that new hash
                     }
                 }
 
@@ -412,9 +436,8 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
                 if ($query) {
                     // Decode any HTML entities, e.g. &amp;
                     $query = Html::decode($query);
-                    if (mb_strpos($parsed, $query) !== false) {
-                        $parsed = UrlHelper::urlWithParams($parsed, $query);
-                    }
+                    // we want to keep the whole query, regardless of whether it's part of the element's URI format or not
+                    $parsed = UrlHelper::urlWithParams($parsed, $query);
                 }
 
                 // Make sure the ref handle matches the real ref handle from the resolved element type
@@ -473,21 +496,30 @@ abstract class HtmlField extends Field implements PreviewableFieldInterface
      * @param string $dir The directory name within the config/ folder to look for config files
      * @return array
      */
-    protected function configOptions(string $dir): array
-    {
-        $options = ['' => Craft::t('app', 'Default')];
+    protected function configOptions(
+        string $dir,
+        array $only = ['*.json'],
+        bool $includeDefault = true,
+        bool $includeExtensions = false,
+    ): array {
+        $options = [];
+
+        if ($includeDefault) {
+            $options[''] = Craft::t('app', 'Default');
+        }
+
         $path = Craft::$app->getPath()->getConfigPath() . DIRECTORY_SEPARATOR . $dir;
 
         if (is_dir($path)) {
             $files = FileHelper::findFiles($path, [
-                'only' => ['*.json'],
+                'only' => $only,
                 'recursive' => false,
             ]);
 
             foreach ($files as $file) {
                 $filename = basename($file);
                 if ($filename !== 'Default.json') {
-                    $options[$filename] = pathinfo($file, PATHINFO_FILENAME);
+                    $options[$filename] = $includeExtensions ? $filename : pathinfo($file, PATHINFO_BASENAME);
                 }
             }
         }

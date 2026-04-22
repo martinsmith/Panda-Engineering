@@ -7,9 +7,10 @@
 {% endblock %}
 
 {% block content %}
-{% if entry.hero.heroImage|length %}
-<div class="hero" style="background-image: url({{ entry.hero.heroImage.one().url }})">
-  <div>{{ entry.hero.heroOverlayText }}</div>
+{% set heroBlock = entry.hero.one() %}
+{% if heroBlock and heroBlock.heroImage|length %}
+<div class="hero" style="background-image: url({{ heroBlock.heroImage.one().url }})">
+  <div>{{ heroBlock.heroOverlayText }}</div>
 </div>
 {% endif %}
 <main>
@@ -31,7 +32,8 @@
         {{ block.text }}
       </div>
       {% case 'serviceslisting' %}
-      <div class="serviceList {% if block.service.serviceImage.one()|length %}withImage{% endif %}">
+      {% set firstService = block.service.one() %}
+      <div class="serviceList {% if firstService and firstService.serviceImage.one()|length %}withImage{% endif %}">
         {% if block.serviceSectionTitle|length %}
         <header>
           <h2>{{ block.serviceSectionTitle }}</h2>
@@ -81,11 +83,14 @@
     {% set children = craft.entries.section('areasOfCapability').level(2) %}
     <ul class="serviceBlocks">
       {% for item in children %}
+      {% set itemHero = item.hero.one() %}
       <li>
         <a href="{{ item.url }}">
           <h2>{{ item.title }}</h2>
-          <p>{{ item.hero.heroOverlayText }}</p>
-          <img src="{{ item.hero.heroImage.one.url('summaries') }}" alt="{{ item.hero.heroImage.one.title }}">
+          <p>{{ itemHero ? itemHero.heroOverlayText }}</p>
+          {% if itemHero and itemHero.heroImage|length %}
+          <img src="{{ itemHero.heroImage.one.url('summaries') }}" alt="{{ itemHero.heroImage.one.title }}">
+          {% endif %}
         </a>
       </li>
       {% endfor %}

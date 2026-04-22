@@ -1,5 +1,62 @@
 # Changelog
 
+## 5.0.7 - 2026-03-15
+
+### Fixed
+- Fix compatibility with Craft 5.9+ and new layout changes.
+
+## 5.0.6 - 2026-03-03
+
+### Fixed
+- Fix compatibility with Craft 5.9+ and new layout changes.
+
+## 5.0.5 - 2025-07-18
+
+### Fixed
+- Fix an error when applying Layout changes.
+
+## 5.0.4 - 2025-03-05
+
+### Fixed
+- Fix external link icon style.
+- Fix custom icons not rendering correctly.
+
+## 5.0.3 - 2025-02-05
+
+### Fixed
+- Update Craft icon collection.
+- Tweak color contrast for divider labels.
+- Fix nav icon showing for divider nodes.
+- Fix expanded subnav state not being respected.
+- Fix support for GraphQL on Craft Solo.
+
+## 5.0.2 - 2024-09-07
+
+### Fixed
+- Fix an error when updating nav items.
+- Fix icon not working for nav item, when set to “First Letter”.
+
+## 5.0.1 - 2024-06-24
+
+### Added
+- Add Craft Teams support for permissions.
+
+### Changed
+- Update English translations.
+
+### Fixed
+- Fix an error when saving or creating layouts.
+
+## 5.0.0 - 2024-05-20
+
+### Changed
+- Now requires PHP `8.2.0+`.
+- Now requires Craft `5.0.0+`.
+- Update compatibility with Craft 5 menu changes.
+
+### Removed
+- Remove `subnavBehaviour` in favour of native Craft 5 menu updates.
+
 ## 4.0.13 - 2025-07-18
 
 ### Changed

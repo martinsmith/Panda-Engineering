@@ -1,8 +1,7 @@
 columnSuffix: null
 contentColumnType: text
-fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
 handle: achievements
-instructions: ''
+instructions: null
 name: Achievments
 searchable: true
 settings:
@@ -51,8 +50,9 @@ settings:
         -
           - col2
           - ''
-  maxRows: ''
-  minRows: '1'
+  maxRows: null
+  minRows: 1
+  staticRows: false
 translationKeyFormat: null
 translationMethod: site
 type: craft\fields\Table

@@ -1,16 +1,29 @@
 columnSuffix: null
 contentColumnType: string
-fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
 handle: pageSections
-instructions: ''
+instructions: null
 name: 'Page Sections'
 searchable: true
 settings:
-  contentTable: '{{%matrixcontent_pagesections}}'
-  maxBlocks: ''
-  minBlocks: '1'
+  entryTypes:
+    -
+      handle: sectionTitle
+      uid: 15342c9f-fe8b-4275-ad2e-31be8d485759
+    -
+      handle: sectionText
+      uid: f1488003-d73d-4b45-9886-e99a94da12fa
+    -
+      uid: e9b93271-5621-42a7-9b06-71fbb0667fd0
+    -
+      handle: supportingImages
+      uid: 980c06fb-afa7-4eaa-9d5f-0b604880ed3a
+    -
+      uid: a581b1cc-d502-4aa1-a3fb-bf41ebc4c83a
+  maxEntries: null
+  minEntries: 1
   propagationKeyFormat: null
   propagationMethod: none
+  viewMode: blocks
 translationKeyFormat: null
 translationMethod: site
 type: craft\fields\Matrix

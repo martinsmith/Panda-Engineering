@@ -21,7 +21,7 @@ use nystudio107\seomatic\Seomatic;
 /**
  * @author    nystudio107
  * @package   Seomatic
- * @since     4.1.11
+ * @since     5.1.12
  */
 class EagerLoad
 {
@@ -69,7 +69,7 @@ class EagerLoad
     public static function assetFieldEagerLoadMap($layout, $transform): array
     {
         $fieldMap = [];
-        $assetFields = FieldHelper::fieldsOfTypeFromLayout(FieldHelper::ASSET_FIELD_CLASS_KEY, $layout);
+        $assetFields = FieldHelper::fieldsOfTypeFromLayout(FieldHelper::ASSET_FIELD_CLASS_KEY, $layout, true, null, null, false);
         foreach ($assetFields as $assetFieldHandle) {
             $fieldMap[] = empty($transform) ? $assetFieldHandle : [$assetFieldHandle, ['withTransforms' => $transform]];
         }
@@ -87,16 +87,23 @@ class EagerLoad
     public static function matrixFieldEagerLoadMap($layout, $transform): array
     {
         $fieldMap = [];
-        $matrixFields = FieldHelper::fieldsOfTypeFromLayout(FieldHelper::BLOCK_FIELD_CLASS_KEY, $layout);
+        $matrixFields = FieldHelper::fieldsOfTypeFromLayout(FieldHelper::BLOCK_FIELD_CLASS_KEY, $layout, true, null, null, false);
         foreach ($matrixFields as $matrixFieldHandle) {
             /** @var Matrix $matrixField */
             $matrixField = $layout->getFieldByHandle($matrixFieldHandle);
+            $entryTypes = null;
+            // For Matrix blocks
+            if (method_exists($matrixField, 'getEntryTypes')) {
+                $entryTypes = $matrixField->getEntryTypes();
+            }
+            // For other block types like Neo
             if (method_exists($matrixField, 'getBlockTypes')) {
-                $blockTypes = $matrixField->getBlockTypes();
-                foreach ($blockTypes as $blockType) {
-                    $blockName = $blockType->handle;
-                    $matrixLayout = $blockType->getFieldLayout();
-                    $assetFields = FieldHelper::fieldsOfTypeFromLayout(FieldHelper::ASSET_FIELD_CLASS_KEY, $matrixLayout);
+                $entryTypes = $matrixField->getBlockTypes();
+            }
+            if ($entryTypes) {
+                foreach ($entryTypes as $entryType) {
+                    $matrixLayout = $entryType->getFieldLayout();
+                    $assetFields = FieldHelper::fieldsOfTypeFromLayout(FieldHelper::ASSET_FIELD_CLASS_KEY, $matrixLayout, true, null, null, false);
                     foreach ($assetFields as $assetFieldHandle) {
                         $fieldMap[] = empty($transform) ? "$matrixFieldHandle.$assetFieldHandle" : ["$matrixFieldHandle.$assetFieldHandle", ['withTransforms' => $transform]];
                     }

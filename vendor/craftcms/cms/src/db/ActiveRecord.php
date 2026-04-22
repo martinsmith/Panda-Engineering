@@ -63,9 +63,13 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         // Fire a 'defineBehaviors' event
-        $event = new DefineBehaviorsEvent();
-        $this->trigger(self::EVENT_DEFINE_BEHAVIORS, $event);
-        return $event->behaviors;
+        if ($this->hasEventHandlers(self::EVENT_DEFINE_BEHAVIORS)) {
+            $event = new DefineBehaviorsEvent();
+            $this->trigger(self::EVENT_DEFINE_BEHAVIORS, $event);
+            return $event->behaviors;
+        }
+
+        return [];
     }
 
     /**
@@ -137,7 +141,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
      */
     private function _prepareValue(string $name, mixed $value): mixed
     {
-        $columnType = static::getTableSchema()->columns[$name]->dbType ?? null;
+        $columnType = static::getTableSchema()->getColumn($name)->dbType ?? null;
         return Db::prepareValueForDb($value, $columnType);
     }
 }

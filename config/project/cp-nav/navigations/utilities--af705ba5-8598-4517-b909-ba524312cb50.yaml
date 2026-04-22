@@ -1,16 +1,17 @@
 currLabel: Utilities
 customIcon: null
-enabled: '1'
+enabled: true
 handle: utilities
 icon: tool
 layout: 1b2fd43c-2000-42df-b5aa-0c4c7609c574 # Default
 level: 1
-newWindow: '0'
-parentId: null
+newWindow: false
+parent: null
 prevLabel: Utilities
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: utilities
-sortOrder: '8'
+sortOrder: 8
+subnavBehaviour: null
 type: craft
 url: utilities

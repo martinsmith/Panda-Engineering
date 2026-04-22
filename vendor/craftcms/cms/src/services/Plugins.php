@@ -310,11 +310,7 @@ class Plugins extends Component
     {
         $this->loadPlugins();
 
-        if (isset($this->_plugins[$handle])) {
-            return $this->_plugins[$handle];
-        }
-
-        return null;
+        return $this->_plugins[$handle] ?? null;
     }
 
     /**
@@ -865,14 +861,11 @@ class Plugins extends Component
             $this->_storedPluginInfo[$plugin->id]['schemaVersion'] = $plugin->schemaVersion;
         }
 
-        // Only update the schema version if it's changed from what's in the file,
-        // so we don't accidentally overwrite other pending changes
-        $projectConfig = Craft::$app->getProjectConfig();
-        $key = ProjectConfig::PATH_PLUGINS . ".$plugin->id.schemaVersion";
-
-        if ($projectConfig->get($key, true) !== $plugin->schemaVersion) {
-            Craft::$app->getProjectConfig()->set($key, $plugin->schemaVersion, "Update plugin schema version for “{$plugin->handle}”");
-        }
+        Craft::$app->getProjectConfig()->set(
+            sprintf('%s.%s.schemaVersion', ProjectConfig::PATH_PLUGINS, $plugin->id),
+            $plugin->schemaVersion,
+            "Update plugin schema version for “{$plugin->handle}”",
+        );
 
         // Clear the license info cache
         Craft::$app->getCache()->delete(App::CACHE_KEY_LICENSE_INFO);
@@ -917,7 +910,7 @@ class Plugins extends Component
             unset($config['aliases']);
         }
 
-        /** @var class-string<PluginInterface> $class */
+        /** @var class-string<PluginInterface>|class-string<object> $class */
         $class = $config['class'];
 
         // Make sure the class exists and it implements PluginInterface
@@ -1024,22 +1017,23 @@ class Plugins extends Component
         $info['moduleId'] = $handle;
         $info['edition'] = $edition;
         $info['hasMultipleEditions'] = count($editions) > 1;
-        $info['hasCpSettings'] = ($plugin !== null && $plugin->hasCpSettings);
+        $info['hasCpSettings'] = $plugin->hasCpSettings ?? false;
+        $info['hasReadOnlyCpSettings'] = $plugin->hasReadOnlyCpSettings ?? false;
         $info['licenseKey'] = $pluginInfo['licenseKey'] ?? null;
 
         $licenseInfo = Craft::$app->getCache()->get(App::CACHE_KEY_LICENSE_INFO) ?? [];
         $pluginCacheKey = StringHelper::ensureLeft($handle, 'plugin-');
         $info['licenseId'] = $licenseInfo[$pluginCacheKey]['id'] ?? null;
         $info['licensedEdition'] = $licenseInfo[$pluginCacheKey]['edition'] ?? null;
-        $info['licenseKeyStatus'] = $licenseInfo[$pluginCacheKey]['status'] ?? LicenseKeyStatus::Unknown;
+        $info['licenseKeyStatus'] = $licenseInfo[$pluginCacheKey]['status'] ?? LicenseKeyStatus::Unknown->value;
         $info['licenseIssues'] = $installed ? $this->getLicenseIssues($handle) : [];
 
         $info['isTrial'] = (
             $installed &&
             (
-                $info['licenseKeyStatus'] === LicenseKeyStatus::Trial ||
+                $info['licenseKeyStatus'] === LicenseKeyStatus::Trial->value ||
                 (
-                    $info['licenseKeyStatus'] === LicenseKeyStatus::Valid &&
+                    $info['licenseKeyStatus'] === LicenseKeyStatus::Valid->value &&
                     !empty($pluginInfo['licensedEdition'])
                     && $pluginInfo['licensedEdition'] !== $edition
                 )
@@ -1096,9 +1090,9 @@ class Plugins extends Component
             return [];
         }
 
-        $status = $pluginInfo['licenseKeyStatus'] ?? LicenseKeyStatus::Unknown;
+        $status = $pluginInfo['licenseKeyStatus'] ?? LicenseKeyStatus::Unknown->value;
 
-        if ($status === LicenseKeyStatus::Unknown) {
+        if ($status === LicenseKeyStatus::Unknown->value) {
             // Either we don't know yet, or the plugin is free
             return [];
         }
@@ -1117,14 +1111,14 @@ class Plugins extends Component
 
         // General license issues
         switch ($pluginInfo['licenseKeyStatus']) {
-            case LicenseKeyStatus::Trial:
+            case LicenseKeyStatus::Trial->value:
                 if (!$canTestEditions) {
                     $issues[] = empty($pluginInfo['licenseKey']) ? 'required' : 'no_trials';
                 }
                 break;
-            case LicenseKeyStatus::Invalid:
-            case LicenseKeyStatus::Mismatched:
-            case LicenseKeyStatus::Astray:
+            case LicenseKeyStatus::Invalid->value:
+            case LicenseKeyStatus::Mismatched->value:
+            case LicenseKeyStatus::Astray->value:
                 $issues[] = $pluginInfo['licenseKeyStatus'];
                 break;
         }
@@ -1169,9 +1163,10 @@ class Plugins extends Component
     {
         $licenseKey = App::parseEnv($this->getStoredPluginInfo($handle)['licenseKey'] ?? null);
 
-        // Is it set to a nonexistent environment variable?
-        if (is_string($licenseKey) && preg_match('/^\$\w+$/', $licenseKey)) {
-            return null;
+        // also check if pc has the license key
+        if ($licenseKey === null) {
+            $pcPlugins = Craft::$app->getProjectConfig()->get(ProjectConfig::PATH_PLUGINS);
+            $licenseKey = App::parseEnv($pcPlugins[$handle]['licenseKey'] ?? null);
         }
 
         return $this->normalizePluginLicenseKey($licenseKey);
@@ -1252,24 +1247,12 @@ class Plugins extends Component
      * Returns the license key status of a given plugin.
      *
      * @param string $handle The plugin’s handle
-     * @return string
+     * @return LicenseKeyStatus
      */
-    public function getPluginLicenseKeyStatus(string $handle): string
+    public function getPluginLicenseKeyStatus(string $handle): LicenseKeyStatus
     {
-        return $this->getStoredPluginInfo($handle)['licenseKeyStatus'] ?? LicenseKeyStatus::Unknown;
-    }
-
-    /**
-     * Sets the license key status for a given plugin.
-     *
-     * @param string $handle The plugin’s handle
-     * @param string|null $licenseKeyStatus The plugin’s license key status
-     * @param string|null $licensedEdition The plugin’s licensed edition, if the key is valid
-     * @deprecated in 4.4.0
-     */
-    public function setPluginLicenseKeyStatus(string $handle, ?string $licenseKeyStatus = null, ?string $licensedEdition = null): void
-    {
-        // this is not the way
+        $info = $this->getStoredPluginInfo($handle);
+        return LicenseKeyStatus::tryFrom($info['licenseKeyStatus'] ?? '') ?? LicenseKeyStatus::Unknown;
     }
 
     /**

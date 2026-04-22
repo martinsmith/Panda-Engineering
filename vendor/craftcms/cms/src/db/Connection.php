@@ -7,7 +7,6 @@
 
 namespace craft\db;
 
-use Composer\Util\Platform;
 use Craft;
 use craft\db\mysql\QueryBuilder as MysqlQueryBuilder;
 use craft\db\mysql\Schema as MysqlSchema;
@@ -88,7 +87,7 @@ class Connection extends \yii\db\Connection
     private ?bool $_supportsMb4 = null;
 
     /**
-     * Returns whether this is a MySQL connection.
+     * Returns whether this is a MySQL (or MySQL-like) connection.
      *
      * @return bool
      */
@@ -101,7 +100,7 @@ class Connection extends \yii\db\Connection
      * Returns whether this is a MariaDB connection.
      *
      * @return bool
-     * @since 4.15.0
+     * @since 5.0.0
      */
     public function getIsMaria(): bool
     {
@@ -129,16 +128,11 @@ class Connection extends \yii\db\Connection
      */
     public function getDriverLabel(): string
     {
-        if ($this->getIsMysql()) {
-            // Actually MariaDB though?
-            if (StringHelper::contains($this->getSchema()->getServerVersion(), 'mariadb', false)) {
-                return 'MariaDB';
-            }
-
-            return 'MySQL';
-        }
-
-        return 'PostgreSQL';
+        return match (true) {
+            $this->getIsMaria() => 'MariaDB',
+            $this->getIsMysql() => 'MySQL',
+            default => 'PostgreSQL',
+        };
     }
 
     /**
@@ -148,10 +142,15 @@ class Connection extends \yii\db\Connection
      */
     public function getSupportsMb4(): bool
     {
-        if (isset($this->_supportsMb4)) {
-            return $this->_supportsMb4;
+        if (!isset($this->_supportsMb4)) {
+            if (!Craft::$app->getIsInstalled()) {
+                return false;
+            }
+
+            // if elements_sites supports mb4, pretty good chance everything else does too
+            $this->_supportsMb4 = $this->getSchema()->supportsMb4(Table::ELEMENTS_SITES);
         }
-        return $this->_supportsMb4 = $this->getIsPgsql();
+        return $this->_supportsMb4;
     }
 
     /**
@@ -171,7 +170,7 @@ class Connection extends \yii\db\Connection
      */
     public function open(): void
     {
-        if (App::env('CRAFT_NO_DB')) {
+        if (App::normalizeBooleanValue(App::env('CRAFT_NO_DB'))) {
             throw new DbConnectException('Craft CMS can’t connect to the database.');
         }
 
@@ -283,12 +282,17 @@ class Connection extends \yii\db\Connection
      */
     public function backupTo(string $filePath): void
     {
+        $ignoreTables = $this->getIgnoredBackupTables();
+
         // Fire a 'beforeCreateBackup' event
-        $event = new BackupEvent([
-            'file' => $filePath,
-            'ignoreTables' => $this->getIgnoredBackupTables(),
-        ]);
-        $this->trigger(self::EVENT_BEFORE_CREATE_BACKUP, $event);
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_CREATE_BACKUP)) {
+            $event = new BackupEvent([
+                'file' => $filePath,
+                'ignoreTables' => $ignoreTables,
+            ]);
+            $this->trigger(self::EVENT_BEFORE_CREATE_BACKUP, $event);
+            $ignoreTables = $event->ignoreTables;
+        }
 
         // Determine the command that should be executed
         $backupCommand = Craft::$app->getConfig()->getGeneral()->backupCommand;
@@ -296,7 +300,7 @@ class Connection extends \yii\db\Connection
         if ($backupCommand === false) {
             throw new Exception('Database not backed up because the backup command is false.');
         } elseif ($backupCommand === null || $backupCommand instanceof \Closure) {
-            $backupCommand = $this->getSchema()->getDefaultBackupCommand($event->ignoreTables);
+            $backupCommand = $this->getSchema()->getDefaultBackupCommand($ignoreTables);
         }
 
         // Create the shell command
@@ -318,15 +322,14 @@ class Connection extends \yii\db\Connection
             $backupPath = Craft::$app->getPath()->getDbBackupPath();
 
             // Grab all .sql/.dump files in the backup folder.
+            /** @var string[] $files */
             $files = array_merge(
                 glob($backupPath . DIRECTORY_SEPARATOR . "*{$this->_getDumpExtension()}"),
                 glob($backupPath . DIRECTORY_SEPARATOR . "*{$this->_getDumpExtension()}.zip"),
             );
 
             // Sort them by file modified time descending (newest first).
-            usort($files, static function($a, $b) {
-                return filemtime($b) <=> filemtime($a);
-            });
+            usort($files, static fn($a, $b) => filemtime($b) <=> filemtime($a));
 
             if (count($files) >= $generalConfig->maxBackups) {
                 $backupsToDelete = array_slice($files, $generalConfig->maxBackups);
@@ -578,7 +581,7 @@ class Connection extends \yii\db\Connection
 
         // PostgreSQL specific cleanup.
         if ($this->getIsPgsql()) {
-            if (Platform::isWindows()) {
+            if (App::isWindows()) {
                 $envCommand = 'set PGPASSWORD=';
             } else {
                 $envCommand = 'unset PGPASSWORD';
@@ -593,9 +596,7 @@ class Connection extends \yii\db\Connection
 
             // Redact the PGPASSWORD
             if ($this->getIsPgsql()) {
-                $execCommand = preg_replace_callback('/(PGPASSWORD=")([^"]+)"/i', function($match) {
-                    return $match[1] . str_repeat('•', strlen($match[2])) . '"';
-                }, $execCommand);
+                $execCommand = preg_replace_callback('/(PGPASSWORD=")([^"]+)"/i', fn($match) => $match[1] . str_repeat('•', strlen($match[2])) . '"', $execCommand);
             }
 
             throw new ShellCommandException($execCommand, $command->getExitCode(), $command->getStdErr());

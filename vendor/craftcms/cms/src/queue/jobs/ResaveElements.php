@@ -13,10 +13,9 @@ use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\console\controllers\ResaveController;
 use craft\db\QueryBatcher;
-use craft\errors\InvalidElementException;
 use craft\helpers\ElementHelper;
 use craft\i18n\Translation;
-use craft\queue\BaseBatchedJob;
+use craft\queue\BaseBatchedElementJob;
 use Throwable;
 
 /**
@@ -25,7 +24,7 @@ use Throwable;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0.0
  */
-class ResaveElements extends BaseBatchedJob
+class ResaveElements extends BaseBatchedElementJob
 {
     /**
      * @var class-string<ElementInterface> The element type that should be resaved
@@ -63,7 +62,7 @@ class ResaveElements extends BaseBatchedJob
 
     /**
      * @var bool Whether the [[set]] attribute should only be set if the current value doesn’t validate.
-     * @since 4.9.0
+     * @since 5.1.0
      */
     public bool $ifInvalid = false;
 
@@ -93,12 +92,6 @@ class ResaveElements extends BaseBatchedJob
      */
     protected function processItem(mixed $item): void
     {
-        // Make sure the element was queried with its content
-        /** @var ElementInterface $item */
-        if ($item::hasContent() && $item->contentId === null) {
-            throw new InvalidElementException($item, "Skipped resaving {$item->getUiLabel()} ($item->id) because it wasn’t loaded with its content.");
-        }
-
         if (isset($this->set)) {
             $set = true;
             if ($this->ifEmpty) {
@@ -125,6 +118,7 @@ class ResaveElements extends BaseBatchedJob
             Craft::$app->getElements()->saveElement($item,
                 updateSearchIndex: $this->updateSearchIndex,
                 forceTouch: $this->touch,
+                saveContent: true,
             );
         } catch (Throwable $e) {
             Craft::$app->getErrorHandler()->logException($e);

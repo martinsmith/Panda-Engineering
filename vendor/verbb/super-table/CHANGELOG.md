@@ -1,5 +1,47 @@
 # Changelog
 
+## 4.0.5 - 2025-07-18
+
+### Changed
+- Preserve static field behaviour.
+
+### Fixed
+- Fix garbage collection.
+
+## 4.0.4 - 2025-03-12
+
+### Added
+- Add cache for converted block types to entry types for other plugins to use in migrations.
+
+## 4.0.3 - 2025-02-05
+
+### Added
+- Add `force-field-migration` console command to force the Craft 5 migration on-demand.
+
+### Fixed
+- Fix migrated Super Table blocks View Mode not being set to “Inline-editable blocks”.
+
+## 4.0.2 - 2024-07-31
+
+### Fixed
+- Fix FK checks when migrating block data. (thanks @boboldehampsink).
+
+## 4.0.1 - 2024-06-18
+
+### Fixed
+- Disable FK checks when migrating Matrix block data. (thanks @brandonkelly).
+
+## 4.0.0 - 2024-05-20
+
+> {note} Super Table has now reached its end-of-life. Read more in the [announcement](https://verbb.io/blog/so-long-super-table).
+
+### Added
+- Add `super-table/migrate` console command to convert Super Table fields to Matrix fields.
+
+### Changed
+- Now requires PHP `8.2.0+`.
+- Now requires Craft `5.0.0+`.
+
 ## 3.0.16 - 2025-07-18
 
 ### Changed
@@ -512,7 +554,7 @@
 ## 2.1.18 - 2019-04-24
 
 ### Fixed
-- Fix nested Matrix fields in Matrix layout not being properly instantiated. 
+- Fix nested Matrix fields in Matrix layout not being properly instantiated.
 
 ## 2.1.17 - 2019-04-08
 

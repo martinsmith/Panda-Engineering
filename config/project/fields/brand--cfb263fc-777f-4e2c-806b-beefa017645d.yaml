@@ -1,29 +1,26 @@
 columnSuffix: null
-contentColumnType: string
-fieldGroup: e2b4b0d2-50f5-4093-8fbb-f12bcd5fd3a4 # Global
 handle: brand
-instructions: ''
+instructions: null
 name: Brand
 searchable: true
 settings:
-  columns:
-    __assoc__:
-      -
-        - 6e33bb60-e268-4870-bc46-b4fc8094502e # Logo
+  createButtonLabel: null
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
         -
-          __assoc__:
-            -
-              - width
-              - ''
-  contentTable: '{{%stc_brand}}'
-  fieldLayout: row
-  maxRows: ''
-  minRows: ''
-  placeholderKey: null
+          - uid
+          - 9587740a-09d9-47f6-9654-aecc04b70992 # Brand Block
+  includeTableView: false
+  maxEntries: 1
+  minEntries: 1
+  pageSize: null
   propagationKeyFormat: null
   propagationMethod: none
-  selectionLabel: ''
-  staticField: '1'
+  showCardsInGrid: false
+  viewMode: blocks
 translationKeyFormat: null
 translationMethod: site
-type: verbb\supertable\fields\SuperTableField
+type: craft\fields\Matrix

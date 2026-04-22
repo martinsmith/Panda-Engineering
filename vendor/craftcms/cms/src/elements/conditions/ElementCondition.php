@@ -9,6 +9,8 @@ use craft\base\ElementInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\errors\InvalidTypeException;
 use craft\fields\conditions\FieldConditionRuleInterface;
+use craft\fields\conditions\GeneratedFieldConditionRule;
+use craft\models\FieldLayout;
 use yii\base\InvalidConfigException;
 
 /**
@@ -37,7 +39,7 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
 
     /**
      * @var string The field context that should be used when fetching custom fields’ condition rule types.
-     * @see conditionRuleTypes()
+     * @see selectableConditionRules()
      */
     public string $fieldContext = 'global';
 
@@ -54,6 +56,13 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
     public ?ElementInterface $referenceElement = null;
 
     /**
+     * @var FieldLayout[]
+     * @see getFieldLayouts()
+     * @see setFieldLayouts()
+     */
+    private array $_fieldLayouts;
+
+    /**
      * Constructor.
      *
      * @param class-string<ElementInterface>|null $elementType
@@ -61,7 +70,7 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
      */
     public function __construct(?string $elementType = null, array $config = [])
     {
-        $elementType = $elementType ?? $config['elementType'] ?? $config['attributes']['elementType'] ?? null;
+        $elementType ??= $config['elementType'] ?? $config['attributes']['elementType'] ?? null;
         unset($config['elementType'], $config['attributes']['elementType']);
 
         if (
@@ -76,6 +85,42 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
         }
 
         parent::__construct($config);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFieldLayouts(): array
+    {
+        if (isset($this->_fieldLayouts)) {
+            return $this->_fieldLayouts;
+        }
+
+        if ($this->elementType === null) {
+            return [];
+        }
+
+        // If we have a source key, we can fetch just the field layouts that are available to it
+        if ($this->sourceKey) {
+            return Craft::$app->getElementSources()->getFieldLayoutsForSource($this->elementType, $this->sourceKey);
+        }
+
+        return Craft::$app->getFields()->getLayoutsByType($this->elementType);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setFieldLayouts(array $fieldLayouts): void
+    {
+        $fieldsService = Craft::$app->getFields();
+        $this->_fieldLayouts = array_map(function(FieldLayout|array $fieldLayout) use ($fieldsService) {
+            if (is_array($fieldLayout)) {
+                $fieldLayout['type'] = $this->elementType;
+                return $fieldsService->createLayout($fieldLayout);
+            }
+            return $fieldLayout;
+        }, $fieldLayouts);
     }
 
     /**
@@ -112,12 +157,13 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
     /**
      * @inheritdoc
      */
-    protected function conditionRuleTypes(): array
+    protected function selectableConditionRules(): array
     {
         $types = [
             DateCreatedConditionRule::class,
             DateUpdatedConditionRule::class,
             IdConditionRule::class,
+            NotRelatedToConditionRule::class,
             RelatedToConditionRule::class,
             SlugConditionRule::class,
         ];
@@ -141,30 +187,42 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
                 $types[] = StatusConditionRule::class;
             }
 
-            if ($this->elementType::hasContent()) {
-                if ($this->elementType::hasTitles()) {
-                    $types[] = TitleConditionRule::class;
+            if ($this->elementType::hasTitles()) {
+                $types[] = TitleConditionRule::class;
+            }
+
+            foreach ($this->getFieldLayouts() as $fieldLayout) {
+                foreach ($fieldLayout->getCustomFieldElements() as $layoutElement) {
+                    // Discard fields with empty labels
+                    $label = $layoutElement->label();
+                    if ($label === null) {
+                        continue;
+                    }
+                    $field = $layoutElement->getField();
+                    $type = $field->getElementConditionRuleType();
+                    if ($type === null) {
+                        continue;
+                    }
+
+                    if (is_string($type)) {
+                        $type = ['class' => $type];
+                    }
+                    if (!is_subclass_of($type['class'], FieldConditionRuleInterface::class)) {
+                        throw new InvalidTypeException($type['class'], FieldConditionRuleInterface::class);
+                    }
+
+                    $type['fieldUid'] = $field->uid;
+                    $type['layoutElementUid'] = $field->layoutElement->uid;
+
+                    $types[] = $type;
                 }
 
-                // If we have a source key, we can fetch just the field layouts that are available to it
-                if ($this->sourceKey) {
-                    $fieldLayouts = Craft::$app->getElementSources()->getFieldLayoutsForSource($this->elementType, $this->sourceKey);
-                } else {
-                    $fieldLayouts = Craft::$app->getFields()->getLayoutsByType($this->elementType);
-                }
-
-                foreach ($fieldLayouts as $fieldLayout) {
-                    foreach ($fieldLayout->getCustomFields() as $field) {
-                        if (($type = $field->getElementConditionRuleType()) !== null) {
-                            if (is_string($type)) {
-                                $type = ['class' => $type];
-                            }
-                            if (!is_subclass_of($type['class'], FieldConditionRuleInterface::class)) {
-                                throw new InvalidTypeException($type['class'], FieldConditionRuleInterface::class);
-                            }
-                            $type['fieldUid'] = $field->uid;
-                            $types[] = $type;
-                        }
+                foreach ($fieldLayout->getGeneratedFields() as $field) {
+                    if (($field['name'] ?? '') !== '' && ($field['handle'] ?? '') !== '') {
+                        $types[] = [
+                            'class' => GeneratedFieldConditionRule::class,
+                            'fieldUid' => $field['uid'],
+                        ];
                     }
                 }
             }
@@ -179,8 +237,20 @@ class ElementCondition extends BaseCondition implements ElementConditionInterfac
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['elementType', 'fieldContext'], 'safe'];
+        $rules[] = [['elementType', 'fieldLayouts', 'fieldContext'], 'safe'];
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBuilderConfig(): array
+    {
+        $config = parent::getBuilderConfig();
+        if (isset($this->_fieldLayouts)) {
+            $config['fieldLayouts'] = array_map(fn(FieldLayout $layout) => $layout->getConfig(), $this->_fieldLayouts);
+        }
+        return $config;
     }
 
     /**

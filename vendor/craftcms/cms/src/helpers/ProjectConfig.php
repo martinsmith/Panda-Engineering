@@ -8,6 +8,7 @@
 namespace craft\helpers;
 
 use Craft;
+use craft\behaviors\CustomFieldBehavior;
 use craft\services\ProjectConfig as ProjectConfigService;
 use StdClass;
 use yii\base\InvalidArgumentException;
@@ -60,6 +61,12 @@ class ProjectConfig
     private static bool $_processedUserGroups = false;
 
     /**
+     * @var bool Whether we've already processed all entry type configs.
+     * @see ensureAllEntryTypesProcessed()
+     */
+    private static bool $_processedEntryTypes = false;
+
+    /**
      * @var bool Whether we've already processed all section configs.
      * @see ensureAllSectionsProcessed()
      */
@@ -103,17 +110,23 @@ class ProjectConfig
 
         self::$_processedFields = true;
 
-        $allGroups = $projectConfig->get(ProjectConfigService::PATH_FIELD_GROUPS, true) ?? [];
         $allFields = $projectConfig->get(ProjectConfigService::PATH_FIELDS, true) ?? [];
-
-        foreach ($allGroups as $groupUid => $groupData) {
-            // Ensure group is processed
-            $projectConfig->processConfigChanges(ProjectConfigService::PATH_FIELD_GROUPS . '.' . $groupUid);
-        }
 
         foreach ($allFields as $fieldUid => $fieldData) {
             // Ensure field is processed
             $projectConfig->processConfigChanges(ProjectConfigService::PATH_FIELDS . '.' . $fieldUid);
+        }
+
+        // Now that all fields are processed, make sure that CustomFieldBehavior::$fieldHandles
+        // is up-to-date with any overridden field handles in field layouts.
+        // (This could not be the case if any Content Block fields define a field layout that reference
+        // fields which weren’t processed yet at the time their layout was saved, for example.)
+        foreach (Craft::$app->getFields()->getAllLayouts() as $layout) {
+            foreach ($layout->getCustomFieldElements() as $layoutElement) {
+                if (isset($layoutElement->handle)) {
+                    CustomFieldBehavior::$fieldHandles[$layoutElement->handle] = true;
+                }
+            }
         }
     }
 
@@ -167,6 +180,28 @@ class ProjectConfig
                 // Ensure group is processed
                 $projectConfig->processConfigChanges($path . $groupUid);
             }
+        }
+    }
+
+    /**
+     * Ensure all entry type config changes are processed immediately in a safe manner.
+     *
+     * @since 5.0.0
+     */
+    public static function ensureAllEntryTypesProcessed(): void
+    {
+        $projectConfig = Craft::$app->getProjectConfig();
+
+        if (self::$_processedEntryTypes || !$projectConfig->getIsApplyingExternalChanges()) {
+            return;
+        }
+
+        self::$_processedEntryTypes = true;
+
+        $configs = $projectConfig->get(ProjectConfigService::PATH_ENTRY_TYPES, true) ?? [];
+        foreach ($configs as $uid => $config) {
+            $path = sprintf('%s.%s', ProjectConfigService::PATH_ENTRY_TYPES, $uid);
+            $projectConfig->processConfigChanges($path);
         }
     }
 
@@ -450,7 +485,9 @@ class ProjectConfig
     public static function flattenConfigArray(array $array, string $path, array &$result): void
     {
         foreach ($array as $key => $value) {
-            $thisPath = ltrim($path . '.' . $key, '.');
+            // escape periods within keys, so they don't get confused as multiple path segments
+            // (see https://github.com/craftcms/cms/issues/18631)
+            $thisPath = ltrim(sprintf('%s.%s', $path, str_replace('.', '\.', $key)), '.');
 
             if (is_array($value)) {
                 self::flattenConfigArray($value, $thisPath, $result);
@@ -492,7 +529,7 @@ class ProjectConfig
     public static function traverseDataArray(array &$data, string|array $path, mixed $value = null, bool $delete = false): mixed
     {
         if (is_string($path)) {
-            $path = explode('.', $path);
+            $path = static::pathSegments($path);
         }
 
         $nextSegment = array_shift($path);
@@ -749,7 +786,29 @@ class ProjectConfig
         if ($path === '') {
             throw new InvalidArgumentException('No project config path provided.');
         }
+
+        if (str_contains($path, '\.')) {
+            $segments = preg_split('/(?<!\\\)\./', $path);
+            return array_map(fn(string $segment) => str_replace('\.', '.', $segment), $segments);
+        }
+
         return explode('.', $path);
+    }
+
+    /**
+     * Returns the number of segments in the given path.
+     *
+     * @param string $path
+     * @return int
+     * @since 5.9.19
+     */
+    public static function pathDepth(string $path): int
+    {
+        if (str_contains($path, '\.')) {
+            return preg_match_all('/(?<!\\\)\./', $path);
+        }
+
+        return substr_count($path, '.');
     }
 
     /**
@@ -778,6 +837,10 @@ class ProjectConfig
     {
         $segments = static::pathSegments($path);
         array_pop($segments);
-        return !empty($segments) ? implode('.', $segments) : null;
+        if (empty($segments)) {
+            return null;
+        }
+        $segments = array_map(fn(string $segment) => str_replace('.', '\.', $segment), $segments);
+        return implode('.', $segments);
     }
 }

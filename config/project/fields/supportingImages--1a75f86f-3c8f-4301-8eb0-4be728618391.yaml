@@ -1,30 +1,33 @@
 columnSuffix: null
 contentColumnType: string
-fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
 handle: supportingImages
-instructions: ''
+instructions: null
 name: 'Supporting Images'
 searchable: true
 settings:
   allowSelfRelations: false
+  allowSubfolders: false
   allowUploads: true
   allowedKinds: null
+  branchLimit: null
   defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
-  defaultUploadLocationSubpath: ''
-  limit: ''
+  defaultUploadLocationSubpath: null
   localizeRelations: false
+  maintainHierarchy: false
+  maxRelations: null
+  minRelations: null
   previewMode: full
-  restrictFiles: ''
+  restrictFiles: false
+  restrictLocation: true
+  restrictedDefaultUploadSubpath: null
+  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  restrictedLocationSubpath: null
   selectionLabel: 'Add an Image'
   showSiteMenu: true
   showUnpermittedFiles: false
   showUnpermittedVolumes: false
-  singleUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
-  singleUploadLocationSubpath: ''
-  source: null
   sources: '*'
   targetSiteId: null
-  useSingleFolder: true
   validateRelatedElements: false
   viewMode: large
 translationKeyFormat: null

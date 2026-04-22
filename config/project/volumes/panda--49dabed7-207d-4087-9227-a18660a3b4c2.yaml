@@ -1,7 +1,8 @@
 fieldLayouts:
-  52bea9a1-8de7-48b4-9c68-69c7866865c9:
+  26fe0bed-5284-40f8-952e-03f1a3a9a4e6:
     tabs:
       -
+        elementCondition: null
         elements:
           -
             autocapitalize: true
@@ -9,7 +10,9 @@ fieldLayouts:
             autocorrect: true
             class: null
             disabled: false
+            elementCondition: null
             id: null
+            inputType: null
             instructions: null
             label: null
             max: null
@@ -24,15 +27,18 @@ fieldLayouts:
             tip: null
             title: null
             type: craft\fieldlayoutelements\assets\AssetTitleField
+            uid: 74bb57bd-f610-47fb-8908-8c43872c9009
+            userCondition: null
             warning: null
             width: 100
         name: Content
-        sortOrder: 1
+        uid: 87a29dbe-4498-4208-bec5-89e45dd7e577
+        userCondition: null
 fs: panda
 handle: panda
-hasUrls: true
 name: Panda
 sortOrder: 2
 titleTranslationKeyFormat: null
 titleTranslationMethod: site
-url: $CLOUDFRONT_URL
+transformFs: null
+transformSubpath: ''

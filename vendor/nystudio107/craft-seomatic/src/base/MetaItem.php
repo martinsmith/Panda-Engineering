@@ -31,11 +31,6 @@ use function is_string;
  */
 abstract class MetaItem extends FluentModel implements MetaItemInterface
 {
-    // Constants
-    // =========================================================================
-
-    public const ITEM_TYPE = 'Generic';
-
     // Traits
     // =========================================================================
 

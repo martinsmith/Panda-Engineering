@@ -7,7 +7,6 @@
 
 namespace craft\controllers;
 
-use Composer\Json\JsonFile;
 use Craft;
 use craft\helpers\Json;
 use craft\utilities\Upgrade;
@@ -39,8 +38,8 @@ class UpgradeController extends Controller
         $versions = $this->request->getBodyParam('versions');
         $composerService = Craft::$app->getComposer();
         $jsonPath = $composerService->getJsonPath();
-        $jsonFile = new JsonFile($jsonPath);
-        $config = $jsonFile->read();
+        $json = file_get_contents($jsonPath);
+        $config = Json::decode($json);
 
         $config['require']['craftcms/cms'] = $versions['craft'];
 

@@ -12,7 +12,6 @@
 namespace nystudio107\seomatic\seoelements;
 
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Model;
 use craft\elements\db\ElementQueryInterface;
@@ -284,12 +283,12 @@ class SeoEvent implements SeoElementInterface, GqlSeoElementInterface
         $uri = null;
         /** @var EventQuery $query */
         $query = Event::find();
-        /** @var Element|null $element */
         $element = $query
             ->setCalendar($sourceHandle)
             ->siteId($siteId)
             ->one();
         if ($element) {
+            /** @var ElementInterface $element */
             $uri = $element->uri;
         }
 
@@ -377,24 +376,21 @@ class SeoEvent implements SeoElementInterface, GqlSeoElementInterface
     /**
      * Return the most recently updated Element from a given source model
      *
-     * @param CalendarModel $sourceModel
+     * @param Model $sourceModel
      * @param int $sourceSiteId
      *
      * @return null|ElementInterface
      */
     public static function mostRecentElement(Model $sourceModel, int $sourceSiteId)
     {
-        /** @var EventQuery $query */
-        $query = Event::find();
-        /** @var Element|null $element */
-        $element = $query
+        /** @var CalendarModel $sourceModel */
+        /** @phpstan-ignore-next-line */
+        return Event::find()
             ->setCalendar($sourceModel->handle)
             ->siteId($sourceSiteId)
             ->limit(1)
             ->orderBy(['elements.dateUpdated' => SORT_DESC])
             ->one();
-
-        return $element;
     }
 
     /**

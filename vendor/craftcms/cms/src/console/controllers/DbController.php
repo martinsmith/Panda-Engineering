@@ -39,7 +39,7 @@ class DbController extends Controller
      *
      * The `backupCommandFormat` config setting will be used by default.
      *
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public ?string $format = null;
 
@@ -87,7 +87,7 @@ class DbController extends Controller
      *
      * Note that this can cause table locking, which could interfere with SQL being executed.
      *
-     * @since 4.15.0
+     * @since 5.7.0
      * @see https://dev.mysql.com/doc/refman/8.4/en/optimize-table.html
      * @see https://www.postgresql.org/docs/current/sql-analyze.html
      */
@@ -423,7 +423,9 @@ class DbController extends Controller
      * @param string|null $charset The target character set, which honors `DbConfig::$charset`
      *                               or defaults to `utf8`.
      * @param string|null $collation The target collation, which honors `DbConfig::$collation`
-     *                               or defaults to `utf8_unicode_ci`.
+     *                               or defaults to `utf8mb4_0900_ai_ci` for MySQL 8.0+,
+     *                               otherwise, `utf8mb4_unicode_ci` for MariaDB and earlier
+     *                               MySQL versions.
      * @return int
      */
     public function actionConvertCharset(?string $charset = null, ?string $collation = null): int
@@ -447,13 +449,13 @@ class DbController extends Controller
 
         if ($charset === null) {
             $charset = $this->prompt('Which character set should be used?', [
-                'default' => $dbConfig->charset ?? 'utf8',
+                'default' => $dbConfig->getCharset(),
             ]);
         }
 
         if ($collation === null) {
             $collation = $this->prompt('Which collation should be used?', [
-                'default' => $dbConfig->collation ?? 'utf8_unicode_ci',
+                'default' => $dbConfig->collation ?? Db::defaultCollation($db),
             ]);
         }
 

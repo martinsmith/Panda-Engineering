@@ -6,11 +6,12 @@ icon: section
 layout: 2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666 # Staff
 level: 1
 newWindow: false
-parentId: null
+parent: null
 prevLabel: Entries
 prevLevel: null
-prevParentId: null
+prevParent: null
 prevUrl: entries
 sortOrder: 1
+subnavBehaviour: null
 type: craft
 url: entries

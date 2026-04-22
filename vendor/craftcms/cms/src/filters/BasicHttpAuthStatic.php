@@ -17,7 +17,7 @@ use yii\filters\auth\HttpBasicAuth;
  *
  * @see https://www.yiiframework.com/doc/api/2.0/yii-filters-auth-httpbasicauth
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.13.0
+ * @since 5.5.0
  */
 class BasicHttpAuthStatic extends HttpBasicAuth
 {
@@ -58,7 +58,7 @@ class BasicHttpAuthStatic extends HttpBasicAuth
             return true;
         }
 
-        list($username, $password) = Craft::$app->getRequest()->getAuthCredentials();
+        [$username, $password] = Craft::$app->getRequest()->getAuthCredentials();
 
         if ($username === $this->username && $password === $this->password) {
             return true;

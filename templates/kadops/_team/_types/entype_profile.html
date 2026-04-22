@@ -7,17 +7,20 @@
 {% endblock %}
 
 {% block content %}
+{% set profile = entry.profileDetails.one() %}
 <main>
   <div class="content profiles">
     <div class="pageText">
       <header>
-        <h1>{{ entry.profileDetails.firstName }} {{ entry.profileDetails.surname }} {{ entry.profileDetails.qualifications }} - {{ entry.profileDetails.positionTitle }}</h1>
+        <h1>{{ profile.firstName }} {{ profile.surname }} {{ profile.qualifications }} - {{ profile.positionTitle }}</h1>
       </header>
       {{ entry.pageText }}
     </div>
     <figure>
-      <img src="{{ entry.profileDetails.profilePicture.one().url('profilePictures') }}" alt="{{ entry.profileDetails.profilePicture.one().title }}">
-      <figcaption>{{ entry.profileDetails.firstName }} {{ entry.profileDetails.surname }} - {{ entry.profileDetails.positionTitle }}</figcaption>
+      {% if profile and profile.profilePicture|length %}
+      <img src="{{ profile.profilePicture.one().url('profilePictures') }}" alt="{{ profile.profilePicture.one().title }}">
+      {% endif %}
+      <figcaption>{{ profile.firstName }} {{ profile.surname }} - {{ profile.positionTitle }}</figcaption>
     </figure>
 
       {% if entry.career|length and entry.career[0].position %}
@@ -46,7 +49,7 @@
     </div>
     {% endif %}
 
-    {% if entry.references.refereeName|length %}
+    {% if entry.references.exists() %}
     <div class="references">
       <header>
         <h2>References</h2>

@@ -1,19 +1,18 @@
 defaultPlacement: end
 enableVersioning: true
+entryTypes:
+  -
+    uid: 49baa156-b43e-4e99-9769-48166a3e4fbb # Capability
+  -
+    uid: bfcd7586-50fc-4927-800f-d7f798054851 # Overview
 handle: areasOfCapability
+maxAuthors: 1
 name: 'Areas of Capability'
 previewTargets:
   -
-    __assoc__:
-      -
-        - label
-        - 'Primary entry page'
-      -
-        - urlFormat
-        - '{url}'
-      -
-        - refresh
-        - '1'
+    label: 'Primary entry page'
+    refresh: '1'
+    urlFormat: '{url}'
 propagationMethod: none
 siteSettings:
   08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering

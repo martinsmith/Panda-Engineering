@@ -24,7 +24,7 @@ class UpdateRelease extends Model
     /**
      * @event UpdateReleaseEvent The event that is triggered when determining if this release should be flagged as critical.
      * @see isCritical()
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public const EVENT_IS_CRITICAL = 'isCritical';
 
@@ -70,7 +70,7 @@ class UpdateRelease extends Model
      * Returns whether the release should be flagged as critical.
      *
      * @return bool
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public function isCritical(Update $update): bool
     {

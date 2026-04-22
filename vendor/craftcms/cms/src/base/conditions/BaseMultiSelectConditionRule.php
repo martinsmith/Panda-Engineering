@@ -28,7 +28,7 @@ abstract class BaseMultiSelectConditionRule extends BaseConditionRule
 
     /**
      * @var bool Whether “has a value” and “is empty” operators should be available to the condition rule.
-     * @since 4.15.0
+     * @since 5.7.0
      */
     protected bool $includeEmptyOperators = false;
 
@@ -108,7 +108,7 @@ abstract class BaseMultiSelectConditionRule extends BaseConditionRule
      */
     protected function inputHtml(): string
     {
-        if (in_array($this->operator, [self::OPERATOR_NOT_EMPTY, self::OPERATOR_EMPTY])) {
+        if (!in_array($this->operator, [self::OPERATOR_IN, self::OPERATOR_NOT_IN])) {
             return '';
         }
 

@@ -17,12 +17,6 @@ class Settings extends Model
     public const SUBNAV_OPEN_TOGGLE = 'openToggle';
 
 
-    // Properties
-    // =========================================================================
-
-    public string $defaultSubnavBehaviour = self::SUBNAV_DEFAULT;
-
-
     // Public Methods
     // =========================================================================
 
@@ -78,7 +72,7 @@ class Settings extends Model
                     return $a['label'] > $b['label'];
                 });
             } catch (Throwable $e) {
-                CpNav::error(Craft::t('app', '{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]));
+                CpNav::error('{e} - {f}: {l}.', ['e' => $e->getMessage(), 'f' => $e->getFile(), 'l' => $e->getLine()]);
             }
 
             return array_merge([
@@ -86,26 +80,6 @@ class Settings extends Model
                 [ 'value' => 'title', 'label' => 'First Letter' ],
             ], $options);
         });
-    }
-
-    public function getSubnavBehaviourOptions(): array
-    {
-        $options = [
-            [
-                'label' => Craft::t('app', 'Open when active'),
-                'value' => self::SUBNAV_DEFAULT,
-            ],
-            [
-                'label' => Craft::t('app', 'Always open'),
-                'value' => self::SUBNAV_ALWAYS_OPEN,
-            ],
-            [
-                'label' => Craft::t('app', 'Toggle open'),
-                'value' => self::SUBNAV_OPEN_TOGGLE,
-            ],
-        ];
-
-        return $options;
     }
 
 }

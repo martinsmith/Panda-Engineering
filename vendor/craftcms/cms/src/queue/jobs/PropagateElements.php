@@ -14,7 +14,7 @@ use craft\base\ElementInterface;
 use craft\db\QueryBatcher;
 use craft\helpers\ElementHelper;
 use craft\i18n\Translation;
-use craft\queue\BaseBatchedJob;
+use craft\queue\BaseBatchedElementJob;
 
 /**
  * PropagateElements job
@@ -22,7 +22,7 @@ use craft\queue\BaseBatchedJob;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0.13
  */
-class PropagateElements extends BaseBatchedJob
+class PropagateElements extends BaseBatchedElementJob
 {
     /**
      * @var class-string<ElementInterface> The element type that should be propagated
@@ -43,7 +43,7 @@ class PropagateElements extends BaseBatchedJob
 
     /**
      * @var bool Whether this is for a newly-added site.
-     * @since 4.14.9
+     * @since 5.6.10
      */
     public bool $isNewSite = false;
 

@@ -1,17 +1,16 @@
 columnSuffix: null
 contentColumnType: text
-fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
 handle: pageTitle
-instructions: ''
+instructions: null
 name: 'Page Title'
 searchable: true
 settings:
   byteLimit: null
   charLimit: null
-  code: ''
+  code: false
   columnType: null
-  initialRows: '4'
-  multiline: ''
+  initialRows: 4
+  multiline: false
   placeholder: null
   uiMode: normal
 translationKeyFormat: null

@@ -1,4 +1,4 @@
-dateModified: 1776766080
+dateModified: 1776846757
 email:
   fromEmail: martin@mechanised.co.uk
   fromName: Project
@@ -9,16 +9,17 @@ fs:
     name: Kadops
     settings:
       addSubfolderToRootUrl: true
-      autoFocalPoint: ''
+      autoFocalPoint: false
       bucket: $AWS_BUCKET_NAME
       bucketSelectionMode: manual
       cfDistributionId: $CLOUDFRONT_DIST_ID
       cfPrefix: ''
       expires: ''
       keyId: $AWS_ACCESS_KEY
-      makeUploadsPublic: '1'
+      makeUploadsPublic: true
       region: $AWS_REGION
       secret: $AWS_SECRET_KEY
+      storageClass: ''
       subfolder: kadops
     type: craft\awss3\Fs
     url: $CLOUDFRONT_URL
@@ -27,16 +28,17 @@ fs:
     name: Panda
     settings:
       addSubfolderToRootUrl: true
-      autoFocalPoint: ''
+      autoFocalPoint: false
       bucket: $AWS_BUCKET_NAME
       bucketSelectionMode: manual
       cfDistributionId: $CLOUDFRONT_DIST_ID
       cfPrefix: ''
       expires: ''
       keyId: $AWS_ACCESS_KEY
-      makeUploadsPublic: '1'
+      makeUploadsPublic: true
       region: $AWS_REGION
       secret: $AWS_SECRET_KEY
+      storageClass: ''
       subfolder: panda
     type: craft\awss3\Fs
     url: $CLOUDFRONT_URL
@@ -45,128 +47,94 @@ fs:
     name: Stat
     settings:
       addSubfolderToRootUrl: true
-      autoFocalPoint: ''
+      autoFocalPoint: false
       bucket: $AWS_BUCKET_NAME
       bucketSelectionMode: manual
       cfDistributionId: $CLOUDFRONT_DIST_ID
       cfPrefix: ''
       expires: ''
       keyId: $AWS_ACCESS_KEY
-      makeUploadsPublic: '1'
+      makeUploadsPublic: true
       region: $AWS_REGION
       secret: $AWS_SECRET_KEY
+      storageClass: ''
       subfolder: stat
     type: craft\awss3\Fs
     url: $CLOUDFRONT_URL
 meta:
   __names__:
-    000dc138-de3d-4948-bec2-496f89984e1d: Contacts # Contacts
+    0e7e201d-45b8-40f3-8053-d9ea7610fbeb: 'Profile Details Block' # Profile Details Block
     0f34b306-eb64-41bb-9475-6d149116fd30: References # References
     1a75f86f-3c8f-4301-8eb0-4be728618391: 'Supporting Images' # Supporting Images
     1b2fd43c-2000-42df-b5aa-0c4c7609c574: Default # Default
-    1cfcc26c-9d2a-42d0-b6c7-155d7c010a92: Address # Address
-    2bf32af3-2504-449b-9e7f-9a3548253ff8: 'Service Image' # Service Image
+    2bab1b4b-9c73-46db-a424-065a6e96c879: 'Hero Block' # Hero Block
     2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666: Staff # Staff
-    2fd7d0b2-a8af-43b5-b48d-8aed11fb975b: Service # Service
+    2fd7d0b2-a8af-43b5-b48d-8aed11fb975b: 'Page Sections - ServicesList - Service' # Page Sections - ServicesList - Service
     3e8173e2-82d1-4c5e-8d56-622c2f629efe: Content # Content
-    3ef47ed8-7e10-4143-b599-cadbdc4ed33b: Common # Common
     4b87641c-dafb-4624-82e2-fa956cbcfb67: Stat # Stat
-    4d9c3753-fecb-4198-9645-80bc57876a27: 'LinkedIn Link' # LinkedIn Link
-    4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a: 'Hero Image' # Hero Image
-    05abf91c-0d86-484b-97c7-16218f9836ed: 'Capacity Items' # Capacity Items
-    5e131149-b2d7-423b-b1ab-52ef8e34c208: 'Email Address' # Email Address
     6af18bea-6a01-4de3-9c52-9162e75f7ebb: 'Page Introduction' # Page Introduction
     6b99b05c-3d3d-4cee-a97e-106e81e96b1c: Brand # Brand
-    6e33bb60-e268-4870-bc46-b4fc8094502e: Logo # Logo
     6e987caa-c976-4b84-9b86-fe4c91a134a4: 'Contact Information' # Contact Information
+    7a102528-858e-40f4-8074-30384764baf8: 'Service Capabilities Block' # Service Capabilities Block
     7b1e3f9b-1abf-4c62-a9ee-b907c066db18: small # small
-    7bedad13-023a-4d2e-a2ea-93354c6af2df: 'Service Image' # Service Image
     7bfb3391-5edc-42d9-a58a-e34712a21e69: 'Service Capabilities' # Service Capabilities
     7c8147fb-6b44-4bd9-9941-59c6cba1053d: 'Project Introduction' # Project Introduction
     7efab5b7-5821-412c-9c72-9c03c486c460: 'Areas of Capability' # Areas of Capability
     7fc6de07-1125-4dce-820e-d3a7b50f84ff: 'Policy Documents' # Policy Documents
-    8b6761ff-d207-45ca-b2b0-11534c5863f6: 'Section Title' # Section Title
-    8ec8a84e-28c6-4e2f-a346-0bbcbbd546dc: 'Company Reg' # Company Reg
     8f1c1910-fa93-4ce9-a6fb-50f13a7989a4: 'Page Title' # Page Title
-    9a3aa619-e636-45f5-a6f7-0b472980c0bb: Title # Title
-    9d99aefb-5b62-415b-9490-c9f89455adad: 'Supporting Images' # Supporting Images
     9da07754-03ed-4d57-b922-917ddba96c72: Biography # Biography
     9de82510-27f9-4bc8-b117-2553094ea062: 'Case Study Images' # Case Study Images
     9e43eb97-3023-4a81-bf7a-25709c76b78b: 'Images and Text Study' # Images and Text Study
     9ebe2d4e-07f9-4fd3-8655-0b6ebcff6a31: 'Images Only Study' # Images Only Study
     24ef758d-c6ee-4276-bf5d-2540f049b76a: Achievments # Achievments
-    31f1bd89-9b4e-48f6-9025-f5459acc810f: 'Service Points' # Service Points
+    041c8c55-9d95-430b-8599-a312f5a113dc: Kadops # Kadops
     49baa156-b43e-4e99-9769-48166a3e4fbb: Capability # Capability
     49dabed7-207d-4087-9227-a18660a3b4c2: Panda # Panda
-    53c51fff-4779-42d2-84dc-b034c0e7a5d6: Qualifications # Qualifications
     54c945bd-ff56-4c1c-b4ab-121864677770: 'Panda News' # Panda News
-    64c30549-98c7-4f27-b59e-59659739ca75: Capabilities # Capabilities
-    67ffad80-6f58-4aa0-adce-b663ccddcfb1: 'Link?' # Link?
-    85bd7c4f-aae4-456f-af33-31b87ab82276: Surname # Surname
-    87ff484a-e88c-48b0-8815-a96efaf1d6f0: 'Service Title' # Service Title
     88b867e8-471b-4a2a-a9cf-87a800ace135: 'Panda Team' # Panda Team
     091b9d19-5686-40f4-93a4-ad85dc15777a: 'Company Information' # Company Information
-    92c21d7c-f3a9-4219-8f54-505098156f65: 'Profile Picture' # Profile Picture
-    96aa048d-6854-4079-a4bb-19af7c170d9f: 'Add Images' # Add Images
-    257dfff7-f54a-4ee8-81fb-635a85dda547: 'Service Summary' # Service Summary
     318ceac4-1f0c-4b8b-b3db-39faa69fd25d: Hero # Hero
     414f71cb-697e-478e-9f52-4b2fd4f6cbee: Homepage # Homepage
     426b0d1b-7374-4c05-b844-97e94916dd5e: 'Public Schema' # Public Schema
     504a9970-e732-4891-a6f3-66f1e99d8ae9: Kadops # Kadops
     683d1203-b086-478b-91cc-d25c27b2e661: 'Profile Pictures' # Profile Pictures
     791a54fd-182a-4eca-b677-a52ea1ff20ad: 'Additional Pages' # Additional Pages
+    822f810f-ccda-4171-9479-bab006333f63: Simple # Simple
     969e6c85-2a2f-4757-a703-a1e256b62323: 'Study Text' # Study Text
-    980c06fb-afa7-4eaa-9d5f-0b604880ed3a: 'Supporting Images' # Supporting Images
-    999c8e96-eedc-42d0-9936-1ed24f6a1237: Text # Text
-    2440d605-4546-4ad3-84b8-61d02fd259f6: 'Hero Overlay Text' # Hero Overlay Text
-    6347a00b-ca50-41a2-ad19-8425c746ba6c: 'Referee Name' # Referee Name
+    999c8e96-eedc-42d0-9936-1ed24f6a1237: 'Page Sections - Section Text - Text' # Page Sections - Section Text - Text
+    2440d605-4546-4ad3-84b8-61d02fd259f6: 'Hero - Hero Overlay Text' # Hero - Hero Overlay Text
     08101c32-d8eb-4be0-ae85-8bef7fa172b6: 'Panda Engineering' # Panda Engineering
-    15342c9f-fe8b-4275-ad2e-31be8d485759: 'Section Title' # Section Title
-    18184c72-56da-4f73-9685-77478df376d7: 'First Name' # First Name
-    50244b2b-4d04-4815-85e6-044d3a4399d2: Reference # Reference
+    50244b2b-4d04-4815-85e6-044d3a4399d2: 'References - Reference' # References - Reference
     75235d45-cfbe-4943-a49f-36622ebecb82: Gallery # Gallery
     77448c72-dafb-4028-aea9-4eb677ca33aa: 'Project Images' # Project Images
-    321761e4-24ec-4d33-a57e-d4878d24e3b4: Text # Text
+    321761e4-24ec-4d33-a57e-d4878d24e3b4: 'Content - Section Text - Text' # Content - Section Text - Text
     757524fa-302d-4167-8b35-fca944b11b9d: Homepage # Homepage
-    964636a0-9dd8-4e64-8a82-b2870e2e12af: 'First Name' # First Name
-    51382061-10b3-4d46-85d3-3e42b04e08f4: 'Add Images' # Add Images
-    a2b34d35-591a-4435-9902-8ccb25ac9bb9: Surname # Surname
-    a5b574d0-080f-48eb-9e76-079061ba4126: 'Section Title' # Section Title
+    2364038a-89ef-413b-ab78-2176456a14dd: 'Policy Documents Block' # Policy Documents Block
+    9587740a-09d9-47f6-9654-aecc04b70992: 'Brand Block' # Brand Block
+    09951464-6d56-40cf-9d3b-6ba88b346fc2: Default # Default
     a13da793-5b4a-4ee1-9d0e-9359ea08544e: Career # Career
-    a71f9cdc-8077-459c-9b23-cf057000c642: 'Section Text' # Section Text
-    a177ad8e-a72d-4a70-9d76-f8d803cae361: 'Profile Picture' # Profile Picture
-    a581b1cc-d502-4aa1-a3fb-bf41ebc4c83a: ServicesList # ServicesList
     a7606d83-b448-42ce-b465-eb80ab40d4d0: 'Page Text' # Page Text
-    b0f72810-cb75-4db1-9846-ad819a9d3d5f: 'Section Title' # Section Title
     b0591aa2-c0f2-4fdf-a019-4416ebc666d8: 'Override Global SEO Per Page' # Override Global SEO Per Page
+    b1b59a79-2793-4a07-a3ea-32d6be7324f4: 'Page Sections - ServicesList - Service Block' # Page Sections - ServicesList - Service Block
     b8c2211b-67eb-41ad-808e-6adc735deb48: 'Article Text' # Article Text
-    b40b9c43-9e56-46a1-86b1-1a6e8dee9665: 'Service Name' # Service Name
     b250b1af-00ee-4642-86d3-a0b2fcde0975: 'Profile Details' # Profile Details
     b403bca0-2ac3-4d19-ae05-a15addf85b37: 'Panda Group' # Panda Group
+    bd7748ef-34c8-4922-843a-659895d90d4b: 'References Block' # References Block
     be9cfcd7-876e-4f69-95e9-fd958c5a7402: Medium # Medium
     bfcd7586-50fc-4927-800f-d7f798054851: Overview # Overview
     c2cd3f88-410e-4a31-9a2e-2bbf93b8da79: 'News Intro' # News Intro
+    c4e477a9-8d8b-4064-af08-66d29d584c49: 'Company Information Block' # Company Information Block
     c35e1a9b-e5ca-43f8-a58e-0a58e1581fbd: 'Page Sections' # Page Sections
+    c64ac48b-e6ad-4689-a725-076591167d20: 'Profile Block' # Profile Block
     cd938a60-3fc2-45c8-be0e-56a73848693f: 'Project Text' # Project Text
-    cf7b0e33-7c76-4132-bb68-aacf438ed2c7: Position/Title # Position/Title
     cfb263fc-777f-4e2c-806b-beefa017645d: Brand # Brand
     d1cec1dd-df52-4e68-a979-c893e6af1616: Profile # Profile
     d7c35450-613e-4943-9003-ef28eaa6fd69: Overview # Overview
-    d61e0893-3424-44ae-baa1-54d16eb8de43: Title # Title
-    d682feb0-05b9-4c03-b3f6-33bf5e8b07ee: 'LinkedIn Link' # LinkedIn Link
-    d734bee2-d132-4204-89a0-edec02ba9213: 'Document Upload' # Document Upload
     d5259a57-656b-4fef-8dab-006f806df19c: 'Additional Pages' # Additional Pages
     da064374-dd80-4ac1-99e4-33946de39dc0: 'Panda Team' # Panda Team
     dac17834-2dd9-44fe-82f5-551ddd17168d: Large # Large
     dd1f3a64-42bf-4cb6-a468-cce29725df35: 'Panda News' # Panda News
     df6900ca-95b7-4dd4-8f9b-b4457d51e3d6: 'Policy Documents' # Policy Documents
-    e2b4b0d2-50f5-4093-8fbb-f12bcd5fd3a4: Global # Global
-    e5fefffd-14d4-49f6-afba-ff31c9439344: 'Document title' # Document title
-    e9b93271-5621-42a7-9b06-71fbb0667fd0: 'Capacity List' # Capacity List
-    e3402563-be6f-41fa-88d1-3b4d54a5e45c: Position/Title # Position/Title
-    f1e920b9-7b31-4868-b327-3c35f5fc3bf5: 'Referee Position' # Referee Position
-    f1488003-d73d-4b45-9886-e99a94da12fa: 'Section Text' # Section Text
-    fa499391-926a-4107-8094-57c3522fb407: 'Email Address' # Email Address
     fe5d60d6-8991-48d8-be8d-742b86ea03cb: Summaries # Summaries
 plugins:
   aws-s3:
@@ -177,6 +145,10 @@ plugins:
     edition: standard
     enabled: true
     schemaVersion: 1.0.0
+  ckeditor:
+    edition: standard
+    enabled: true
+    schemaVersion: 3.0.0.0
   cookie-consent-banner:
     edition: standard
     enabled: true
@@ -255,7 +227,7 @@ plugins:
           __assoc__:
             -
               - policy
-              - '''self'''
+              - "'self'"
       devModeCpTitlePrefix: ''
       devModeTitlePrefix: ''
       displayAnalysisSidebar: true
@@ -286,7 +258,7 @@ plugins:
   super-table:
     edition: standard
     enabled: true
-    schemaVersion: 3.0.0
+    schemaVersion: 4.0.0
   wordsmith:
     edition: standard
     enabled: true
@@ -296,7 +268,7 @@ system:
   live: true
   name: 'Panda Engineering'
   retryDuration: null
-  schemaVersion: 4.17.0.3
+  schemaVersion: 5.9.0.8
   timeZone: Europe/London
 users:
   allowPublicRegistration: false

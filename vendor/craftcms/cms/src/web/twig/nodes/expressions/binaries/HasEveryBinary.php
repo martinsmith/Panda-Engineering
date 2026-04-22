@@ -15,7 +15,7 @@ use Twig\Node\Expression\Binary\AbstractBinary;
  * Class HasEveryBinary
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.12.2
+ * @since 5.4.3
  */
 class HasEveryBinary extends AbstractBinary
 {

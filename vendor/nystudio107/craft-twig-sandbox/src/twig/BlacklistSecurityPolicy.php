@@ -10,7 +10,6 @@ use Twig\Sandbox\SecurityNotAllowedMethodError;
 use Twig\Sandbox\SecurityNotAllowedPropertyError;
 use Twig\Sandbox\SecurityNotAllowedTagError;
 use Twig\Template;
-use function get_class;
 
 class BlacklistSecurityPolicy extends BaseSecurityPolicy
 {
@@ -74,7 +73,7 @@ class BlacklistSecurityPolicy extends BaseSecurityPolicy
         }
 
         if (!$allowed) {
-            $class = get_class($obj);
+            $class = \get_class($obj);
             throw new SecurityNotAllowedMethodError(sprintf('Calling "%s" method on a "%s" object is not allowed.', $method, $class), $class, $method);
         }
     }
@@ -96,7 +95,7 @@ class BlacklistSecurityPolicy extends BaseSecurityPolicy
         }
 
         if (!$allowed) {
-            $class = get_class($obj);
+            $class = \get_class($obj);
             throw new SecurityNotAllowedPropertyError(sprintf('Accessing "%s" property on a "%s" object is not allowed.', $property, $class), $class, $property);
         }
     }

@@ -30,7 +30,7 @@ return [
     'sourceSiteId' => null,
     'sourceAltSiteSettings' => [
     ],
-    'sourceDateUpdated' => new \DateTime(),
+    'sourceDateUpdated' => new DateTime(),
     'metaGlobalVars' => Config::getConfigFromFile('shopifyproductmeta/GlobalVars'),
     'metaSiteVars' => Config::getConfigFromFile('shopifyproductmeta/SiteVars'),
     'metaSitemapVars' => Config::getConfigFromFile('shopifyproductmeta/SitemapVars'),

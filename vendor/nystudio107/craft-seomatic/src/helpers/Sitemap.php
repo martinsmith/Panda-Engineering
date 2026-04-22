@@ -9,7 +9,7 @@ use craft\base\Event;
 use craft\console\Application as ConsoleApplication;
 use craft\db\Paginator;
 use craft\elements\Asset;
-use craft\elements\MatrixBlock;
+use craft\elements\Entry;
 use craft\errors\SiteNotFoundException;
 use craft\fields\Assets as AssetsField;
 use DateTime;
@@ -23,7 +23,6 @@ use nystudio107\seomatic\models\MetaBundle;
 use nystudio107\seomatic\models\SitemapTemplate;
 use nystudio107\seomatic\Seomatic;
 use Throwable;
-use verbb\supertable\elements\SuperTableBlockElement as SuperTableBlock;
 use yii\base\Exception;
 use yii\helpers\Html;
 use function array_intersect_key;
@@ -363,10 +362,13 @@ class Sitemap
                             true
                         );
                         foreach ($assetFields as $assetField) {
-                            $assets = $element[$assetField]->all();
-                            /** @var Asset[] $assets */
-                            foreach ($assets as $asset) {
-                                self::assetSitemapItem($asset, $metaBundle, $lines);
+                            $resolvedField = self::resolveNestedField($element, $assetField);
+                            if ($resolvedField !== null) {
+                                $assets = $resolvedField->all();
+                                /** @var Asset[] $assets */
+                                foreach ($assets as $asset) {
+                                    self::assetSitemapItem($asset, $metaBundle, $lines);
+                                }
                             }
                         }
                         // Assets embeded in Block fields
@@ -376,22 +378,22 @@ class Sitemap
                             true
                         );
                         foreach ($blockFields as $blockField) {
-                            $blocks = $element[$blockField]->all();
-                            /** @var MatrixBlock[]|NeoBlock[]|SuperTableBlock[]|object[] $blocks */
-                            foreach ($blocks as $block) {
-                                $assetFields = [];
-                                if ($block instanceof MatrixBlock) {
-                                    $assetFields = FieldHelper::matrixFieldsOfType($block, AssetsField::class);
-                                }
-                                if ($block instanceof NeoBlock) {
-                                    $assetFields = FieldHelper::neoFieldsOfType($block, AssetsField::class);
-                                }
-                                if ($block instanceof SuperTableBlock) {
-                                    $assetFields = FieldHelper::superTableFieldsOfType($block, AssetsField::class);
-                                }
-                                foreach ($assetFields as $assetField) {
-                                    foreach ($block[$assetField]->all() as $asset) {
-                                        self::assetSitemapItem($asset, $metaBundle, $lines);
+                            $resolvedField = self::resolveNestedField($element, $blockField);
+                            if ($resolvedField !== null) {
+                                $blocks = $resolvedField->all();
+                                /** @var Entry[]|NeoBlock[]|object[] $blocks */
+                                foreach ($blocks as $block) {
+                                    $assetFields = [];
+                                    if ($block instanceof Entry) {
+                                        $assetFields = FieldHelper::matrixFieldsOfType($block, AssetsField::class);
+                                    }
+                                    if ($block instanceof NeoBlock) {
+                                        $assetFields = FieldHelper::neoFieldsOfType($block, AssetsField::class);
+                                    }
+                                    foreach ($assetFields as $assetField) {
+                                        foreach ($block[$assetField]->all() as $asset) {
+                                            self::assetSitemapItem($asset, $metaBundle, $lines);
+                                        }
                                     }
                                 }
                             }
@@ -408,9 +410,12 @@ class Sitemap
                         true
                     );
                     foreach ($assetFields as $assetField) {
-                        $assets = $element[$assetField]->all();
-                        foreach ($assets as $asset) {
-                            self::assetFilesSitemapLink($asset, $metaBundle, $lines);
+                        $resolvedField = self::resolveNestedField($element, $assetField);
+                        if ($resolvedField !== null) {
+                            $assets = $resolvedField->all();
+                            foreach ($assets as $asset) {
+                                self::assetFilesSitemapLink($asset, $metaBundle, $lines);
+                            }
                         }
                     }
                     // Assets embeded in Block fields
@@ -420,22 +425,22 @@ class Sitemap
                         true
                     );
                     foreach ($blockFields as $blockField) {
-                        $blocks = $element[$blockField]->all();
-                        /** @var MatrixBlock[]|NeoBlock[]|SuperTableBlock[]|object[] $blocks */
-                        foreach ($blocks as $block) {
-                            $assetFields = [];
-                            if ($block instanceof MatrixBlock) {
-                                $assetFields = FieldHelper::matrixFieldsOfType($block, AssetsField::class);
-                            }
-                            if ($block instanceof SuperTableBlock) {
-                                $assetFields = FieldHelper::superTableFieldsOfType($block, AssetsField::class);
-                            }
-                            if ($block instanceof NeoBlock) {
-                                $assetFields = FieldHelper::neoFieldsOfType($block, AssetsField::class);
-                            }
-                            foreach ($assetFields as $assetField) {
-                                foreach ($block[$assetField]->all() as $asset) {
-                                    self::assetFilesSitemapLink($asset, $metaBundle, $lines);
+                        $resolvedField = self::resolveNestedField($element, $blockField);
+                        if ($resolvedField !== null) {
+                            $blocks = $resolvedField->all();
+                            /** @var Entry[]|NeoBlock[]|object[] $blocks */
+                            foreach ($blocks as $block) {
+                                $assetFields = [];
+                                if ($block instanceof Entry) {
+                                    $assetFields = FieldHelper::matrixFieldsOfType($block, AssetsField::class);
+                                }
+                                if ($block instanceof NeoBlock) {
+                                    $assetFields = FieldHelper::neoFieldsOfType($block, AssetsField::class);
+                                }
+                                foreach ($assetFields as $assetField) {
+                                    foreach ($block[$assetField]->all() as $asset) {
+                                        self::assetFilesSitemapLink($asset, $metaBundle, $lines);
+                                    }
                                 }
                             }
                         }
@@ -463,6 +468,23 @@ class Sitemap
     }
 
     /**
+     * Fields coming back from FieldHelper:: are delimited by a . if they are nested fields like
+     * ContentBlock or Matrix fields, so we need to drill down to find the actual field in question
+     *
+     * @param Element $element
+     * @param $name
+     * @return Element|mixed
+     */
+    public static function resolveNestedField(Element $element, $name)
+    {
+        $result = array_reduce(explode('.', $name), function($o, $p) {
+            return $o === null ? $o : $o->$p;
+        }, $element);
+
+        return $result;
+    }
+
+    /**
      * Encode sitemap entities to make sure they follow the RFC-3986 standard for URIs, the RFC-3987 standard for IRIs
      * and the XML standard.
      * ref: https://sitemaps.org/protocol.html#escaping
@@ -478,14 +500,14 @@ class Sitemap
     /**
      * Return the total number of elements in a sitemap, respecting metabundle settings.
      *
-     * @param class-string<SeoElementInterface> $seoElementClass
+     * @param class-string<SeoElementInterface> $seoElement
      * @param MetaBundle $metaBundle
      * @return int|null
      */
-    public static function getTotalElementsInSitemap(string $seoElementClass, MetaBundle $metaBundle): ?int
+    public static function getTotalElementsInSitemap(string $seoElement, MetaBundle $metaBundle): ?int
     {
         // Allow listeners to modify the query before we use it
-        $query = $seoElementClass::sitemapElementsQuery($metaBundle);
+        $query = $seoElement::sitemapElementsQuery($metaBundle);
         $event = new ModifySitemapQueryEvent([
             'query' => $query,
             'metaBundle' => $metaBundle,

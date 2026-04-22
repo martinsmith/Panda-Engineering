@@ -8,18 +8,24 @@
 namespace craft\fields;
 
 use Craft;
+use craft\base\CrossSiteCopyableFieldInterface;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\base\PreviewableFieldInterface;
+use craft\base\InlineEditableFieldInterface;
+use craft\base\MergeableFieldInterface;
 use craft\base\SortableFieldInterface;
+use craft\elements\Entry;
 use craft\fields\conditions\NumberFieldConditionRule;
 use craft\gql\types\Number as NumberType;
 use craft\helpers\Db;
+use craft\helpers\Html;
 use craft\helpers\Localization;
 use craft\i18n\Locale;
 use GraphQL\Type\Definition\Type;
 use Throwable;
 use yii\base\InvalidArgumentException;
+use yii\db\Schema;
+use yii\helpers\Markdown;
 
 /**
  * Number represents a Number field.
@@ -27,7 +33,7 @@ use yii\base\InvalidArgumentException;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.0.0
  */
-class Number extends Field implements PreviewableFieldInterface, SortableFieldInterface
+class Number extends Field implements InlineEditableFieldInterface, SortableFieldInterface, MergeableFieldInterface, CrossSiteCopyableFieldInterface
 {
     /**
      * @since 3.5.11
@@ -53,15 +59,39 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
     /**
      * @inheritdoc
      */
-    public static function valueType(): string
+    public static function icon(): string
+    {
+        return 'input-numeric';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function phpType(): string
     {
         return 'int|float|null';
     }
 
     /**
-     * @var int|float|null The default value for new elements
+     * @inheritdoc
      */
-    public int|null|float $defaultValue = null;
+    public static function dbType(): string
+    {
+        if (Craft::$app->getDb()->getIsMysql()) {
+            return sprintf('%s(65,16)', Schema::TYPE_DECIMAL);
+        }
+
+        return Schema::TYPE_DECIMAL;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function queryCondition(array $instances, mixed $value, array &$params): ?array
+    {
+        $valueSql = static::valueSql($instances);
+        return Db::parseNumericParam($valueSql, $value, columnType: static::dbType());
+    }
 
     /**
      * @var int|float|null The minimum allowed number
@@ -74,6 +104,12 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
     public int|null|float $max = null;
 
     /**
+     * @var int|float|null The step value for the input
+     * @since 5.5.0
+     */
+    public int|float|null $step = null;
+
+    /**
      * @var int The number of digits allowed after the decimal point
      */
     public int $decimals = 0;
@@ -82,6 +118,11 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
      * @var int|null The size of the field
      */
     public ?int $size = null;
+
+    /**
+     * @var int|float|null The default value for new elements
+     */
+    public int|null|float $defaultValue = null;
 
     /**
      * @var string|null Text that should be displayed before the input
@@ -113,7 +154,7 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
     public function __construct($config = [])
     {
         // Config normalization
-        foreach (['defaultValue', 'min', 'max'] as $name) {
+        foreach (['defaultValue', 'min', 'max', 'step'] as $name) {
             if (isset($config[$name])) {
                 $config[$name] = $this->_normalizeNumber($config[$name]);
             }
@@ -128,12 +169,8 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['defaultValue', 'min', 'max'], 'number'];
+        $rules[] = [['min', 'max', 'step', 'defaultValue'], 'number'];
         $rules[] = [['decimals', 'size'], 'integer'];
-
-        if ($this->decimals && Craft::$app->getDb()->getIsMysql()) {
-            $rules[] = [['decimals'], 'integer', 'max' => 30];
-        }
 
         $rules[] = [
             ['max'],
@@ -148,9 +185,7 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
 
         $rules[] = [['previewFormat'], 'in', 'range' => [self::FORMAT_DECIMAL, self::FORMAT_CURRENCY, self::FORMAT_NONE]];
         $rules[] = [
-            ['previewCurrency'], 'required', 'when' => function(): bool {
-                return $this->previewFormat === self::FORMAT_CURRENCY;
-            },
+            ['previewCurrency'], 'required', 'when' => fn(): bool => $this->previewFormat === self::FORMAT_CURRENCY,
         ];
         $rules[] = [['previewCurrency'], 'string', 'min' => 3, 'max' => 3, 'encoding' => '8bit'];
 
@@ -162,24 +197,29 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
      */
     public function getSettingsHtml(): ?string
     {
-        return Craft::$app->getView()->renderTemplate('_components/fieldtypes/Number/settings.twig',
-            [
-                'field' => $this,
-            ]);
+        return $this->settingsHtml(false);
     }
 
     /**
      * @inheritdoc
      */
-    public function getContentColumnType(): string
+    public function getReadOnlySettingsHtml(): ?string
     {
-        return Db::getNumericalColumnType($this->min, $this->max, $this->decimals);
+        return $this->settingsHtml(true);
+    }
+
+    private function settingsHtml(bool $readOnly): string
+    {
+        return Craft::$app->getView()->renderTemplate('_components/fieldtypes/Number/settings.twig', [
+            'field' => $this,
+            'readOnly' => $readOnly,
+        ]);
     }
 
     /**
      * @inheritdoc
      */
-    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?ElementInterface $element): mixed
     {
         if ($value === null) {
             if (isset($this->defaultValue) && $this->isFresh($element)) {
@@ -214,13 +254,28 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
     /**
      * @inheritdoc
      */
-    protected function inputHtml(mixed $value, ?ElementInterface $element = null): string
+    public function serializeValue(mixed $value, ?ElementInterface $element): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        // ensure we only store the selected number of decimals and that the result is the same as in v4
+        // https://github.com/craftcms/cms/issues/16181
+        $value = round((float)$value, $this->decimals);
+        return $this->decimals === 0 ? (int)$value : $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         $view = Craft::$app->getView();
         $formatter = Craft::$app->getFormatter();
 
         try {
-            $formatNumber = !$formatter->willBeMisrepresented($value);
+            $formatNumber = !$this->step && !$formatter->willBeMisrepresented($value);
         } catch (InvalidArgumentException $e) {
             $formatNumber = false;
         }
@@ -232,7 +287,7 @@ class Number extends Field implements PreviewableFieldInterface, SortableFieldIn
                         $value = Craft::$app->getFormatter()->asDecimal($value, $this->decimals);
                     } catch (InvalidArgumentException) {
                     }
-                } elseif ($this->decimals) {
+                } elseif ($this->decimals !== 0) {
                     // Just make sure we're using the right decimal symbol
                     $decimalSeparator = Craft::$app->getFormattingLocale()->getNumberSymbol(Locale::SYMBOL_DECIMAL_SEPARATOR);
                     try {
@@ -301,17 +356,67 @@ JS;
     /**
      * @inheritdoc
      */
-    public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
+    protected function dbTypeForValueSql(): array|string|null
+    {
+        if (!$this->decimals) {
+            return Schema::TYPE_INTEGER;
+        }
+
+        if (Craft::$app->getDb()->getIsMysql()) {
+            return sprintf('%s(65,%s)', Schema::TYPE_DECIMAL, $this->decimals);
+        }
+
+        return Schema::TYPE_DECIMAL;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPreviewHtml(mixed $value, ElementInterface $element): string
     {
         if ($value === null) {
             return '';
         }
 
-        return match ($this->previewFormat) {
+        $formatted = match ($this->previewFormat) {
             self::FORMAT_DECIMAL => Craft::$app->getFormatter()->asDecimal($value, $this->decimals),
             self::FORMAT_CURRENCY => Craft::$app->getFormatter()->asCurrency($value, $this->previewCurrency, [], [], !$this->decimals),
             default => $value,
         };
+
+        if ($this->prefix) {
+            $formatted = Markdown::processParagraph(Html::encode($this->prefix)) . $formatted;
+        }
+
+        if ($this->suffix) {
+            $formatted = $formatted . Markdown::processParagraph(Html::encode($this->suffix));
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function previewPlaceholderHtml(mixed $value, ?ElementInterface $element): string
+    {
+        if (!$value) {
+            if (isset($this->min, $this->max)) {
+                $min = $this->min * (10 ^ $this->decimals);
+                $max = $this->max * (10 ^ $this->decimals);
+                if ($this->step) {
+                    $step = $this->step * (10 ^ $this->decimals);
+                    $value = mt_rand($min / $step, $max / $step) * $step;
+                } else {
+                    $value = mt_rand($min, $max);
+                }
+                $value /= 10 ^ $this->decimals;
+            } else {
+                $value = 1234;
+            }
+        }
+
+        return $this->getPreviewHtml($value, $element ?? new Entry());
     }
 
     /**

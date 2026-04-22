@@ -1,8 +1,7 @@
 columnSuffix: null
 contentColumnType: text
-fieldGroup: 64c30549-98c7-4f27-b59e-59659739ca75 # Capabilities
 handle: override
-instructions: ''
+instructions: null
 name: 'Override Global SEO Per Page'
 searchable: false
 settings:

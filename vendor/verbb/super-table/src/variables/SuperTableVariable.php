@@ -2,17 +2,16 @@
 namespace verbb\supertable\variables;
 
 use Craft;
+use craft\elements\Entry;
 use craft\elements\db\ElementQueryInterface;
-
-use verbb\supertable\SuperTable;
-use verbb\supertable\elements\db\SuperTableBlockQuery;
-use verbb\supertable\elements\SuperTableBlockElement;
 
 class SuperTableVariable
 {
-    public function blocks($criteria = null): SuperTableBlockQuery
+    public function blocks(array $criteria = []): ElementQueryInterface
     {
-        $query = SuperTableBlockElement::find();
+        Craft::$app->getDeprecator()->log(__METHOD__, '`craft.superTable.blocks()` method has been deprecated. Use `craft.entries()` instead.');
+
+        $query = Entry::find();
 
         if ($criteria) {
             Craft::configure($query, $criteria);
@@ -21,13 +20,19 @@ class SuperTableVariable
         return $query;
     }
 
-    public function getRelatedElements($params = null): ?ElementQueryInterface
+    public function getRelatedElements(array $criteria = []): ?ElementQueryInterface
     {
-        return SuperTable::$plugin->getService()->getRelatedElementsQuery($params);
+        Craft::$app->getDeprecator()->log(__METHOD__, '`craft.superTable.getRelatedElements()` method has been deprecated. Use `craft.entries().relatedTo()` instead.');
+
+        return null;
     }
 
-    public function getSuperTableBlocks($fieldId): array
+    public function getSuperTableBlocks(int $fieldId): array
     {
-        return SuperTable::$plugin->getService()->getBlockTypesByFieldId($fieldId);
+        Craft::$app->getDeprecator()->log(__METHOD__, '`craft.superTable.getSuperTableBlocks()` method has been deprecated. Use `field.getEntryTypes()` instead.');
+
+        $field = Craft::$app->getFields()->getFieldById($fieldId);
+
+        return $field->getEntryTypes();
     }
 }

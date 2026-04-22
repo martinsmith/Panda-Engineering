@@ -1,0 +1,18 @@
+columnSuffix: null
+handle: reference
+instructions: null
+name: 'References - Reference'
+searchable: true
+settings:
+  availableTransforms: '*'
+  availableVolumes: ''
+  ckeConfig: 09951464-6d56-40cf-9d3b-6ba88b346fc2 # Default
+  defaultTransform: ''
+  enableSourceEditingForNonAdmins: true
+  purifierConfig: null
+  purifyHtml: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+translationKeyFormat: null
+translationMethod: site
+type: craft\ckeditor\Field

@@ -20,7 +20,7 @@ class m260125_233614_changeAuthorForPeerEntries_permission extends Migration
         $projectConfig = Craft::$app->getProjectConfig();
         $map = [];
 
-        foreach (Craft::$app->getSections()->getAllSections() as $section) {
+        foreach (Craft::$app->getEntries()->getAllSections() as $section) {
             $oldPermission = strtolower("savePeerEntries:$section->uid");
             $newPermission = strtolower("changeAuthorForPeerEntries:$section->uid");
             $map[$oldPermission] = $newPermission;
@@ -56,24 +56,19 @@ class m260125_233614_changeAuthorForPeerEntries_permission extends Migration
             }
         }
 
-        // Don't make the same config changes twice
-        $schemaVersion = $projectConfig->get('system.schemaVersion', true);
+        foreach ($projectConfig->get('users.groups') ?? [] as $uid => $group) {
+            $groupPermissions = array_flip($group['permissions'] ?? []);
+            $save = false;
 
-        if (version_compare($schemaVersion, '4.17.0.3', '<')) {
-            foreach ($projectConfig->get('users.groups') ?? [] as $uid => $group) {
-                $groupPermissions = array_flip($group['permissions'] ?? []);
-                $save = false;
-
-                foreach ($map as $oldPermission => $newPermission) {
-                    if (isset($groupPermissions[$oldPermission])) {
-                        $groupPermissions[$newPermission] = true;
-                        $save = true;
-                    }
+            foreach ($map as $oldPermission => $newPermission) {
+                if (isset($groupPermissions[$oldPermission])) {
+                    $groupPermissions[$newPermission] = true;
+                    $save = true;
                 }
+            }
 
-                if ($save) {
-                    $projectConfig->set("users.groups.$uid.permissions", array_keys($groupPermissions));
-                }
+            if ($save) {
+                $projectConfig->set("users.groups.$uid.permissions", array_keys($groupPermissions));
             }
         }
 

@@ -152,22 +152,23 @@ class Search extends Component
         }
 
         // Figure out which fields to update, and which to ignore
-        /** @var FieldInterface[] $updateFields */
-        $updateFields = [];
-        /** @var string[] $ignoreFieldIds */
+        $customFields = $element->getFieldLayout()?->getCustomFields() ?? [];
+        $updateFieldIds = [];
         $ignoreFieldIds = [];
-        if ($element::hasContent() && ($fieldLayout = $element->getFieldLayout()) !== null) {
+
+        if (!empty($customFields)) {
             if ($fieldHandles !== null) {
                 $fieldHandles = array_flip($fieldHandles);
             }
-            foreach ($fieldLayout->getCustomFields() as $field) {
-                if ($field->searchable) {
+            foreach ($customFields as $field) {
+                if ($field->searchable && !isset($updateFieldIds[$field->id])) {
                     // Are we updating this field's keywords?
                     if ($fieldHandles === null || isset($fieldHandles[$field->handle])) {
-                        $updateFields[] = $field;
+                        $updateFieldIds[$field->id] = true;
+                        unset($ignoreFieldIds[$field->id]);
                     } else {
                         // Leave its existing keywords alone
-                        $ignoreFieldIds[] = (string)$field->id;
+                        $ignoreFieldIds[$field->id] = true;
                     }
                 }
             }
@@ -179,7 +180,12 @@ class Search extends Component
             'siteId' => $element->siteId,
         ];
         if (!empty($ignoreFieldIds)) {
-            $deleteCondition = ['and', $deleteCondition, ['not', ['fieldId' => $ignoreFieldIds]]];
+            $ignoreFieldIds = array_map(fn(int $fieldId) => (string)$fieldId, array_keys($ignoreFieldIds));
+            $deleteCondition = [
+                'and',
+                $deleteCondition,
+                ['not', ['fieldId' => $ignoreFieldIds]],
+            ];
         }
         Db::delete(Table::SEARCHINDEX, $deleteCondition);
 
@@ -190,10 +196,15 @@ class Search extends Component
         }
 
         // Update the custom fields' keywords
-        foreach ($updateFields as $field) {
-            $fieldValue = $element->getFieldValue($field->handle);
-            $keywords = $field->getSearchKeywords($fieldValue, $element);
-            $this->_indexKeywords($element, $keywords, fieldId: $field->id);
+        $keywords = [];
+        foreach ($customFields as $field) {
+            if (isset($updateFieldIds[$field->id])) {
+                $fieldValue = $element->getFieldValue($field->handle);
+                $keywords[$field->id][] = $field->getSearchKeywords($fieldValue, $element);
+            }
+        }
+        foreach ($keywords as $fieldId => $instanceKeywords) {
+            $this->_indexKeywords($element, implode(' ', $instanceKeywords), fieldId: $fieldId);
         }
 
         // Release the lock
@@ -212,7 +223,7 @@ class Search extends Component
      *
      * @param ElementInterface $element
      * @param string[] $fieldHandles
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public function queueIndexElement(ElementInterface $element, array $fieldHandles): void
     {
@@ -283,7 +294,7 @@ class Search extends Component
      * @param int $elementId
      * @param int $siteId
      * @param class-string<ElementInterface>|null $elementType
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public function indexElementIfQueued(int $elementId, int $siteId, ?string $elementType = null): void
     {
@@ -386,8 +397,7 @@ class Search extends Component
      * Searches for elements that match the given element query.
      *
      * @param ElementQuery $elementQuery The element query being executed
-     * @return array<int,int> Element ID and score mapping, with scores descending
-     * @phpstan-return array<int,int>
+     * @return array<string,int> The element scores (descending) indexed by element ID and site ID (e.g. `'100-1'`).
      * @since 3.7.14
      */
     public function searchElements(ElementQuery $elementQuery): array
@@ -447,8 +457,8 @@ class Search extends Component
             }
         }
 
-        // Sort by element ID ascending, then score descending
-        ksort($scores);
+        // Sort by element ID/site ID ascending, then score descending
+        ksort($scores, SORT_NATURAL);
         arsort($scores);
 
         return $scores;
@@ -529,14 +539,11 @@ class Search extends Component
 
         // Loop through results and calculate score per element
         foreach ($results as $row) {
-            $elementId = $row['elementId'];
-            $score = $this->_scoreRow($row, $elementQuery->siteId);
-
-            if (!isset($scores[$elementId])) {
-                $scores[$elementId] = $score;
-            } else {
-                $scores[$elementId] += $score;
+            $key = sprintf('%s-%s', $row['elementId'], $row['siteId']);
+            if (!isset($scores[$key])) {
+                $scores[$key] = 0;
             }
+            $scores[$key] += $this->_scoreRow($row);
         }
 
         return $scores;
@@ -597,7 +604,7 @@ SQL;
     /**
      * Deletes any search indexes that belong to elements that don’t exist anymore.
      *
-     * @since 4.17.0
+     * @since 5.9.0
      */
     public function deleteOrphanedIndexJobs(): void
     {
@@ -641,6 +648,7 @@ SQL;
         $site = $element->getSite();
         $keywords = SearchHelper::normalizeKeywords($keywords, [], true, $site->language);
 
+        // Fire a 'beforeIndexKeywords' event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_INDEX_KEYWORDS)) {
             $event = new IndexKeywordsEvent([
                 'element' => $element,
@@ -708,17 +716,16 @@ SQL;
      * Calculate score for a result.
      *
      * @param array $row A single result from the search query.
-     * @param int|int[]|null $siteId
      * @return int The total score for this row.
      */
-    private function _scoreRow(array $row, array|int|null $siteId = null): int
+    private function _scoreRow(array $row): int
     {
         // Starting point
         $score = 0;
 
         // Loop through AND-terms and score each one against this row
         foreach ($this->_terms as $term) {
-            $score += $this->_scoreTerm($term, $row, 1, $siteId);
+            $score += $this->_scoreTerm($term, $row, 1);
         }
 
         // Loop through each group of OR-terms
@@ -728,7 +735,7 @@ SQL;
 
             // Get the score for each term and add it to the total
             foreach ($terms as $term) {
-                $score += $this->_scoreTerm($term, $row, $weight, $siteId);
+                $score += $this->_scoreTerm($term, $row, $weight);
             }
         }
 
@@ -741,14 +748,13 @@ SQL;
      * @param SearchQueryTerm $term The SearchQueryTerm to score.
      * @param array $row The result row to score against.
      * @param float|int $weight Optional weight for this term.
-     * @param int|int[]|null $siteId
      * @return float The total score for this term/row combination.
      */
-    private function _scoreTerm(SearchQueryTerm $term, array $row, float|int $weight = 1, array|int|null $siteId = null): float
+    private function _scoreTerm(SearchQueryTerm $term, array $row, float|int $weight = 1): float
     {
         // Skip these terms: exact filtering is just that, no weighted search applies since all elements will
         // already apply for these filters.
-        if ($term->exact || !($keywords = $this->_normalizeTerm($term->term, $siteId))) {
+        if ($term->exact || !($keywords = $this->_normalizeTerm($term->term, $row['siteId']))) {
             return 0;
         }
 

@@ -123,7 +123,6 @@ class MetaJsonLdContainer extends NonceContainer
     {
         $tagData = [];
         if ($this->prepForInclusion()) {
-            /** @var MetaJsonLd $metaJsonLdModel */
             foreach ($this->data as $metaJsonLdModel) {
                 if ($metaJsonLdModel->include) {
                     $options = $metaJsonLdModel->tagAttributes();

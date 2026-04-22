@@ -130,7 +130,7 @@ class QueryBuilder extends \yii\db\pgsql\QueryBuilder
      * @param string $column The column name to extract from
      * @param string[] $path The path to the value to extract
      * @return string
-     * @since 4.15.0
+     * @since 5.0.0
      */
     public function jsonExtract(string $column, array $path): string
     {
@@ -148,7 +148,7 @@ class QueryBuilder extends \yii\db\pgsql\QueryBuilder
      * @param string $targetSql SQL that expresses the JSON value
      * @param mixed $value The value to check for (**not** JSON-encoded)
      * @return string
-     * @since 4.15.0
+     * @since 5.0.0
      */
     public function jsonContains(string $targetSql, mixed $value): string
     {

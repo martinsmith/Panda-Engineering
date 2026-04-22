@@ -17,7 +17,7 @@ use yii\web\IdentityInterface;
  *
  * @see https://www.yiiframework.com/doc/api/2.0/yii-filters-auth-httpbasicauth
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.13.0
+ * @since 5.5.0
  */
 class BasicHttpAuthLogin extends HttpBasicAuth
 {

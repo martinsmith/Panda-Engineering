@@ -128,7 +128,7 @@ class UrlHelper
 
         // Combine them
         $params = array_merge($baseParams, $params);
-        $fragment = $fragment ?? $baseFragment;
+        $fragment ??= $baseFragment;
 
         // Append to the base URL and return
         if (($query = static::buildQuery($params)) !== '') {
@@ -228,7 +228,7 @@ class UrlHelper
      *
      * @param string $url
      * @return string
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function encodeUrl(string $url): string
     {
@@ -575,6 +575,37 @@ class UrlHelper
     }
 
     /**
+     * Returns a CP referral URL.
+     *
+     * @return string|null
+     * @since 5.9.0
+     */
+    public static function cpReferralUrl(): ?string
+    {
+        $referrer = Craft::$app->getRequest()->getReferrer();
+
+        if ($referrer === null) {
+            return null;
+        }
+
+        // Make sure the CP referred it
+        if (!str_starts_with($referrer, self::baseCpUrl())) {
+            return null;
+        }
+
+        // to ensure we're comparing uris strip base cp url and query string from the referrer first
+        $referrerFullUri = ltrim(StringHelper::removeLeft($referrer, self::baseCpUrl()), '/');
+        $referrerFullUri = substr($referrerFullUri, 0, strpos($referrerFullUri, '?') ?: null);
+
+        // Make sure it didn't refer itself
+        if ($referrerFullUri === Craft::$app->getRequest()->getFullUri()) {
+            return null;
+        }
+
+        return $referrer;
+    }
+
+    /**
      * Parses a URL for the host info.
      *
      * @param string $url
@@ -642,7 +673,7 @@ class UrlHelper
 
         // Combine them
         $params = array_merge($baseParams, $params);
-        $fragment = $fragment ?? $baseFragment;
+        $fragment ??= $baseFragment;
 
         $generalConfig = Craft::$app->getConfig()->getGeneral();
         $request = Craft::$app->getRequest();

@@ -83,7 +83,7 @@ class SeoElements extends Component
      *
      * @return class-string<SeoElementInterface>|null
      */
-    public function getSeoElementByMetaBundleType($metaBundleType): ?string
+    public function getSeoElementByMetaBundleType(?string $metaBundleType): ?string
     {
         if ($metaBundleType === null) {
             return null;

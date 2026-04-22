@@ -10,10 +10,13 @@ namespace craft\elements;
 use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\ArrayHelper;
+use craft\helpers\ElementHelper;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Enumerable;
+use Twig\Markup;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 
 /**
@@ -41,7 +44,7 @@ class ElementCollection extends Collection
      * @param int|TElement|Arrayable<array-key,int>|iterable<array-key,int> $key
      * @param TFindDefault $default
      * @return static<TKey,TElement>|TElement|TFindDefault
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public function find(mixed $key, mixed $default = null): mixed
     {
@@ -72,7 +75,7 @@ class ElementCollection extends Collection
     /**
      * Eager-loads related elements for the collected elements.
      *
-     * See [Eager-Loading Elements](https://craftcms.com/docs/4.x/dev/eager-loading-elements.html) for a full explanation of how to work with this parameter.
+     * See [Eager-Loading Elements](https://craftcms.com/docs/5.x/development/eager-loading.html) for a full explanation of how to work with this parameter.
      *
      * ---
      *
@@ -175,7 +178,7 @@ class ElementCollection extends Collection
     public function map(callable $callback)
     {
         $result = parent::map($callback);
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore instanceof.alwaysTrue */
         return $result->contains(fn($item) => !$item instanceof ElementInterface) ? $result->toBase() : $result;
     }
 
@@ -193,7 +196,7 @@ class ElementCollection extends Collection
     public function mapWithKeys(callable $callback)
     {
         $result = parent::mapWithKeys($callback);
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore instanceof.alwaysTrue */
         return $result->contains(fn($item) => !$item instanceof ElementInterface) ? $result->toBase() : $result;
     }
 
@@ -201,7 +204,7 @@ class ElementCollection extends Collection
      * Reloads fresh element instances from the database for all the elements.
      *
      * @return static
-     * @since 4.10.0
+     * @since 5.2.0
      */
     public function fresh(): static
     {
@@ -362,6 +365,23 @@ class ElementCollection extends Collection
         $elements = array_filter($this->items, fn(ElementInterface $element) => !isset($keys[$element->id]));
         /** @phpstan-ignore-next-line */
         return new static(array_values($elements));
+    }
+
+    /**
+     * Renders the elements using their partial templates.
+     *
+     * If no partial template exists for an element, its string representation will be output instead.
+     *
+     * @param array $variables
+     * @return Markup
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @see ElementHelper::renderElements()
+     * @since 5.0.0
+     */
+    public function render(array $variables = []): Markup
+    {
+        return ElementHelper::renderElements($this->items, $variables);
     }
 
     // The following methods are intercepted to always return base collections.

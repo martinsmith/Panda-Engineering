@@ -17,10 +17,13 @@ use besteadfast\preparsefield\fields\PreparseFieldType;
 use Craft;
 use craft\base\Element;
 use craft\base\Field as BaseField;
+use craft\base\FieldInterface;
 use craft\ckeditor\Field as CKEditorField;
-use craft\elements\MatrixBlock;
+use craft\elements\Entry;
 use craft\elements\User;
+use craft\fieldlayoutelements\CustomField;
 use craft\fields\Assets as AssetsField;
+use craft\fields\ContentBlock as ContentBlockField;
 use craft\fields\Matrix as MatrixField;
 use craft\fields\PlainText as PlainTextField;
 use craft\fields\Tags as TagsField;
@@ -32,8 +35,6 @@ use nystudio107\seomatic\fields\SeoSettings as SeoSettingsField;
 use nystudio107\seomatic\Seomatic;
 use nystudio107\seomatic\services\MetaBundles;
 use verbb\doxter\fields\Doxter as DoxterField;
-use verbb\supertable\elements\SuperTableBlockElement as SuperTableBlock;
-use verbb\supertable\fields\SuperTableField;
 use yii\base\InvalidConfigException;
 
 /**
@@ -49,6 +50,7 @@ class Field
     public const TEXT_FIELD_CLASS_KEY = 'text';
     public const ASSET_FIELD_CLASS_KEY = 'asset';
     public const BLOCK_FIELD_CLASS_KEY = 'block';
+    public const NESTED_FIELD_CLASS_KEY = 'nested';
     public const SEO_SETTINGS_CLASS_KEY = 'seo';
     public const OLD_SEOMATIC_META_CLASS_KEY = 'Seomatic_Meta';
 
@@ -60,7 +62,6 @@ class Field
             RedactorField::class,
             TagsField::class,
             NeoField::class,
-            SuperTableField::class,
             PreparseFieldType::class,
             DoxterField::class,
         ],
@@ -70,7 +71,6 @@ class Field
         self::BLOCK_FIELD_CLASS_KEY => [
             MatrixField::class,
             NeoField::class,
-            SuperTableField::class,
         ],
         self::SEO_SETTINGS_CLASS_KEY => [
             SeoSettingsField::class,
@@ -98,11 +98,6 @@ class Field
      */
     public static $neoFieldsOfTypeCache = [];
 
-    /**
-     * @var array Memoization cache
-     */
-    public static $superTableFieldsOfTypeCache = [];
-
     // Static Methods
     // =========================================================================
 
@@ -113,18 +108,29 @@ class Field
      * @param string $fieldClassKey
      * @param FieldLayout $layout
      * @param bool $keysOnly
-     *
+     * @param FieldInterface|null $parentField
+     * @param CustomField|null $parentFieldElement
      * @return array
      */
     public static function fieldsOfTypeFromLayout(
-        string      $fieldClassKey,
-        FieldLayout $layout,
-        bool        $keysOnly = true,
+        string          $fieldClassKey,
+        FieldLayout     $layout,
+        bool            $keysOnly = true,
+        ?FieldInterface $parentField = null,
+        ?CustomField    $parentFieldElement = null,
+        bool            $parseContentBlocks = true,
     ): array {
         $foundFields = [];
+        $nestedFoundFields = [];
+        $handlePrefix = '';
+        $namePrefix = '';
+        if ($parentField !== null && $parentFieldElement !== null) {
+            $handlePrefix = $parentField->handle . '.';
+            $namePrefix = ($parentFieldElement->label() ?? $parentField->name) . ' → ';
+        }
         if (!empty(self::FIELD_CLASSES[$fieldClassKey])) {
             // Cache me if you can
-            $memoKey = $fieldClassKey . $layout->id . ($keysOnly ? 'keys' : 'nokeys');
+            $memoKey = $fieldClassKey . $layout->id . ($keysOnly ? 'keys' : 'nokeys') . ($parseContentBlocks ? 'content' : 'nocontent');
             if (!empty(self::$fieldsOfTypeFromLayoutCache[$memoKey])) {
                 return self::$fieldsOfTypeFromLayoutCache[$memoKey];
             }
@@ -132,17 +138,24 @@ class Field
             $fieldElements = $layout->getCustomFieldElements();
             foreach ($fieldElements as $fieldElement) {
                 $field = $fieldElement->getField();
+                // Handle ContentBlock fields recursively
+                if ($parseContentBlocks && $field instanceof ContentBlockField) {
+                    $nestedFoundFields = array_merge($nestedFoundFields,
+                        self::fieldsOfTypeFromLayout($fieldClassKey, $field->getFieldLayout(), $keysOnly, $field, $fieldElement, $parseContentBlocks));
+                }
                 /** @var array $fieldClasses */
                 foreach ($fieldClasses as $fieldClass) {
                     if ($field instanceof $fieldClass) {
-                        $foundFields[$field->handle] = $fieldElement->label() ?? $field->name;
+                        $foundFields[$handlePrefix . $field->handle] = $namePrefix . ($fieldElement->label() ?? $field->name);
                     }
                 }
             }
+
             // Return only the keys if asked
             if ($keysOnly) {
                 $foundFields = array_keys($foundFields);
             }
+            $foundFields = array_merge($foundFields, $nestedFoundFields);
             // Cache for future use
             self::$fieldsOfTypeFromLayoutCache[$memoKey] = $foundFields;
         }
@@ -299,30 +312,30 @@ class Field
     }
 
     /**
-     * Return all of the fields in the $matrixBlock of the type $fieldType class
+     * Return all of the fields in the $matrixEntry of the type $fieldType class
      *
-     * @param MatrixBlock $matrixBlock
+     * @param Entry $matrixEntry
      * @param string $fieldType
      * @param bool $keysOnly
      *
      * @return array
      */
-    public static function matrixFieldsOfType(MatrixBlock $matrixBlock, string $fieldType, bool $keysOnly = true): array
+    public static function matrixFieldsOfType(Entry $matrixEntry, string $fieldType, bool $keysOnly = true): array
     {
         $foundFields = [];
 
         try {
-            $matrixBlockTypeModel = $matrixBlock->getType();
+            $matrixEntryTypeModel = $matrixEntry->getType();
         } catch (InvalidConfigException $e) {
-            $matrixBlockTypeModel = null;
+            $matrixEntryTypeModel = null;
         }
-        if ($matrixBlockTypeModel) {
+        if ($matrixEntryTypeModel) {
             // Cache me if you can
-            $memoKey = $fieldType . $matrixBlock->id . ($keysOnly ? 'keys' : 'nokeys');
+            $memoKey = $fieldType . $matrixEntry->id . ($keysOnly ? 'keys' : 'nokeys');
             if (!empty(self::$matrixFieldsOfTypeCache[$memoKey])) {
                 return self::$matrixFieldsOfTypeCache[$memoKey];
             }
-            $fields = $matrixBlockTypeModel->getCustomFields();
+            $fields = $matrixEntryTypeModel->getCustomFields();
             /** @var BaseField $field */
             foreach ($fields as $field) {
                 if ($field instanceof $fieldType) {
@@ -374,52 +387,6 @@ class Field
             }
             // Cache for future use
             self::$neoFieldsOfTypeCache[$memoKey] = $foundFields;
-        }
-
-        return $foundFields;
-    }
-
-    /**
-     * Return all of the fields in the $superTableBlock of the type $fieldType class
-     *
-     * @param SuperTableBlock $superTableBlock
-     * @param string $fieldType
-     * @param bool $keysOnly
-     *
-     * @return array
-     */
-    public static function superTableFieldsOfType(SuperTableBlock $superTableBlock, string $fieldType, bool $keysOnly = true): array
-    {
-        $foundFields = [];
-
-        try {
-            $superTableBlockTypeModel = $superTableBlock->getType();
-        } catch (InvalidConfigException $e) {
-            $superTableBlockTypeModel = null;
-        }
-        if ($superTableBlockTypeModel) {
-            // Cache me if you can
-            $memoKey = $fieldType . $superTableBlock->id . ($keysOnly ? 'keys' : 'nokeys');
-            if (!empty(self::$superTableFieldsOfTypeCache[$memoKey])) {
-                return self::$superTableFieldsOfTypeCache[$memoKey];
-            }
-            /** @var ?FieldLayout $layout */
-            // The SuperTableBlockType class lacks @mixin FieldLayoutBehavior in its annotations
-            /** @phpstan-ignore-next-line */
-            $layout = $superTableBlockTypeModel->getFieldLayout();
-            $fieldElements = $layout->getCustomFieldElements();
-            foreach ($fieldElements as $fieldElement) {
-                $field = $fieldElement->getField();
-                if ($field instanceof $fieldType) {
-                    $foundFields[$field->handle] = $field->name;
-                }
-            }
-            // Return only the keys if asked
-            if ($keysOnly) {
-                $foundFields = array_keys($foundFields);
-            }
-            // Cache for future use
-            self::$superTableFieldsOfTypeCache[$memoKey] = $foundFields;
         }
 
         return $foundFields;

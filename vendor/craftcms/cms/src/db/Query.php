@@ -152,9 +152,13 @@ class Query extends \yii\db\Query implements ArrayAccess, IteratorAggregate
     public function behaviors(): array
     {
         // Fire a 'defineBehaviors' event
-        $event = new DefineBehaviorsEvent();
-        $this->trigger(self::EVENT_DEFINE_BEHAVIORS, $event);
-        return $event->behaviors;
+        if ($this->hasEventHandlers(self::EVENT_DEFINE_BEHAVIORS)) {
+            $event = new DefineBehaviorsEvent();
+            $this->trigger(self::EVENT_DEFINE_BEHAVIORS, $event);
+            return $event->behaviors;
+        }
+
+        return [];
     }
 
     /**
@@ -208,6 +212,42 @@ class Query extends \yii\db\Query implements ArrayAccess, IteratorAggregate
         }
 
         return parent::orWhere($condition, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function groupBy($columns): static
+    {
+        $this->splitColumns($columns);
+        return parent::groupBy($columns);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addGroupBy($columns): static
+    {
+        $this->splitColumns($columns);
+        return parent::addGroupBy($columns);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function normalizeSelect($columns): array
+    {
+        $this->splitColumns($columns);
+        return parent::normalizeSelect($columns);
+    }
+
+    private function splitColumns(mixed &$columns): void
+    {
+        if (is_string($columns)) {
+            // match commas that are not preceded by `DECIMAL(` and one or two digits
+            // e.g. the comma in `DECIMAL(65,15)` shouldn't be matched, but the one in `test12, test13` should
+            $columns = preg_split('/(?<!DECIMAL\(\d)(?<!DECIMAL\(\d\d)\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        }
     }
 
     // Execution functions

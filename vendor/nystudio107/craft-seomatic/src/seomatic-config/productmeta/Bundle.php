@@ -30,7 +30,7 @@ return [
     'sourceSiteId' => null,
     'sourceAltSiteSettings' => [
     ],
-    'sourceDateUpdated' => new \DateTime(),
+    'sourceDateUpdated' => new DateTime(),
     'metaGlobalVars' => Config::getConfigFromFile('productmeta/GlobalVars'),
     'metaSiteVars' => Config::getConfigFromFile('productmeta/SiteVars'),
     'metaSitemapVars' => Config::getConfigFromFile('productmeta/SitemapVars'),

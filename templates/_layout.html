@@ -48,14 +48,14 @@ gtag('config', 'UA-219864959-1');
     <div class="head">
       <div>
         <div class="brand">
-          <a href="/"><img src="{{ brand.brand.logo.one.url() }}" alt="{{ currentSite.name }}"></a>
+          <a href="/"><img src="{{ brand.brand.one().logo.one.url }}" alt="{{ currentSite.name }}"></a>
         </div>
 
         <div class="contact">
           {% if currentSite.handle == 'pandaEngineering' %}
           <p>Panda Engineering (Bfd) Ltd.</p>
           {% endif %}
-          {% for item in contactInfo.companyInformation.contacts %}
+          {% for item in contactInfo.companyInformation.one().contacts %}
           <p>Telephone {{ item.name }}: <a href="tel:{{ item.number }}">{{ item.number }}</a></p>
           <p>Email: <a href="mailto:{{ item.email }}">{{ item.email }}</a></p>
           {% endfor %}
@@ -93,9 +93,9 @@ gtag('config', 'UA-219864959-1');
       <div>
         <div class="contact">
           <h2>Contact</h2>
-          <p class="address">{{ contactInfo.companyInformation.address| nl2br }}</p>
+          <p class="address">{{ contactInfo.companyInformation.one().address| nl2br }}</p>
           <div class="direct">
-            {% for item in contactInfo.companyInformation.contacts %}
+            {% for item in contactInfo.companyInformation.one().contacts %}
               <p>Telephone {{ item.name }}: <a href="tel:{{ item.number }}">{{ item.number }}</a></p>
               <p>Email: <a href="mailto:{{ item.email }}">{{ item.email }}</a></p>
             {% endfor %}
@@ -122,8 +122,8 @@ gtag('config', 'UA-219864959-1');
         <div class="policies">
           <h2>Policies</h2>
           <ul>
-            {% for item in policyDocuments.policyDocuments %}
-            <li><a href="{{ item.documentUpload.one.url() }}">{{ item.documentTitle }}</a></li>
+            {% for item in policyDocuments.policyDocuments.all() %}
+            <li><a href="{{ item.documentUpload.one.url }}">{{ item.documentTitle }}</a></li>
             {% endfor %}
           </ul>
         </div>

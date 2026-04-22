@@ -96,7 +96,7 @@ class MetaSitemapVars extends InheritableSettingsModel
      */
     public $sitemapVideoFieldMap = [];
 
-    // Public Static Methods
+    // Static Methods
     // =========================================================================
 
     /**

@@ -219,7 +219,9 @@ class Tags extends Component
         }
 
         if ($isNewTagGroup) {
-            $tagGroup->uid = StringHelper::UUID();
+            if (!$tagGroup->uid) {
+                $tagGroup->uid = StringHelper::UUID();
+            }
         } elseif (!$tagGroup->uid) {
             $tagGroup->uid = Db::uidById(Table::TAGGROUPS, $tagGroup->id);
         }
@@ -395,7 +397,7 @@ SQL;
 
             if ($db->getIsMysql()) {
                 $db->createCommand(<<<SQL
-UPDATE $elementsTable [[elements]], $tagsTable [[tags]] 
+UPDATE $elementsTable [[elements]], $tagsTable [[tags]]
 SET [[elements.dateDeleted]] = '$now',
   [[tags.deletedWithGroup]] = 1
 WHERE $conditionSql

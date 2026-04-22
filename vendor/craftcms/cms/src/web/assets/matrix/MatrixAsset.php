@@ -45,13 +45,13 @@ class MatrixAsset extends AssetBundle
         if ($view instanceof View) {
             $view->registerTranslations('app', [
                 'Actions',
-                'Add a block',
+                'Add an entry',
                 'Add {type} above',
-                'Are you sure you want to delete the selected blocks?',
                 'Collapse',
                 'Disable',
                 'Disabled',
                 'Enable',
+                'Entry could not be added. Maximum number of entries reached.',
                 'Expand',
             ]);
         }

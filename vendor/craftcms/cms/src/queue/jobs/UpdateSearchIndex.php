@@ -44,7 +44,7 @@ class UpdateSearchIndex extends BaseJob
 
     /**
      * @var bool Whether to check if the element’s search indexes are queued to be updated before proceeding.
-     * @since 4.15.0
+     * @since 5.7.0
      */
     public bool $queued = false;
 

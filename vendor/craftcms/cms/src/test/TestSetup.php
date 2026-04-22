@@ -28,7 +28,6 @@ use craft\services\Assets;
 use craft\services\Categories;
 use craft\services\Composer;
 use craft\services\Config;
-use craft\services\Content;
 use craft\services\Dashboard;
 use craft\services\Deprecator;
 use craft\services\Elements;
@@ -38,7 +37,6 @@ use craft\services\Fields;
 use craft\services\Globals;
 use craft\services\Images;
 use craft\services\ImageTransforms;
-use craft\services\Matrix;
 use craft\services\Path;
 use craft\services\Plugins;
 use craft\services\PluginStore;
@@ -46,7 +44,6 @@ use craft\services\ProjectConfig;
 use craft\services\Relations;
 use craft\services\Routes;
 use craft\services\Search;
-use craft\services\Sections;
 use craft\services\Sites;
 use craft\services\Structures;
 use craft\services\SystemMessages;
@@ -137,9 +134,7 @@ class TestSetup
         $_REQUEST = [];
 
         UploadedFile::reset();
-        if (method_exists(Event::class, 'offAll')) {
-            Event::offAll();
-        }
+        Event::offAll();
 
         Craft::setLogger(null);
 
@@ -172,7 +167,7 @@ class TestSetup
     }
 
     /**
-     * @param class-string<Migration> $class
+     * @param class-string<Migration>|string $class
      * @param array $params
      * @param bool $ignorePreviousMigrations
      * @return bool
@@ -231,7 +226,6 @@ class TestSetup
         Craft::setAlias('@crafttestsfolder', $basePath . '/tests/_craft');
 
         // Normalize some Craft defined path aliases.
-        Craft::setAlias('@craft', CraftTest::normalizePathSeparators(Craft::getAlias('@craft')));
         Craft::setAlias('@lib', CraftTest::normalizePathSeparators(Craft::getAlias('@lib')));
         Craft::setAlias('@config', CraftTest::normalizePathSeparators(Craft::getAlias('@config')));
         Craft::setAlias('@contentMigrations', CraftTest::normalizePathSeparators(Craft::getAlias('@contentMigrations')));
@@ -350,7 +344,6 @@ class TestSetup
         Craft::setAlias('@vendor', $vendorPath);
         Craft::setAlias('@craftcms', $repoRoot);
         Craft::setAlias('@lib', $libPath);
-        Craft::setAlias('@craft', $srcPath);
         Craft::setAlias('@appicons', $srcPath . DIRECTORY_SEPARATOR . 'icons');
         Craft::setAlias('@config', $configPath);
         Craft::setAlias('@contentMigrations', $contentMigrationsPath);
@@ -460,7 +453,7 @@ class TestSetup
 
         $siteConfig = [
             'name' => 'Craft test site',
-            'handle' => 'default',
+            'handle' => 'defaultSite',
             'hasUrls' => true,
             'baseUrl' => self::SITE_URL,
             'language' => 'en-US',
@@ -509,7 +502,7 @@ class TestSetup
      */
     public static function getMockModule(CodeceptionTestCase $test, array $serviceMap = [], ?string $moduleClass = null): Module
     {
-        $moduleClass = $moduleClass ?? self::appClass();
+        $moduleClass ??= self::appClass();
         $serviceMap = $serviceMap ?: self::getCraftServiceMap();
 
         $mockApp = self::getMock($test, $moduleClass);
@@ -574,7 +567,6 @@ class TestSetup
             [Categories::class, ['getCategories', 'categories']],
             [Composer::class, ['getComposer', 'composer']],
             [Config::class, ['getConfig', 'config']],
-            [Content::class, ['getContent', 'content']],
             [MigrationManager::class, ['getContentMigrator', 'contentMigrator']],
             [Dashboard::class, ['getDashboard', 'dashboard']],
             [Deprecator::class, ['getDeprecator', 'deprecator']],
@@ -587,7 +579,6 @@ class TestSetup
             [Images::class, ['getImages', 'images']],
             [Locale::class, ['getLocale', 'locale']],
             [Mailer::class, ['getMailer', 'mailer']],
-            [Matrix::class, ['getMatrix', 'matrix']],
             [MigrationManager::class, ['getMigrator', 'migrator']],
             [Mutex::class, ['getMutex', 'mutex']],
             [Path::class, ['getPath', 'path']],
@@ -598,7 +589,6 @@ class TestSetup
             [Relations::class, ['getRelations', 'relations']],
             [Routes::class, ['getRoutes', 'routes']],
             [Search::class, ['getSearch', 'search']],
-            [Sections::class, ['getSections', 'sections']],
             [Sites::class, ['getSites', 'sites']],
             [Structures::class, ['getStructures', 'structures']],
             [SystemMessages::class, ['getSystemMessages', 'systemMessages']],

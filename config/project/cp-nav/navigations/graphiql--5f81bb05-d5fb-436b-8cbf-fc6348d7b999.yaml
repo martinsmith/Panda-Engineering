@@ -7,13 +7,11 @@ layout: 1b2fd43c-2000-42df-b5aa-0c4c7609c574 # Default
 level: 2
 newWindow: true
 parent: 8be2f3e2-2e30-4ac8-a78c-14be5ec55ec0
-parentId: null
 prevLabel: GraphiQL
 prevLevel: 2
 prevParent: 8be2f3e2-2e30-4ac8-a78c-14be5ec55ec0
-prevParentId: null
 prevUrl: graphiql
 sortOrder: 0
 subnavBehaviour: null
-type: ''
+type: null
 url: graphiql

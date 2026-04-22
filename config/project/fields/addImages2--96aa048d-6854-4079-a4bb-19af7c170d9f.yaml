@@ -1,0 +1,37 @@
+columnSuffix: null
+handle: addImages2
+instructions: null
+name: 'Page Sections - Supporting Images - Add Images'
+searchable: true
+settings:
+  allowSelfRelations: false
+  allowSubfolders: false
+  allowUploads: true
+  allowedKinds: null
+  branchLimit: null
+  defaultPlacement: end
+  defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  defaultUploadLocationSubpath: null
+  maintainHierarchy: false
+  maxRelations: null
+  minRelations: null
+  previewMode: full
+  restrictFiles: false
+  restrictLocation: false
+  restrictedDefaultUploadSubpath: null
+  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  restrictedLocationSubpath: null
+  selectionLabel: 'Add an Image'
+  showSearchInput: true
+  showSiteMenu: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+  sources:
+    - 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+    - 'volume:49dabed7-207d-4087-9227-a18660a3b4c2' # Panda
+  targetSiteId: null
+  validateRelatedElements: false
+  viewMode: thumbs
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\Assets

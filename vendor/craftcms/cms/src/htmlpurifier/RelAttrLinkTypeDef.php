@@ -13,7 +13,7 @@ use HTMLPurifier_AttrDef_HTML_LinkTypes;
  * Class VideoEmbedUrlDef
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.14.10
+ * @since 5.6.11
  */
 class RelAttrLinkTypeDef extends HTMLPurifier_AttrDef_HTML_LinkTypes
 {

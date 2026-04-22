@@ -7,7 +7,6 @@
 
 namespace craft\db\mysql;
 
-use Composer\Util\Platform;
 use Craft;
 use craft\db\Connection;
 use craft\db\ExpressionBuilder;
@@ -21,6 +20,7 @@ use mikehaertl\shellcommand\Command as ShellCommand;
 use PDO;
 use PDOException;
 use yii\base\ErrorException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Exception;
 
@@ -67,6 +67,31 @@ class Schema extends \yii\db\mysql\Schema
     }
 
     /**
+     * Returns whether a table supports 4-byte characters.
+     *
+     * @param string $table The table to check
+     * @return bool
+     * @throws InvalidArgumentException if $table is invalid
+     * @since 5.0.0
+     */
+    public function supportsMb4(string $table): bool
+    {
+        $tableSchema = $this->getTableSchema($table);
+        if (!$tableSchema) {
+            throw new InvalidArgumentException("Invalid table: $table");
+        }
+        foreach ($tableSchema->columns as $column) {
+            // collation names always start with the charset name,
+            // so if a collation includes "mb4" we can safely assume the table has an mb4 charset
+            /** @var ColumnSchema $column */
+            if (isset($column->collation) && str_contains($column->collation, 'mb4')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function findTableNames($schema = ''): array
@@ -101,7 +126,7 @@ class Schema extends \yii\db\mysql\Schema
      *
      * @param string $name
      * @return string
-     * @deprecated in 4.12.0
+     * @deprecated in 5.4.0
      */
     public function quoteDatabaseName(string $name): string
     {
@@ -179,21 +204,18 @@ class Schema extends \yii\db\mysql\Schema
             ->addArg('--dump-date')
             ->addArg('--no-autocommit')
             ->addArg('--routines')
-            ->addArg('--default-character-set=', Craft::$app->getConfig()->getDb()->charset)
+            ->addArg('--default-character-set=', Craft::$app->getConfig()->getDb()->getCharset())
             ->addArg('--set-charset')
             ->addArg('--triggers')
             ->addArg('--no-tablespaces');
 
         $serverVersion = App::normalizeVersion(Craft::$app->getDb()->getServerVersion());
-        $isMySQL5 = version_compare($serverVersion, '8', '<');
         $isMySQL8 = version_compare($serverVersion, '8', '>=');
-        $ignoreTables = $ignoreTables ?? Craft::$app->getDb()->getIgnoredBackupTables();
+        $ignoreTables ??= Craft::$app->getDb()->getIgnoredBackupTables();
         $commandFromConfig = Craft::$app->getConfig()->getGeneral()->backupCommand;
 
         // https://bugs.mysql.com/bug.php?id=109685
-        $useSingleTransaction =
-            ($isMySQL5 && version_compare($serverVersion, '5.7.41', '<')) ||
-            ($isMySQL8 && version_compare($serverVersion, '8.0.32', '<'));
+        $useSingleTransaction = $isMySQL8 && version_compare($serverVersion, '8.0.32', '<');
 
         if ($useSingleTransaction) {
             $baseCommand->addArg('--single-transaction');
@@ -311,6 +333,18 @@ class Schema extends \yii\db\mysql\Schema
     }
 
     /**
+     * @param array $info
+     * @return ColumnSchema
+     */
+    protected function loadColumnSchema($info): ColumnSchema
+    {
+        /** @var ColumnSchema $column */
+        $column = parent::loadColumnSchema($info);
+        $column->collation = $info['collation'] ?? null;
+        return $column;
+    }
+
+    /**
      * Collects extra foreign key information details for the given table.
      *
      * @param TableSchema $table the table metadata
@@ -398,7 +432,7 @@ SQL;
         // Find out if the db/dump client supports column-statistics
         $shellCommand = new ShellCommand();
 
-        if (Platform::isWindows()) {
+        if (App::isWindows()) {
             $shellCommand->setCommand('mysqldump --help | findstr "column-statistics"');
         } else {
             $shellCommand->setCommand('mysqldump --help | grep "column-statistics"');
@@ -456,5 +490,37 @@ SQL;
         FileHelper::writeToFile($this->tempMyCnfPath, $contents, ['append']);
 
         return $this->tempMyCnfPath;
+    }
+
+    /**
+     * Returns the row format for the given table, if known.
+     *
+     * @param string $table
+     * @return string|null
+     * @throws Exception
+     * @since 5.9.6
+     */
+    public function getRowFormat(string $table): ?string
+    {
+        $sql = sprintf('SHOW CREATE TABLE %s', $this->quoteTableName($table));
+        $result = $this->db->createCommand($sql)->queryOne();
+        if (!preg_match('/\bROW_FORMAT=(\w+)\b/i', $result['Create Table'], $match)) {
+            return null;
+        }
+        return strtoupper($match[1]);
+    }
+
+    /**
+     * Sets the row format for the given table.
+     *
+     * @param string $table
+     * @param string $rowFormat
+     * @throws Exception
+     * @since 5.9.6
+     */
+    public function setRowFormat(string $table, string $rowFormat): void
+    {
+        $sql = sprintf('ALTER TABLE %s ROW_FORMAT = %s', $this->quoteTableName($table), $rowFormat);
+        $this->db->createCommand($sql)->execute();
     }
 }

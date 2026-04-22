@@ -13,7 +13,7 @@ use craft\i18n\Locale;
  * Language condition rule.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since 4.13.0
+ * @since 5.5.0
  */
 class LanguageConditionRule extends BaseMultiSelectConditionRule implements ElementConditionRuleInterface
 {

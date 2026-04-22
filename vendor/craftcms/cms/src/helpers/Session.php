@@ -22,7 +22,7 @@ class Session
     /**
      * @see session()
      */
-    private static YiiSession|false|null $_session;
+    private static YiiSession|false|null $_session = null;
 
     /**
      * @see exists()
@@ -98,7 +98,7 @@ class Session
     /**
      * Closes the session, if open.
      *
-     * @since 4.12.0
+     * @since 5.4.0
      */
     public static function close(): void
     {
@@ -152,7 +152,7 @@ class Session
      * @param bool $delete whether to delete this flash message right after this method is called
      * @return mixed the flash message or an array of messages if addFlash was used
      * @see YiiSession::getFlash()
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function getFlash(string $key, mixed $defaultValue = null, bool $delete = false): mixed
     {
@@ -169,7 +169,7 @@ class Session
      * @param bool $delete whether to delete the flash messages right after this method is called
      * @return array flash messages (key => message or key => [message1, message2])
      * @see YiiSession::getAllFlashes()
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function getAllFlashes(bool $delete): array
     {
@@ -185,7 +185,7 @@ class Session
      * @param string $key key identifying the flash message type
      * @return bool whether any flash messages exist under specified key
      * @see YiiSession::hasFlash()
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function hasFlash(string $key): bool
     {
@@ -202,7 +202,7 @@ class Session
      * @param mixed $value flash message
      * @param bool $removeAfterAccess whether the flash message should be automatically removed only if it is accessed
      * @see YiiSession::addFlash()
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function addFlash($key, $value = true, $removeAfterAccess = true): void
     {
@@ -215,7 +215,7 @@ class Session
      * @param string $key the key identifying the flash message
      * @return mixed the removed flash message or `null` if the flash message does not exist
      * @see YiiSession::removeFlash()
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function removeFlash(string $key): mixed
     {
@@ -230,7 +230,7 @@ class Session
      * Removes all flash messages.
      *
      * @see YiiSession::removeAllFlashes()
-     * @since 4.13.0
+     * @since 5.5.0
      */
     public static function removeAllFlashes(): void
     {

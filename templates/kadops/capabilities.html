@@ -28,7 +28,9 @@
             {% endfor %}
           </ul>
         </div>
+        {% if capability.serviceImage|length %}
         <img src="{{ capability.serviceImage.one.url('summaries') }}" alt="{{ capability.serviceImage.one.title }}">
+        {% endif %}
       </li>
       {% endfor %}
     </ul>

@@ -1,64 +1,26 @@
 columnSuffix: null
-contentColumnType: string
-fieldGroup: 3ef47ed8-7e10-4143-b599-cadbdc4ed33b # Common
 handle: profile
-instructions: ''
+instructions: null
 name: Profile
 searchable: true
 settings:
-  columns:
-    __assoc__:
-      -
-        - 92c21d7c-f3a9-4219-8f54-505098156f65 # Profile Picture
+  createButtonLabel: null
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
         -
-          __assoc__:
-            -
-              - width
-              - ''
-      -
-        - 964636a0-9dd8-4e64-8a82-b2870e2e12af # First Name
-        -
-          __assoc__:
-            -
-              - width
-              - ''
-      -
-        - 85bd7c4f-aae4-456f-af33-31b87ab82276 # Surname
-        -
-          __assoc__:
-            -
-              - width
-              - ''
-      -
-        - cf7b0e33-7c76-4132-bb68-aacf438ed2c7 # Position/Title
-        -
-          __assoc__:
-            -
-              - width
-              - ''
-      -
-        - 5e131149-b2d7-423b-b1ab-52ef8e34c208 # Email Address
-        -
-          __assoc__:
-            -
-              - width
-              - ''
-      -
-        - d682feb0-05b9-4c03-b3f6-33bf5e8b07ee # LinkedIn Link
-        -
-          __assoc__:
-            -
-              - width
-              - ''
-  contentTable: '{{%stc_profile}}'
-  fieldLayout: row
-  maxRows: ''
-  minRows: '1'
-  placeholderKey: null
+          - uid
+          - c64ac48b-e6ad-4689-a725-076591167d20 # Profile Block
+  includeTableView: false
+  maxEntries: null
+  minEntries: 1
+  pageSize: null
   propagationKeyFormat: null
   propagationMethod: none
-  selectionLabel: ''
-  staticField: ''
+  showCardsInGrid: false
+  viewMode: blocks
 translationKeyFormat: null
 translationMethod: site
-type: verbb\supertable\fields\SuperTableField
+type: craft\fields\Matrix

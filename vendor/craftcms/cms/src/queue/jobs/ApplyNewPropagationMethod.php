@@ -17,7 +17,7 @@ use craft\errors\UnsupportedSiteException;
 use craft\helpers\Db;
 use craft\helpers\ElementHelper;
 use craft\i18n\Translation;
-use craft\queue\BaseBatchedJob;
+use craft\queue\BaseBatchedElementJob;
 use craft\services\Structures;
 use Throwable;
 
@@ -29,7 +29,7 @@ use Throwable;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 3.4.8
  */
-class ApplyNewPropagationMethod extends BaseBatchedJob
+class ApplyNewPropagationMethod extends BaseBatchedElementJob
 {
     /**
      * @var class-string<ElementInterface> The element type to use
@@ -100,7 +100,7 @@ class ApplyNewPropagationMethod extends BaseBatchedJob
         }
 
         // Load the element in any sites that it's about to be deleted for
-        $otherSiteElements = $item::find()
+        $query = $item::find()
             ->id($item->id)
             ->siteId($otherSiteIds)
             ->structureId($item->structureId)
@@ -108,8 +108,13 @@ class ApplyNewPropagationMethod extends BaseBatchedJob
             ->drafts(null)
             ->provisionalDrafts(null)
             ->orderBy([])
-            ->indexBy('siteId')
-            ->all();
+            ->indexBy('siteId');
+
+        if (!empty($this->criteria)) {
+            Craft::configure($query, $this->criteria);
+        }
+
+        $otherSiteElements = $query->all();
 
         if (empty($otherSiteElements)) {
             $this->resaveItem($item);
@@ -213,7 +218,7 @@ class ApplyNewPropagationMethod extends BaseBatchedJob
         $item->resaving = true;
 
         try {
-            Craft::$app->getElements()->saveElement($item, updateSearchIndex: false);
+            Craft::$app->getElements()->saveElement($item, updateSearchIndex: false, saveContent: true);
         } catch (Throwable $e) {
             Craft::$app->getErrorHandler()->logException($e);
         }

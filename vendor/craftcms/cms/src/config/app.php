@@ -3,9 +3,9 @@
 return [
     'id' => 'CraftCMS',
     'name' => 'Craft CMS',
-    'version' => '4.17.13.1',
-    'schemaVersion' => '4.17.0.3',
-    'minVersionRequired' => '3.7.11',
+    'version' => '5.9.20',
+    'schemaVersion' => '5.9.0.8',
+    'minVersionRequired' => '4.5.0',
     'basePath' => dirname(__DIR__), // Defines the @app alias
     'runtimePath' => '@storage/runtime', // Defines the @runtime alias
     'controllerNamespace' => 'craft\controllers',
@@ -26,6 +26,9 @@ return [
         'assetIndexer' => [
             'class' => craft\services\AssetIndexer::class,
         ],
+        'auth' => [
+            'class' => craft\services\Auth::class,
+        ],
         'categories' => [
             'class' => craft\services\Categories::class,
         ],
@@ -34,9 +37,6 @@ return [
         ],
         'conditions' => [
             'class' => craft\services\Conditions::class,
-        ],
-        'content' => [
-            'class' => craft\services\Content::class,
         ],
         'dashboard' => [
             'class' => craft\services\Dashboard::class,
@@ -80,9 +80,6 @@ return [
         'log' => [
             'class' => craft\log\Dispatcher::class,
         ],
-        'matrix' => [
-            'class' => craft\services\Matrix::class,
-        ],
         'mutex' => [
             'class' => craft\mutex\Mutex::class,
         ],
@@ -110,18 +107,13 @@ return [
         'search' => [
             'class' => craft\services\Search::class,
         ],
-        'sections' => [
-            'class' => craft\services\Sections::class,
-        ],
         'security' => [
             'class' => craft\services\Security::class,
             'sensitiveKeywords' => [
                 'key',
                 'pass',
                 'password',
-                'pgpassword',
                 'pw',
-                'pwd',
                 'secret',
                 'sk',
                 'tok',
@@ -184,6 +176,9 @@ return [
         'sites' => [
             'class' => craft\services\Sites::class,
         ],
+        'sso' => [
+            'class' => craft\services\Sso::class,
+        ],
         'i18n' => [
             'class' => craft\i18n\I18N::class,
             'messageFormatter' => [
@@ -226,17 +221,16 @@ return [
             return Craft::createObject($config);
         },
 
-        'formatter' => function() {
-            return Craft::$app->getFormattingLocale()->getFormatter();
+        'db2' => function() {
+            $config = craft\helpers\App::dbConfig();
+            return Craft::createObject($config);
         },
 
-        'formattingLocale' => function() {
-            return craft\helpers\App::createFormattingLocale();
-        },
+        'formatter' => fn() => Craft::$app->getFormattingLocale()->getFormatter(),
 
-        'locale' => function() {
-            return Craft::$app->getI18n()->getLocaleById(Craft::$app->language);
-        },
+        'formattingLocale' => fn() => craft\helpers\App::createFormattingLocale(),
+
+        'locale' => fn() => Craft::$app->getI18n()->getLocaleById(Craft::$app->language),
 
         'mailer' => function() {
             $config = craft\helpers\App::mailerConfig();

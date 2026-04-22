@@ -314,7 +314,7 @@ class ArrayHelper extends \yii\helpers\ArrayHelper
 
     /**
      * Returns whether the given array contains *only* values where a given key (the name of a
-     * -ub-array key or sub-object property) is sett o given value.
+     * -ub-array key or sub-object property) is set to given value.
      *
      * @param iterable $array the array that the value will be searched for in
      * @param callable|string $key the column name or anonymous function which must be set to $value
@@ -344,9 +344,7 @@ class ArrayHelper extends \yii\helpers\ArrayHelper
      */
     public static function filterEmptyStringsFromArray(array $array): array
     {
-        return array_filter($array, function($value): bool {
-            return $value !== '';
-        });
+        return array_filter($array, fn($value): bool => $value !== '');
     }
 
     /**
@@ -370,6 +368,18 @@ class ArrayHelper extends \yii\helpers\ArrayHelper
     public static function firstValue(array $array): mixed
     {
         return !empty($array) ? reset($array) : null;
+    }
+
+    /**
+     * Returns the last value in a given array.
+     *
+     * @param array $array
+     * @return mixed The last value, or null if $array isn’t an array, or is empty.
+     * @since 5.0.0
+     */
+    public static function lastValue(array $array): mixed
+    {
+        return !empty($array) ? end($array) : null;
     }
 
     /**
