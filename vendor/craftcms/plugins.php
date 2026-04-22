@@ -4,23 +4,6 @@ $vendorDir = dirname(__DIR__);
 $rootDir = dirname(dirname(__DIR__));
 
 return array (
-  'craftcms/aws-s3' => 
-  array (
-    'class' => 'craft\\awss3\\Plugin',
-    'basePath' => $vendorDir . '/craftcms/aws-s3/src',
-    'handle' => 'aws-s3',
-    'aliases' => 
-    array (
-      '@craft/awss3' => $vendorDir . '/craftcms/aws-s3/src',
-    ),
-    'name' => 'Amazon S3',
-    'version' => '2.3.0',
-    'description' => 'Amazon S3 integration for Craft CMS',
-    'developer' => 'Pixel & Tonic',
-    'developerUrl' => 'https://pixelandtonic.com/',
-    'developerEmail' => 'support@craftcms.com',
-    'documentationUrl' => 'https://github.com/craftcms/aws-s3/blob/master/README.md',
-  ),
   'craftcms/postmark' => 
   array (
     'class' => 'craftcms\\postmark\\Plugin',

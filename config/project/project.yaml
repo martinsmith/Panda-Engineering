@@ -1,4 +1,4 @@
-dateModified: 1776848552
+dateModified: 1776850326
 email:
   fromEmail: martin@mechanised.co.uk
   fromName: Project
@@ -11,63 +11,6 @@ fs:
       path: assets
     type: craft\fs\Local
     url: /assets
-  kadops:
-    hasUrls: true
-    name: Kadops
-    settings:
-      addSubfolderToRootUrl: true
-      autoFocalPoint: false
-      bucket: $AWS_BUCKET_NAME
-      bucketSelectionMode: manual
-      cfDistributionId: $CLOUDFRONT_DIST_ID
-      cfPrefix: ''
-      expires: ''
-      keyId: $AWS_ACCESS_KEY
-      makeUploadsPublic: true
-      region: $AWS_REGION
-      secret: $AWS_SECRET_KEY
-      storageClass: ''
-      subfolder: kadops
-    type: craft\awss3\Fs
-    url: $CLOUDFRONT_URL
-  panda:
-    hasUrls: true
-    name: Panda
-    settings:
-      addSubfolderToRootUrl: true
-      autoFocalPoint: false
-      bucket: $AWS_BUCKET_NAME
-      bucketSelectionMode: manual
-      cfDistributionId: $CLOUDFRONT_DIST_ID
-      cfPrefix: ''
-      expires: ''
-      keyId: $AWS_ACCESS_KEY
-      makeUploadsPublic: true
-      region: $AWS_REGION
-      secret: $AWS_SECRET_KEY
-      storageClass: ''
-      subfolder: panda
-    type: craft\awss3\Fs
-    url: $CLOUDFRONT_URL
-  stat:
-    hasUrls: true
-    name: Stat
-    settings:
-      addSubfolderToRootUrl: true
-      autoFocalPoint: false
-      bucket: $AWS_BUCKET_NAME
-      bucketSelectionMode: manual
-      cfDistributionId: $CLOUDFRONT_DIST_ID
-      cfPrefix: ''
-      expires: ''
-      keyId: $AWS_ACCESS_KEY
-      makeUploadsPublic: true
-      region: $AWS_REGION
-      secret: $AWS_SECRET_KEY
-      storageClass: ''
-      subfolder: stat
-    type: craft\awss3\Fs
-    url: $CLOUDFRONT_URL
 meta:
   __names__:
     0e7e201d-45b8-40f3-8053-d9ea7610fbeb: 'Profile Details Block' # Profile Details Block
@@ -76,7 +19,6 @@ meta:
     2bab1b4b-9c73-46db-a424-065a6e96c879: 'Hero Block' # Hero Block
     2fd7d0b2-a8af-43b5-b48d-8aed11fb975b: 'Page Sections - ServicesList - Service' # Page Sections - ServicesList - Service
     3e8173e2-82d1-4c5e-8d56-622c2f629efe: Content # Content
-    4b87641c-dafb-4624-82e2-fa956cbcfb67: Stat # Stat
     6af18bea-6a01-4de3-9c52-9162e75f7ebb: 'Page Introduction' # Page Introduction
     6b99b05c-3d3d-4cee-a97e-106e81e96b1c: Brand # Brand
     6e987caa-c976-4b84-9b86-fe4c91a134a4: 'Contact Information' # Contact Information
@@ -94,14 +36,12 @@ meta:
     24ef758d-c6ee-4276-bf5d-2540f049b76a: Achievments # Achievments
     041c8c55-9d95-430b-8599-a312f5a113dc: Kadops # Kadops
     49baa156-b43e-4e99-9769-48166a3e4fbb: Capability # Capability
-    49dabed7-207d-4087-9227-a18660a3b4c2: Panda # Panda
     54c945bd-ff56-4c1c-b4ab-121864677770: 'Panda News' # Panda News
     88b867e8-471b-4a2a-a9cf-87a800ace135: 'Panda Team' # Panda Team
     091b9d19-5686-40f4-93a4-ad85dc15777a: 'Company Information' # Company Information
     318ceac4-1f0c-4b8b-b3db-39faa69fd25d: Hero # Hero
     414f71cb-697e-478e-9f52-4b2fd4f6cbee: Homepage # Homepage
     426b0d1b-7374-4c05-b844-97e94916dd5e: 'Public Schema' # Public Schema
-    504a9970-e732-4891-a6f3-66f1e99d8ae9: Kadops # Kadops
     683d1203-b086-478b-91cc-d25c27b2e661: 'Profile Pictures' # Profile Pictures
     791a54fd-182a-4eca-b677-a52ea1ff20ad: 'Additional Pages' # Additional Pages
     822f810f-ccda-4171-9479-bab006333f63: Simple # Simple
@@ -139,13 +79,10 @@ meta:
     da064374-dd80-4ac1-99e4-33946de39dc0: 'Panda Team' # Panda Team
     dac17834-2dd9-44fe-82f5-551ddd17168d: Large # Large
     dd1f3a64-42bf-4cb6-a468-cce29725df35: 'Panda News' # Panda News
+    de320aaf-bff6-4cd7-90a0-6590c4f80b01: Direct # Direct
     df6900ca-95b7-4dd4-8f9b-b4457d51e3d6: 'Policy Documents' # Policy Documents
     fe5d60d6-8991-48d8-be8d-742b86ea03cb: Summaries # Summaries
 plugins:
-  aws-s3:
-    edition: standard
-    enabled: true
-    schemaVersion: '2.0'
   ckeditor:
     edition: standard
     enabled: true
@@ -153,7 +90,7 @@ plugins:
   cookie-consent-banner:
     edition: standard
     enabled: true
-    schemaVersion: 1.0.4
+    schemaVersion: 1.0.3
     settings:
       allow: 'Allow cookies'
       async_js: ''

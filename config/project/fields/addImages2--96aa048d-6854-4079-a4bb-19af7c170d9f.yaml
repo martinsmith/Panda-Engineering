@@ -10,7 +10,7 @@ settings:
   allowedKinds: null
   branchLimit: null
   defaultPlacement: end
-  defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
   defaultUploadLocationSubpath: null
   maintainHierarchy: false
   maxRelations: null
@@ -19,7 +19,7 @@ settings:
   restrictFiles: false
   restrictLocation: false
   restrictedDefaultUploadSubpath: null
-  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
   restrictedLocationSubpath: null
   selectionLabel: 'Add an Image'
   showSearchInput: true
@@ -27,8 +27,8 @@ settings:
   showUnpermittedFiles: false
   showUnpermittedVolumes: false
   sources:
-    - 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
-    - 'volume:49dabed7-207d-4087-9227-a18660a3b4c2' # Panda
+    - 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
+    - 'volume:49dabed7-207d-4087-9227-a18660a3b4c2'
   targetSiteId: null
   validateRelatedElements: false
   viewMode: thumbs

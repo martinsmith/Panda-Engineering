@@ -10,7 +10,7 @@ settings:
   allowUploads: true
   allowedKinds: null
   branchLimit: null
-  defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
   defaultUploadLocationSubpath: null
   localizeRelations: false
   maintainHierarchy: false
@@ -20,7 +20,7 @@ settings:
   restrictFiles: false
   restrictLocation: true
   restrictedDefaultUploadSubpath: null
-  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9' # Kadops
+  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
   restrictedLocationSubpath: null
   selectionLabel: 'Add an Image'
   showSiteMenu: true
