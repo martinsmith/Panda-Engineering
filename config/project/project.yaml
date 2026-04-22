@@ -1,4 +1,4 @@
-dateModified: 1776846757
+dateModified: 1776848324
 email:
   fromEmail: martin@mechanised.co.uk
   fromName: Project
@@ -66,9 +66,7 @@ meta:
     0e7e201d-45b8-40f3-8053-d9ea7610fbeb: 'Profile Details Block' # Profile Details Block
     0f34b306-eb64-41bb-9475-6d149116fd30: References # References
     1a75f86f-3c8f-4301-8eb0-4be728618391: 'Supporting Images' # Supporting Images
-    1b2fd43c-2000-42df-b5aa-0c4c7609c574: Default # Default
     2bab1b4b-9c73-46db-a424-065a6e96c879: 'Hero Block' # Hero Block
-    2f0cdc40-8dac-4d29-b2d1-3ee2c5b5d666: Staff # Staff
     2fd7d0b2-a8af-43b5-b48d-8aed11fb975b: 'Page Sections - ServicesList - Service' # Page Sections - ServicesList - Service
     3e8173e2-82d1-4c5e-8d56-622c2f629efe: Content # Content
     4b87641c-dafb-4624-82e2-fa956cbcfb67: Stat # Stat
@@ -141,10 +139,6 @@ plugins:
     edition: standard
     enabled: true
     schemaVersion: '2.0'
-  child-me:
-    edition: standard
-    enabled: true
-    schemaVersion: 1.0.0
   ckeditor:
     edition: standard
     enabled: true
@@ -185,32 +179,10 @@ plugins:
       secure_only: ''
       target: _blank
       type: info
-  cp-nav:
-    edition: standard
-    enabled: true
-    schemaVersion: 2.0.11
-    settings:
-      originalNavHash:
-        __assoc__:
-          -
-            - fcdf980d-7f14-49b5-b61c-43252f63070c
-            - W3sibGFiZWwiOiJEYXNoYm9hcmQiLCJ1cmwiOiJkYXNoYm9hcmQiLCJmb250SWNvbiI6ImdhdWdlIn0seyJsYWJlbCI6IkVudHJpZXMiLCJ1cmwiOiJlbnRyaWVzIiwiZm9udEljb24iOiJzZWN0aW9uIn0seyJsYWJlbCI6Ikdsb2JhbHMiLCJ1cmwiOiJnbG9iYWxzIiwiZm9udEljb24iOiJnbG9iZSJ9LHsibGFiZWwiOiJBc3NldHMiLCJ1cmwiOiJhc3NldHMiLCJmb250SWNvbiI6ImFzc2V0cyJ9LHsibGFiZWwiOiJVc2VycyIsInVybCI6InVzZXJzIiwiZm9udEljb24iOiJ1c2VycyJ9LHsibGFiZWwiOiJTRU9tYXRpYyIsInVybCI6InNlb21hdGljIiwiaWNvbiI6Ii92YXIvd3d3L3Zob3N0cy9rYWRvcHMuY28udWsvaHR0cGRvY3MvY3JhZnQvdmVuZG9yL255c3R1ZGlvMTA3L2NyYWZ0LXNlb21hdGljL3NyYy9pY29uLW1hc2suc3ZnIiwic3VibmF2Ijp7ImRhc2hib2FyZCI6eyJsYWJlbCI6IkRhc2hib2FyZCIsInVybCI6InNlb21hdGljL2Rhc2hib2FyZCJ9LCJnbG9iYWwiOnsibGFiZWwiOiJHbG9iYWwgU0VPIiwidXJsIjoic2VvbWF0aWMvZ2xvYmFsL2dlbmVyYWwifSwiY29udGVudCI6eyJsYWJlbCI6IkNvbnRlbnQgU0VPIiwidXJsIjoic2VvbWF0aWMvY29udGVudCJ9LCJzaXRlIjp7ImxhYmVsIjoiU2l0ZSBTZXR0aW5ncyIsInVybCI6InNlb21hdGljL3NpdGUvaWRlbnRpdHkifSwidHJhY2tpbmciOnsibGFiZWwiOiJUcmFja2luZyBTY3JpcHRzIiwidXJsIjoic2VvbWF0aWMvdHJhY2tpbmcvZ29vZ2xlQW5hbHl0aWNzIn0sInBsdWdpbiI6eyJsYWJlbCI6IlBsdWdpbiBTZXR0aW5ncyIsInVybCI6InNlb21hdGljL3BsdWdpbiJ9fX0seyJsYWJlbCI6IkdyYXBoUUwiLCJ1cmwiOiJncmFwaHFsIiwiaWNvbiI6IkBhcHBpY29ucy9ncmFwaHFsLnN2ZyIsInN1Ym5hdiI6eyJzY2hlbWFzIjp7ImxhYmVsIjoiU2NoZW1hcyIsInVybCI6ImdyYXBocWwvc2NoZW1hcyJ9LCJ0b2tlbnMiOnsibGFiZWwiOiJUb2tlbnMiLCJ1cmwiOiJncmFwaHFsL3Rva2VucyJ9LCJncmFwaGlxbCI6eyJsYWJlbCI6IkdyYXBoaVFMIiwidXJsIjoiZ3JhcGhpcWwiLCJleHRlcm5hbCI6dHJ1ZX19fSx7InVybCI6InV0aWxpdGllcyIsImxhYmVsIjoiVXRpbGl0aWVzIiwiZm9udEljb24iOiJ0b29sIiwiYmFkZ2VDb3VudCI6MTR9LHsidXJsIjoic2V0dGluZ3MiLCJsYWJlbCI6IlNldHRpbmdzIiwiZm9udEljb24iOiJzZXR0aW5ncyJ9LHsidXJsIjoicGx1Z2luLXN0b3JlIiwibGFiZWwiOiJQbHVnaW4gU3RvcmUiLCJmb250SWNvbiI6InBsdWdpbiJ9XQ==
   postmark:
     edition: standard
     enabled: true
     schemaVersion: 2.0.1
-  redactor:
-    edition: standard
-    enabled: true
-    schemaVersion: 2.3.0
-  redactor-tweaks:
-    edition: standard
-    enabled: true
-    schemaVersion: 1.0.0
-  retcon:
-    edition: standard
-    enabled: true
-    schemaVersion: 1.0.0
   seomatic:
     edition: standard
     enabled: true
@@ -255,14 +227,6 @@ plugins:
       sitemapsEnabled: true
       socialMediaPreviewTarget: true
       submitSitemaps: true
-  super-table:
-    edition: standard
-    enabled: true
-    schemaVersion: 4.0.0
-  wordsmith:
-    edition: standard
-    enabled: true
-    schemaVersion: 0.0.0.0
 system:
   edition: pro
   live: true

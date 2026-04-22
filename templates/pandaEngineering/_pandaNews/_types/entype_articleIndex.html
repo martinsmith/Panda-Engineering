@@ -46,7 +46,8 @@
         <header>
           <h3><a href="{{ entry.url }}">{{ entry.title }}</a></h3>
         </header>
-          <p>{{ entry.pageText|chop(limit="20", unit='w', append='...') }}</p>
+          {% set _words = entry.pageText|striptags|split(' ')|filter(w => w != '') %}
+          <p>{{ _words|slice(0, 20)|join(' ') }}{% if _words|length > 20 %}...{% endif %}</p>
           <p class="readMore"><a href="{{ entry.url }}">Read More</a></p>
         </div>
         <p class="postDate">{{ entry.postDate | date("j M Y") }}</p>

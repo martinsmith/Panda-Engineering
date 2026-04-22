@@ -10,5 +10,4 @@ return array(
     'ML\\IRI' => array($vendorDir . '/ml/iri'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'DaveChild\\TextStatistics' => array($vendorDir . '/davechild/textstatistics/src'),
-    '' => array($vendorDir . '/mofodojodino/profanity-filter/src'),
 );

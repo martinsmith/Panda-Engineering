@@ -14,6 +14,4 @@ return [
     'password' => getenv('DB_PASSWORD'),
     'schema' => getenv('DB_SCHEMA'),
     'tablePrefix' => getenv('DB_TABLE_PREFIX'),
-    'charset' => getenv('CRAFT_DB_CHARSET') ?: 'utf8',
-    'collation' => getenv('CRAFT_DB_COLLATION') ?: null,
 ];

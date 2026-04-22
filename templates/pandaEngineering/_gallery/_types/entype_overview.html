@@ -38,7 +38,8 @@
           <img src="{{ item.caseStudyImages.one.url('summaries') }}" alt="{{ item.caseStudyImages.one.title }}">
         </figure>
         <div>
-        {{ item.pageText | chop(limit=30, unit='w', allowedTags="<p>") }}
+        {% set _words = item.pageText|striptags|split(' ')|filter(w => w != '') %}
+        <p>{{ _words|slice(0, 30)|join(' ') }}</p>
         <p class="readMore"><a href="{{ item.url }}">Read More</a></p>
       </div>
     </div>

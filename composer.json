@@ -5,14 +5,7 @@
     "craftcms/ckeditor": "^4.0",
     "craftcms/cms": "^5.0",
     "craftcms/postmark": "^3.0",
-    "craftcms/redactor": "^4.0",
-    "mmikkel/child-me": "^2.0",
-    "mmikkel/retcon": "^3.0",
     "nystudio107/craft-seomatic": "^5.0",
-    "topshelfcraft/wordsmith": "^5.0",
-    "verbb/cp-nav": "^5.0",
-    "verbb/redactor-tweaks": "^4.0",
-    "verbb/super-table": "^4.0",
     "vlucas/phpdotenv": "^5.4.0"
   },
   "require-dev": {

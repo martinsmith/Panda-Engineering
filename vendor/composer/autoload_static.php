@@ -30,15 +30,10 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'f844ccf1d25df8663951193c3fc307c8' => __DIR__ . '/..' . '/twig/twig/src/Resources/string_loader.php',
         '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
-        'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
-        'b46ad4fe52f4d1899a2951c7e6ea56b0' => __DIR__ . '/..' . '/voku/portable-utf8/bootstrap.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
-        '65380ab4d81167209b0a4fac46641984' => __DIR__ . '/..' . '/voku/arrayy/src/Create.php',
         '09fc349b549513bf7f4291502426f919' => __DIR__ . '/..' . '/embed/embed/src/functions.php',
-        '603ce470d3b0980801c7a6185a3d6d53' => __DIR__ . '/..' . '/icanboogie/inflector/lib/helpers.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
-        'c88a6f0dbb89a32bf4e283d3a7d626ab' => __DIR__ . '/..' . '/voku/stringy/src/Create.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -64,12 +59,7 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         ),
         'v' =>
         array (
-            'voku\\helper\\' => 12,
             'voku\\' => 5,
-            'verbb\\supertable\\' => 17,
-            'verbb\\redactortweaks\\' => 21,
-            'verbb\\cpnav\\' => 12,
-            'verbb\\base\\' => 11,
         ),
         's' =>
         array (
@@ -90,8 +80,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'm' =>
         array (
             'modules\\' => 8,
-            'mmikkel\\retcon\\' => 15,
-            'mmikkel\\childme\\' => 16,
             'mikehaertl\\shellcommand\\' => 24,
         ),
         'e' =>
@@ -102,7 +90,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         array (
             'creocoder\\nestedsets\\' => 21,
             'craftcms\\postmark\\' => 18,
-            'craft\\redactor\\' => 15,
             'craft\\htmlfield\\' => 16,
             'craft\\flysystem\\' => 16,
             'craft\\composer\\' => 15,
@@ -127,8 +114,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'T' =>
         array (
             'Twig\\' => 5,
-            'TopShelfCraft\\base\\' => 19,
-            'TopShelfCraft\\Wordsmith\\' => 24,
             'TheIconic\\NameParser\\' => 21,
         ),
         'S' =>
@@ -141,7 +126,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
-            'Symfony\\Polyfill\\Iconv\\' => 23,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Contracts\\Translation\\' => 30,
             'Symfony\\Contracts\\Service\\' => 26,
@@ -167,7 +151,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Clock\\' => 24,
-            'Stringy\\' => 8,
             'SpomkyLabs\\Pki\\' => 15,
             'Seld\\CliPrompt\\' => 15,
         ),
@@ -218,7 +201,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
             'Imagine\\' => 8,
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Contracts\\' => 21,
-            'ICanBoogie\\' => 11,
         ),
         'H' =>
         array (
@@ -244,7 +226,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
             'Doctrine\\Deprecations\\' => 22,
             'Doctrine\\Common\\Lexer\\' => 22,
             'Doctrine\\Common\\Collections\\' => 28,
-            'Defuse\\Crypto\\' => 14,
             'DASPRiD\\Enum\\' => 13,
         ),
         'C' =>
@@ -267,7 +248,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'A' =>
         array (
             'Aws\\' => 4,
-            'Arrayy\\' => 7,
         ),
     );
 
@@ -340,33 +320,9 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         array (
             0 => __DIR__ . '/..' . '/craftcms/cms/lib/ar-softdelete/src',
         ),
-        'voku\\helper\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/voku/urlify/src/voku/helper',
-            1 => __DIR__ . '/..' . '/voku/email-check/src/voku/helper',
-            2 => __DIR__ . '/..' . '/voku/anti-xss/src/voku/helper',
-        ),
         'voku\\' =>
         array (
-            0 => __DIR__ . '/..' . '/voku/stop-words/src/voku',
-            1 => __DIR__ . '/..' . '/voku/portable-utf8/src/voku',
-            2 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
-        ),
-        'verbb\\supertable\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/verbb/super-table/src',
-        ),
-        'verbb\\redactortweaks\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/verbb/redactor-tweaks/src',
-        ),
-        'verbb\\cpnav\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/verbb/cp-nav/src',
-        ),
-        'verbb\\base\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/verbb/base/src',
+            0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
         ),
         'samdark\\log\\tests\\' =>
         array (
@@ -402,14 +358,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         array (
             0 => __DIR__ . '/../..' . '/modules',
         ),
-        'mmikkel\\retcon\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/mmikkel/retcon/src',
-        ),
-        'mmikkel\\childme\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/mmikkel/child-me/src',
-        ),
         'mikehaertl\\shellcommand\\' =>
         array (
             0 => __DIR__ . '/..' . '/mikehaertl/php-shellcommand/src',
@@ -425,10 +373,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'craftcms\\postmark\\' =>
         array (
             0 => __DIR__ . '/..' . '/craftcms/postmark/src',
-        ),
-        'craft\\redactor\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/craftcms/redactor/src',
         ),
         'craft\\htmlfield\\' =>
         array (
@@ -478,14 +422,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
-        'TopShelfCraft\\base\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/topshelfcraft/base/src',
-        ),
-        'TopShelfCraft\\Wordsmith\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src',
-        ),
         'TheIconic\\NameParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/theiconic/name-parser/src',
@@ -522,10 +458,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'Symfony\\Polyfill\\Intl\\Grapheme\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
-        ),
-        'Symfony\\Polyfill\\Iconv\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-iconv',
         ),
         'Symfony\\Polyfill\\Ctype\\' =>
         array (
@@ -626,10 +558,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'Symfony\\Component\\Clock\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/clock',
-        ),
-        'Stringy\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/voku/stringy/src',
         ),
         'SpomkyLabs\\Pki\\' =>
         array (
@@ -776,10 +704,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         array (
             0 => __DIR__ . '/..' . '/illuminate/contracts',
         ),
-        'ICanBoogie\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/icanboogie/inflector/lib',
-        ),
         'HtmlParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/oscarotero/html-parser/src',
@@ -831,10 +755,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'Doctrine\\Common\\Collections\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/collections/src',
-        ),
-        'Defuse\\Crypto\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
         ),
         'DASPRiD\\Enum\\' =>
         array (
@@ -888,10 +808,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         array (
             0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
         ),
-        'Arrayy\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/voku/arrayy/src',
-        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -925,10 +841,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         ),
     );
 
-    public static $fallbackDirsPsr0 = array (
-        0 => __DIR__ . '/..' . '/mofodojodino/profanity-filter/src',
-    );
-
     public static $classMap = array (
         'AWS\\CRT\\Auth\\AwsCredentials' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/AwsCredentials.php',
         'AWS\\CRT\\Auth\\CredentialsProvider' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/CredentialsProvider.php',
@@ -953,48 +865,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'AWS\\CRT\\NativeResource' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/NativeResource.php',
         'AWS\\CRT\\OptionValue' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
         'AWS\\CRT\\Options' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
-        'Arrayy\\Arrayy' => __DIR__ . '/..' . '/voku/arrayy/src/Arrayy.php',
-        'Arrayy\\ArrayyIterator' => __DIR__ . '/..' . '/voku/arrayy/src/ArrayyIterator.php',
-        'Arrayy\\ArrayyMeta' => __DIR__ . '/..' . '/voku/arrayy/src/ArrayyMeta.php',
-        'Arrayy\\ArrayyRewindableExtendedGenerator' => __DIR__ . '/..' . '/voku/arrayy/src/ArrayyRewindableExtendedGenerator.php',
-        'Arrayy\\ArrayyRewindableGenerator' => __DIR__ . '/..' . '/voku/arrayy/src/ArrayyRewindableGenerator.php',
-        'Arrayy\\ArrayyStrict' => __DIR__ . '/..' . '/voku/arrayy/src/ArrayyStrict.php',
-        'Arrayy\\Collection\\AbstractCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Collection/AbstractCollection.php',
-        'Arrayy\\Collection\\Collection' => __DIR__ . '/..' . '/voku/arrayy/src/Collection/Collection.php',
-        'Arrayy\\Collection\\CollectionInterface' => __DIR__ . '/..' . '/voku/arrayy/src/Collection/CollectionInterface.php',
-        'Arrayy\\Mapper\\Json' => __DIR__ . '/..' . '/voku/arrayy/src/Mapper/Json.php',
-        'Arrayy\\StaticArrayy' => __DIR__ . '/..' . '/voku/arrayy/src/StaticArrayy.php',
-        'Arrayy\\TypeCheck\\AbstractTypeCheck' => __DIR__ . '/..' . '/voku/arrayy/src/TypeCheck/AbstractTypeCheck.php',
-        'Arrayy\\TypeCheck\\TypeCheckArray' => __DIR__ . '/..' . '/voku/arrayy/src/TypeCheck/TypeCheckArray.php',
-        'Arrayy\\TypeCheck\\TypeCheckCallback' => __DIR__ . '/..' . '/voku/arrayy/src/TypeCheck/TypeCheckCallback.php',
-        'Arrayy\\TypeCheck\\TypeCheckInterface' => __DIR__ . '/..' . '/voku/arrayy/src/TypeCheck/TypeCheckInterface.php',
-        'Arrayy\\TypeCheck\\TypeCheckPhpDoc' => __DIR__ . '/..' . '/voku/arrayy/src/TypeCheck/TypeCheckPhpDoc.php',
-        'Arrayy\\TypeCheck\\TypeCheckSimple' => __DIR__ . '/..' . '/voku/arrayy/src/TypeCheck/TypeCheckSimple.php',
-        'Arrayy\\Type\\ArrayCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/ArrayCollection.php',
-        'Arrayy\\Type\\BoolArrayCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/BoolArrayCollection.php',
-        'Arrayy\\Type\\BoolCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/BoolCollection.php',
-        'Arrayy\\Type\\CallableCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/CallableCollection.php',
-        'Arrayy\\Type\\DetectFirstValueTypeCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/DetectFirstValueTypeCollection.php',
-        'Arrayy\\Type\\FloatArrayCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/FloatArrayCollection.php',
-        'Arrayy\\Type\\FloatCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/FloatCollection.php',
-        'Arrayy\\Type\\FloatIntArrayCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/FloatIntArrayCollection.php',
-        'Arrayy\\Type\\FloatIntCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/FloatIntCollection.php',
-        'Arrayy\\Type\\InstanceCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/InstanceCollection.php',
-        'Arrayy\\Type\\InstancesCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/InstancesCollection.php',
-        'Arrayy\\Type\\IntArrayCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/IntArrayCollection.php',
-        'Arrayy\\Type\\IntCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/IntCollection.php',
-        'Arrayy\\Type\\JsonSerializableCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/JsonSerializableCollection.php',
-        'Arrayy\\Type\\MixedCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/MixedCollection.php',
-        'Arrayy\\Type\\NonEmptyStringCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/NonEmptyStringCollection.php',
-        'Arrayy\\Type\\NumericCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/NumericCollection.php',
-        'Arrayy\\Type\\NumericStringCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/NumericStringCollection.php',
-        'Arrayy\\Type\\ObjectCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/ObjectCollection.php',
-        'Arrayy\\Type\\ResourceCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/ResourceCollection.php',
-        'Arrayy\\Type\\ScalarCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/ScalarCollection.php',
-        'Arrayy\\Type\\StdClassCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/StdClassCollection.php',
-        'Arrayy\\Type\\StringArrayCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/StringArrayCollection.php',
-        'Arrayy\\Type\\StringCollection' => __DIR__ . '/..' . '/voku/arrayy/src/Type/StringCollection.php',
-        'Arrayy\\Type\\TypeInterface' => __DIR__ . '/..' . '/voku/arrayy/src/Type/TypeInterface.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Aws\\ACMPCA\\ACMPCAClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ACMPCA/ACMPCAClient.php',
         'Aws\\ACMPCA\\Exception\\ACMPCAException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ACMPCA/Exception/ACMPCAException.php',
@@ -2593,20 +2463,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'DaveChild\\TextStatistics\\Syllables' => __DIR__ . '/..' . '/davechild/textstatistics/src/DaveChild/TextStatistics/Syllables.php',
         'DaveChild\\TextStatistics\\Text' => __DIR__ . '/..' . '/davechild/textstatistics/src/DaveChild/TextStatistics/Text.php',
         'DaveChild\\TextStatistics\\TextStatistics' => __DIR__ . '/..' . '/davechild/textstatistics/src/DaveChild/TextStatistics/TextStatistics.php',
-        'Defuse\\Crypto\\Core' => __DIR__ . '/..' . '/defuse/php-encryption/src/Core.php',
-        'Defuse\\Crypto\\Crypto' => __DIR__ . '/..' . '/defuse/php-encryption/src/Crypto.php',
-        'Defuse\\Crypto\\DerivedKeys' => __DIR__ . '/..' . '/defuse/php-encryption/src/DerivedKeys.php',
-        'Defuse\\Crypto\\Encoding' => __DIR__ . '/..' . '/defuse/php-encryption/src/Encoding.php',
-        'Defuse\\Crypto\\Exception\\BadFormatException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/BadFormatException.php',
-        'Defuse\\Crypto\\Exception\\CryptoException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/CryptoException.php',
-        'Defuse\\Crypto\\Exception\\EnvironmentIsBrokenException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/EnvironmentIsBrokenException.php',
-        'Defuse\\Crypto\\Exception\\IOException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/IOException.php',
-        'Defuse\\Crypto\\Exception\\WrongKeyOrModifiedCiphertextException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/WrongKeyOrModifiedCiphertextException.php',
-        'Defuse\\Crypto\\File' => __DIR__ . '/..' . '/defuse/php-encryption/src/File.php',
-        'Defuse\\Crypto\\Key' => __DIR__ . '/..' . '/defuse/php-encryption/src/Key.php',
-        'Defuse\\Crypto\\KeyOrPassword' => __DIR__ . '/..' . '/defuse/php-encryption/src/KeyOrPassword.php',
-        'Defuse\\Crypto\\KeyProtectedByPassword' => __DIR__ . '/..' . '/defuse/php-encryption/src/KeyProtectedByPassword.php',
-        'Defuse\\Crypto\\RuntimeTests' => __DIR__ . '/..' . '/defuse/php-encryption/src/RuntimeTests.php',
         'Deprecated' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Deprecated.php',
         'Doctrine\\Common\\Collections\\AbstractLazyCollection' => __DIR__ . '/..' . '/doctrine/collections/src/AbstractLazyCollection.php',
         'Doctrine\\Common\\Collections\\ArrayCollection' => __DIR__ . '/..' . '/doctrine/collections/src/ArrayCollection.php',
@@ -3420,16 +3276,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'HTMLPurifier_VarParser_Native' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/VarParser/Native.php',
         'HTMLPurifier_Zipper' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Zipper.php',
         'HtmlParser\\Parser' => __DIR__ . '/..' . '/oscarotero/html-parser/src/Parser.php',
-        'ICanBoogie\\Inflections' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections.php',
-        'ICanBoogie\\InflectionsConfigurator' => __DIR__ . '/..' . '/icanboogie/inflector/lib/InflectionsConfigurator.php',
-        'ICanBoogie\\InflectionsNotFound' => __DIR__ . '/..' . '/icanboogie/inflector/lib/InflectionsNotFound.php',
-        'ICanBoogie\\Inflections\\en' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections/en.php',
-        'ICanBoogie\\Inflections\\es' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections/es.php',
-        'ICanBoogie\\Inflections\\fr' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections/fr.php',
-        'ICanBoogie\\Inflections\\nb' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections/nb.php',
-        'ICanBoogie\\Inflections\\pt' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections/pt.php',
-        'ICanBoogie\\Inflections\\tr' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflections/tr.php',
-        'ICanBoogie\\Inflector' => __DIR__ . '/..' . '/icanboogie/inflector/lib/Inflector.php',
         'Illuminate\\Contracts\\Auth\\Access\\Authorizable' => __DIR__ . '/..' . '/illuminate/contracts/Auth/Access/Authorizable.php',
         'Illuminate\\Contracts\\Auth\\Access\\Gate' => __DIR__ . '/..' . '/illuminate/contracts/Auth/Access/Gate.php',
         'Illuminate\\Contracts\\Auth\\Authenticatable' => __DIR__ . '/..' . '/illuminate/contracts/Auth/Authenticatable.php',
@@ -4273,63 +4119,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'PHPStan\\PhpDocParser\\Printer\\DiffElem' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Printer/DiffElem.php',
         'PHPStan\\PhpDocParser\\Printer\\Differ' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Printer/Differ.php',
         'PHPStan\\PhpDocParser\\Printer\\Printer' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Printer/Printer.php',
-        'PHP_Typography\\Bin\\File_Operations' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/bin/class-file-operations.php',
-        'PHP_Typography\\Bin\\Pattern_Converter' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/bin/class-pattern-converter.php',
-        'PHP_Typography\\DOM' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-dom.php',
-        'PHP_Typography\\Fixes\\Default_Registry' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/class-default-registry.php',
-        'PHP_Typography\\Fixes\\Node_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/class-node-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Abstract_Node_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-abstract-node-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Classes_Dependent_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-classes-dependent-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Dash_Spacing_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-dash-spacing-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Dewidow_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-dewidow-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\French_Punctuation_Spacing_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-french-punctuation-spacing-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Numbered_Abbreviation_Spacing_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-numbered-abbreviation-spacing-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Process_Words_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-process-words-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Simple_Regex_Replacement_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-simple-regex-replacement-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Simple_Style_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-simple-style-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Single_Character_Word_Spacing_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-single-character-word-spacing-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Area_Units_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-area-units-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Dashes_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-dashes-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Diacritics_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-diacritics-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Ellipses_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-ellipses-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Exponents_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-exponents-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Fractions_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-fractions-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Marks_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-marks-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Maths_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-maths-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Ordinal_Suffix_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-ordinal-suffix-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Smart_Quotes_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-smart-quotes-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Space_Collapse_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-space-collapse-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Style_Ampersands_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-style-ampersands-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Style_Caps_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-style-caps-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Style_Hanging_Punctuation_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-style-hanging-punctuation-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Style_Initial_Quotes_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-style-initial-quotes-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Style_Numbers_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-style-numbers-fix.php',
-        'PHP_Typography\\Fixes\\Node_Fixes\\Unit_Spacing_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/node-fixes/class-unit-spacing-fix.php',
-        'PHP_Typography\\Fixes\\Registry' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/class-registry.php',
-        'PHP_Typography\\Fixes\\Token_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/class-token-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Abstract_Token_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-abstract-token-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Hyphenate_Compounds_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-hyphenate-compounds-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Hyphenate_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-hyphenate-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Smart_Dashes_Hyphen_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-smart-dashes-hyphen-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Wrap_Emails_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-wrap-emails-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Wrap_Hard_Hyphens_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-wrap-hard-hyphens-fix.php',
-        'PHP_Typography\\Fixes\\Token_Fixes\\Wrap_URLs_Fix' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/fixes/token-fixes/class-wrap-urls-fix.php',
-        'PHP_Typography\\Hyphenator' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-hyphenator.php',
-        'PHP_Typography\\Hyphenator\\Cache' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/hyphenator/class-cache.php',
-        'PHP_Typography\\Hyphenator\\Trie_Node' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/hyphenator/class-trie-node.php',
-        'PHP_Typography\\PHP_Typography' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-php-typography.php',
-        'PHP_Typography\\RE' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-re.php',
-        'PHP_Typography\\Settings' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-settings.php',
-        'PHP_Typography\\Settings\\Dash_Style' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/settings/class-dash-style.php',
-        'PHP_Typography\\Settings\\Dashes' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/settings/class-dashes.php',
-        'PHP_Typography\\Settings\\Quote_Style' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/settings/class-quote-style.php',
-        'PHP_Typography\\Settings\\Quotes' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/settings/class-quotes.php',
-        'PHP_Typography\\Settings\\Simple_Dashes' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/settings/class-simple-dashes.php',
-        'PHP_Typography\\Settings\\Simple_Quotes' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/settings/class-simple-quotes.php',
-        'PHP_Typography\\Strings' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-strings.php',
-        'PHP_Typography\\Text_Parser' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-text-parser.php',
-        'PHP_Typography\\Text_Parser\\Token' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/text-parser/class-token.php',
-        'PHP_Typography\\U' => __DIR__ . '/..' . '/mundschenk-at/php-typography/src/class-u.php',
         'ParagonIE\\ConstantTime\\Base32' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32.php',
         'ParagonIE\\ConstantTime\\Base32Hex' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32Hex.php',
         'ParagonIE\\ConstantTime\\Base64' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64.php',
@@ -5887,9 +5676,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'SpomkyLabs\\Pki\\X509\\GeneralName\\UniformResourceIdentifier' => __DIR__ . '/..' . '/spomky-labs/pki-framework/src/X509/GeneralName/UniformResourceIdentifier.php',
         'SpomkyLabs\\Pki\\X509\\GeneralName\\X400Address' => __DIR__ . '/..' . '/spomky-labs/pki-framework/src/X509/GeneralName/X400Address.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
-        'Stringy\\CollectionStringy' => __DIR__ . '/..' . '/voku/stringy/src/CollectionStringy.php',
-        'Stringy\\StaticStringy' => __DIR__ . '/..' . '/voku/stringy/src/StaticStringy.php',
-        'Stringy\\Stringy' => __DIR__ . '/..' . '/voku/stringy/src/Stringy.php',
         'Sunra\\PhpSimple\\HtmlDomParser' => __DIR__ . '/..' . '/sunra/php-simple-html-dom-parser/Src/Sunra/PhpSimple/HtmlDomParser.php',
         'Symfony\\Component\\Clock\\Clock' => __DIR__ . '/..' . '/symfony/clock/Clock.php',
         'Symfony\\Component\\Clock\\ClockAwareTrait' => __DIR__ . '/..' . '/symfony/clock/ClockAwareTrait.php',
@@ -6810,7 +6596,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'Symfony\\Contracts\\Translation\\TranslatorInterface' => __DIR__ . '/..' . '/symfony/translation-contracts/TranslatorInterface.php',
         'Symfony\\Contracts\\Translation\\TranslatorTrait' => __DIR__ . '/..' . '/symfony/translation-contracts/TranslatorTrait.php',
         'Symfony\\Polyfill\\Ctype\\Ctype' => __DIR__ . '/..' . '/symfony/polyfill-ctype/Ctype.php',
-        'Symfony\\Polyfill\\Iconv\\Iconv' => __DIR__ . '/..' . '/symfony/polyfill-iconv/Iconv.php',
         'Symfony\\Polyfill\\Intl\\Grapheme\\Grapheme' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/Grapheme.php',
         'Symfony\\Polyfill\\Intl\\Idn\\Idn' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Idn.php',
         'Symfony\\Polyfill\\Intl\\Idn\\Info' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Info.php',
@@ -6861,27 +6646,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'TheIconic\\NameParser\\Part\\PreNormalizedPart' => __DIR__ . '/..' . '/theiconic/name-parser/src/Part/PreNormalizedPart.php',
         'TheIconic\\NameParser\\Part\\Salutation' => __DIR__ . '/..' . '/theiconic/name-parser/src/Part/Salutation.php',
         'TheIconic\\NameParser\\Part\\Suffix' => __DIR__ . '/..' . '/theiconic/name-parser/src/Part/Suffix.php',
-        'TopShelfCraft\\Wordsmith\\Settings' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/Settings.php',
-        'TopShelfCraft\\Wordsmith\\Word' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/Word.php',
-        'TopShelfCraft\\Wordsmith\\Wordsmith' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/Wordsmith.php',
-        'TopShelfCraft\\Wordsmith\\gql\\WordsmithDirective' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/gql/WordsmithDirective.php',
-        'TopShelfCraft\\Wordsmith\\libs\\APTitleCapitalizer' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/APTitleCapitalizer.php',
-        'TopShelfCraft\\Wordsmith\\libs\\Emoji' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/Emoji.php',
-        'TopShelfCraft\\Wordsmith\\libs\\FullNameParser' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/FullNameParser.php',
-        'TopShelfCraft\\Wordsmith\\libs\\Hacksaw' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/Hacksaw.php',
-        'TopShelfCraft\\Wordsmith\\libs\\RomanNumerals' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/RomanNumerals.php',
-        'TopShelfCraft\\Wordsmith\\libs\\SubStringy\\SubStringy' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/SubStringy/SubStringy.php',
-        'TopShelfCraft\\Wordsmith\\libs\\SubStringy\\SubStringyTrait' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/SubStringy/SubStringyTrait.php',
-        'TopShelfCraft\\Wordsmith\\libs\\Tweetify' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/Tweetify.php',
-        'TopShelfCraft\\Wordsmith\\libs\\Videos' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/libs/Videos.php',
-        'TopShelfCraft\\Wordsmith\\services\\EmojiService' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/services/EmojiService.php',
-        'TopShelfCraft\\Wordsmith\\services\\TypographyService' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/services/TypographyService.php',
-        'TopShelfCraft\\Wordsmith\\services\\WordsmithService' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/services/WordsmithService.php',
-        'TopShelfCraft\\Wordsmith\\view\\WordsmithTwigExtension' => __DIR__ . '/..' . '/topshelfcraft/wordsmith/src/view/WordsmithTwigExtension.php',
-        'TopShelfCraft\\base\\Plugin' => __DIR__ . '/..' . '/topshelfcraft/base/src/Plugin.php',
-        'TopShelfCraft\\base\\Registrar' => __DIR__ . '/..' . '/topshelfcraft/base/src/Registrar.php',
-        'TopShelfCraft\\base\\controllers\\console\\ConsoleControllerTrait' => __DIR__ . '/..' . '/topshelfcraft/base/src/controllers/console/ConsoleControllerTrait.php',
-        'TopShelfCraft\\base\\controllers\\web\\WebControllerTrait' => __DIR__ . '/..' . '/topshelfcraft/base/src/controllers/web/WebControllerTrait.php',
         'Twig\\AbstractTwigCallable' => __DIR__ . '/..' . '/twig/twig/src/AbstractTwigCallable.php',
         'Twig\\Attribute\\AsTwigFilter' => __DIR__ . '/..' . '/twig/twig/src/Attribute/AsTwigFilter.php',
         'Twig\\Attribute\\AsTwigFunction' => __DIR__ . '/..' . '/twig/twig/src/Attribute/AsTwigFunction.php',
@@ -8516,17 +8280,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'craft\\records\\VolumeFolder' => __DIR__ . '/..' . '/craftcms/cms/src/records/VolumeFolder.php',
         'craft\\records\\WebAuthn' => __DIR__ . '/..' . '/craftcms/cms/src/records/WebAuthn.php',
         'craft\\records\\Widget' => __DIR__ . '/..' . '/craftcms/cms/src/records/Widget.php',
-        'craft\\redactor\\Field' => __DIR__ . '/..' . '/craftcms/redactor/src/Field.php',
-        'craft\\redactor\\FieldData' => __DIR__ . '/..' . '/craftcms/redactor/src/FieldData.php',
-        'craft\\redactor\\Plugin' => __DIR__ . '/..' . '/craftcms/redactor/src/Plugin.php',
-        'craft\\redactor\\assets\\field\\FieldAsset' => __DIR__ . '/..' . '/craftcms/redactor/src/assets/field/FieldAsset.php',
-        'craft\\redactor\\assets\\redactor\\RedactorAsset' => __DIR__ . '/..' . '/craftcms/redactor/src/assets/redactor/RedactorAsset.php',
-        'craft\\redactor\\controllers\\DefaultController' => __DIR__ . '/..' . '/craftcms/redactor/src/controllers/DefaultController.php',
-        'craft\\redactor\\events\\ModifyPurifierConfigEvent' => __DIR__ . '/..' . '/craftcms/redactor/src/events/ModifyPurifierConfigEvent.php',
-        'craft\\redactor\\events\\ModifyRedactorConfigEvent' => __DIR__ . '/..' . '/craftcms/redactor/src/events/ModifyRedactorConfigEvent.php',
-        'craft\\redactor\\events\\RegisterLinkOptionsEvent' => __DIR__ . '/..' . '/craftcms/redactor/src/events/RegisterLinkOptionsEvent.php',
-        'craft\\redactor\\events\\RegisterPluginPathsEvent' => __DIR__ . '/..' . '/craftcms/redactor/src/events/RegisterPluginPathsEvent.php',
-        'craft\\redactor\\migrations\\Install' => __DIR__ . '/..' . '/craftcms/redactor/src/migrations/Install.php',
         'craft\\search\\SearchQuery' => __DIR__ . '/..' . '/craftcms/cms/src/search/SearchQuery.php',
         'craft\\search\\SearchQueryTerm' => __DIR__ . '/..' . '/craftcms/cms/src/search/SearchQueryTerm.php',
         'craft\\search\\SearchQueryTermGroup' => __DIR__ . '/..' . '/craftcms/cms/src/search/SearchQueryTermGroup.php',
@@ -8835,18 +8588,7 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'enshrined\\svgSanitize\\data\\TagInterface' => __DIR__ . '/..' . '/enshrined/svg-sanitize/src/data/TagInterface.php',
         'enshrined\\svgSanitize\\data\\XPath' => __DIR__ . '/..' . '/enshrined/svg-sanitize/src/data/XPath.php',
         'mikehaertl\\shellcommand\\Command' => __DIR__ . '/..' . '/mikehaertl/php-shellcommand/src/Command.php',
-        'mmikkel\\childme\\ChildMe' => __DIR__ . '/..' . '/mmikkel/child-me/src/ChildMe.php',
-        'mmikkel\\childme\\events\\DefineEntryTypesEvent' => __DIR__ . '/..' . '/mmikkel/child-me/src/events/DefineEntryTypesEvent.php',
-        'mmikkel\\retcon\\Retcon' => __DIR__ . '/..' . '/mmikkel/retcon/src/Retcon.php',
-        'mmikkel\\retcon\\helpers\\RetconHelper' => __DIR__ . '/..' . '/mmikkel/retcon/src/helpers/RetconHelper.php',
-        'mmikkel\\retcon\\library\\RetconDom' => __DIR__ . '/..' . '/mmikkel/retcon/src/library/RetconDom.php',
-        'mmikkel\\retcon\\models\\RetconSettings' => __DIR__ . '/..' . '/mmikkel/retcon/src/models/RetconSettings.php',
-        'mmikkel\\retcon\\models\\RetconTransformedImage' => __DIR__ . '/..' . '/mmikkel/retcon/src/models/RetconTransformedImage.php',
-        'mmikkel\\retcon\\services\\RetconService' => __DIR__ . '/..' . '/mmikkel/retcon/src/services/RetconService.php',
-        'mmikkel\\retcon\\twigextensions\\RetconTwigExtension' => __DIR__ . '/..' . '/mmikkel/retcon/src/twigextensions/RetconTwigExtension.php',
-        'mmikkel\\retcon\\variables\\RetconVariable' => __DIR__ . '/..' . '/mmikkel/retcon/src/variables/RetconVariable.php',
         'modules\\Module' => __DIR__ . '/../..' . '/modules/Module.php',
-        'mofodojodino\\ProfanityFilter\\Check' => __DIR__ . '/..' . '/mofodojodino/profanity-filter/src/mofodojodino/ProfanityFilter/Check.php',
         'nystudio107\\codeeditor\\CodeEditor' => __DIR__ . '/..' . '/nystudio107/craft-code-editor/src/CodeEditor.php',
         'nystudio107\\codeeditor\\assetbundles\\codeeditor\\CodeEditorAsset' => __DIR__ . '/..' . '/nystudio107/craft-code-editor/src/assetbundles/codeeditor/CodeEditorAsset.php',
         'nystudio107\\codeeditor\\autocompletes\\CraftApiAutocomplete' => __DIR__ . '/..' . '/nystudio107/craft-code-editor/src/autocompletes/CraftApiAutocomplete.php',
@@ -13346,60 +13088,7 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
         'samdark\\log\\tests\\PsrArrayLoggerFactory' => __DIR__ . '/..' . '/samdark/yii2-psr-log-target/tests/PsrArrayLoggerFactory.php',
         'samdark\\log\\tests\\PsrTargetLevelsTest' => __DIR__ . '/..' . '/samdark/yii2-psr-log-target/tests/PsrTargetLevelsTest.php',
         'samdark\\log\\tests\\PsrTargetTest' => __DIR__ . '/..' . '/samdark/yii2-psr-log-target/tests/PsrTargetTest.php',
-        'verbb\\base\\Base' => __DIR__ . '/..' . '/verbb/base/src/Base.php',
-        'verbb\\base\\LogTrait' => __DIR__ . '/..' . '/verbb/base/src/LogTrait.php',
-        'verbb\\base\\assetbundles\\CpAsset' => __DIR__ . '/..' . '/verbb/base/src/assetbundles/CpAsset.php',
-        'verbb\\base\\base\\Module' => __DIR__ . '/..' . '/verbb/base/src/base/Module.php',
-        'verbb\\base\\controllers\\SettingsController' => __DIR__ . '/..' . '/verbb/base/src/controllers/SettingsController.php',
-        'verbb\\base\\elements\\db\\CachedElementQuery' => __DIR__ . '/..' . '/verbb/base/src/elements/db/CachedElementQuery.php',
-        'verbb\\base\\elements\\db\\CachedElementQueryTrait' => __DIR__ . '/..' . '/verbb/base/src/elements/db/CachedElementQueryTrait.php',
-        'verbb\\base\\helpers\\ArrayHelper' => __DIR__ . '/..' . '/verbb/base/src/helpers/ArrayHelper.php',
-        'verbb\\base\\helpers\\Locale' => __DIR__ . '/..' . '/verbb/base/src/helpers/Locale.php',
-        'verbb\\base\\helpers\\Plugin' => __DIR__ . '/..' . '/verbb/base/src/helpers/Plugin.php',
-        'verbb\\base\\helpers\\UrlHelper' => __DIR__ . '/..' . '/verbb/base/src/helpers/UrlHelper.php',
-        'verbb\\base\\services\\Templates' => __DIR__ . '/..' . '/verbb/base/src/services/Templates.php',
-        'verbb\\base\\twig\\SecurityPolicy' => __DIR__ . '/..' . '/verbb/base/src/twig/SecurityPolicy.php',
-        'verbb\\base\\twigextensions\\Extension' => __DIR__ . '/..' . '/verbb/base/src/twigextensions/Extension.php',
-        'verbb\\cpnav\\CpNav' => __DIR__ . '/..' . '/verbb/cp-nav/src/CpNav.php',
-        'verbb\\cpnav\\assetbundles\\CpNavAsset' => __DIR__ . '/..' . '/verbb/cp-nav/src/assetbundles/CpNavAsset.php',
-        'verbb\\cpnav\\assetbundles\\CpNavSettingsAsset' => __DIR__ . '/..' . '/verbb/cp-nav/src/assetbundles/CpNavSettingsAsset.php',
-        'verbb\\cpnav\\base\\PluginTrait' => __DIR__ . '/..' . '/verbb/cp-nav/src/base/PluginTrait.php',
-        'verbb\\cpnav\\controllers\\DefaultController' => __DIR__ . '/..' . '/verbb/cp-nav/src/controllers/DefaultController.php',
-        'verbb\\cpnav\\controllers\\LayoutController' => __DIR__ . '/..' . '/verbb/cp-nav/src/controllers/LayoutController.php',
-        'verbb\\cpnav\\controllers\\NavigationController' => __DIR__ . '/..' . '/verbb/cp-nav/src/controllers/NavigationController.php',
-        'verbb\\cpnav\\events\\LayoutEvent' => __DIR__ . '/..' . '/verbb/cp-nav/src/events/LayoutEvent.php',
-        'verbb\\cpnav\\events\\NavigationEvent' => __DIR__ . '/..' . '/verbb/cp-nav/src/events/NavigationEvent.php',
-        'verbb\\cpnav\\events\\ReorderLayoutsEvent' => __DIR__ . '/..' . '/verbb/cp-nav/src/events/ReorderLayoutsEvent.php',
-        'verbb\\cpnav\\helpers\\Permissions' => __DIR__ . '/..' . '/verbb/cp-nav/src/helpers/Permissions.php',
-        'verbb\\cpnav\\helpers\\ProjectConfigData' => __DIR__ . '/..' . '/verbb/cp-nav/src/helpers/ProjectConfigData.php',
-        'verbb\\cpnav\\migrations\\Install' => __DIR__ . '/..' . '/verbb/cp-nav/src/migrations/Install.php',
-        'verbb\\cpnav\\models\\Layout' => __DIR__ . '/..' . '/verbb/cp-nav/src/models/Layout.php',
-        'verbb\\cpnav\\models\\Navigation' => __DIR__ . '/..' . '/verbb/cp-nav/src/models/Navigation.php',
-        'verbb\\cpnav\\models\\Settings' => __DIR__ . '/..' . '/verbb/cp-nav/src/models/Settings.php',
-        'verbb\\cpnav\\records\\Layout' => __DIR__ . '/..' . '/verbb/cp-nav/src/records/Layout.php',
-        'verbb\\cpnav\\records\\Navigation' => __DIR__ . '/..' . '/verbb/cp-nav/src/records/Navigation.php',
-        'verbb\\cpnav\\services\\Layouts' => __DIR__ . '/..' . '/verbb/cp-nav/src/services/Layouts.php',
-        'verbb\\cpnav\\services\\Navigations' => __DIR__ . '/..' . '/verbb/cp-nav/src/services/Navigations.php',
-        'verbb\\cpnav\\services\\Service' => __DIR__ . '/..' . '/verbb/cp-nav/src/services/Service.php',
-        'verbb\\redactortweaks\\RedactorTweaks' => __DIR__ . '/..' . '/verbb/redactor-tweaks/src/RedactorTweaks.php',
-        'verbb\\redactortweaks\\RedactorTweaksAsset' => __DIR__ . '/..' . '/verbb/redactor-tweaks/src/RedactorTweaksAsset.php',
-        'verbb\\redactortweaks\\base\\PluginTrait' => __DIR__ . '/..' . '/verbb/redactor-tweaks/src/base/PluginTrait.php',
-        'verbb\\supertable\\SuperTable' => __DIR__ . '/..' . '/verbb/super-table/src/SuperTable.php',
-        'verbb\\supertable\\base\\PluginTrait' => __DIR__ . '/..' . '/verbb/super-table/src/base/PluginTrait.php',
-        'verbb\\supertable\\console\\controllers\\MigrateController' => __DIR__ . '/..' . '/verbb/super-table/src/console/controllers/MigrateController.php',
-        'verbb\\supertable\\console\\controllers\\utils\\PruneOrphanedSuperTableBlocksController' => __DIR__ . '/..' . '/verbb/super-table/src/console/controllers/utils/PruneOrphanedSuperTableBlocksController.php',
-        'verbb\\supertable\\elements\\SuperTableBlockElement' => __DIR__ . '/..' . '/verbb/super-table/src/elements/SuperTableBlockElement.php',
-        'verbb\\supertable\\fields\\SuperTableField' => __DIR__ . '/..' . '/verbb/super-table/src/fields/SuperTableField.php',
-        'verbb\\supertable\\migrations\\m240115_000000_craft5' => __DIR__ . '/..' . '/verbb/super-table/src/migrations/m240115_000000_craft5.php',
-        'verbb\\supertable\\variables\\SuperTableVariable' => __DIR__ . '/..' . '/verbb/super-table/src/variables/SuperTableVariable.php',
         'voku\\helper\\ASCII' => __DIR__ . '/..' . '/voku/portable-ascii/src/voku/helper/ASCII.php',
-        'voku\\helper\\AntiXSS' => __DIR__ . '/..' . '/voku/anti-xss/src/voku/helper/AntiXSS.php',
-        'voku\\helper\\Bootup' => __DIR__ . '/..' . '/voku/portable-utf8/src/voku/helper/Bootup.php',
-        'voku\\helper\\EmailCheck' => __DIR__ . '/..' . '/voku/email-check/src/voku/helper/EmailCheck.php',
-        'voku\\helper\\StopWords' => __DIR__ . '/..' . '/voku/stop-words/src/voku/helper/StopWords.php',
-        'voku\\helper\\StopWordsLanguageNotExists' => __DIR__ . '/..' . '/voku/stop-words/src/voku/helper/StopWordsLanguageNotExists.php',
-        'voku\\helper\\URLify' => __DIR__ . '/..' . '/voku/urlify/src/voku/helper/URLify.php',
-        'voku\\helper\\UTF8' => __DIR__ . '/..' . '/voku/portable-utf8/src/voku/helper/UTF8.php',
         'yii2tech\\ar\\softdelete\\SoftDeleteBehavior' => __DIR__ . '/..' . '/craftcms/cms/lib/ar-softdelete/src/SoftDeleteBehavior.php',
         'yii2tech\\ar\\softdelete\\SoftDeleteQueryBehavior' => __DIR__ . '/..' . '/craftcms/cms/lib/ar-softdelete/src/SoftDeleteQueryBehavior.php',
         'yii\\BaseYii' => __DIR__ . '/..' . '/yiisoft/yii2/BaseYii.php',
@@ -13972,7 +13661,6 @@ class ComposerStaticInitb38241da3fe316bb24ed371b299acf5b
             $loader->prefixLengthsPsr4 = ComposerStaticInitb38241da3fe316bb24ed371b299acf5b::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitb38241da3fe316bb24ed371b299acf5b::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInitb38241da3fe316bb24ed371b299acf5b::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInitb38241da3fe316bb24ed371b299acf5b::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInitb38241da3fe316bb24ed371b299acf5b::$classMap;
 
         }, null, ClassLoader::class);
