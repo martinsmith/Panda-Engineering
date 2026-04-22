@@ -1,9 +1,16 @@
-dateModified: 1776848324
+dateModified: 1776848552
 email:
   fromEmail: martin@mechanised.co.uk
   fromName: Project
   transportType: craft\mail\transportadapters\Sendmail
 fs:
+  direct:
+    hasUrls: true
+    name: Direct
+    settings:
+      path: assets
+    type: craft\fs\Local
+    url: /assets
   kadops:
     hasUrls: true
     name: Kadops
