@@ -1,0 +1,74 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  d8f9277b-79b0-49d5-8f87-08635a79aa9d:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: b40b9c43-9e56-46a1-86b1-1a6e8dee9665
+            handle: null
+            instructions: null
+            label: 'Service Name'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 5d0cbd20-1be9-4bd9-81cf-c72edd55b4bd
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 7bedad13-023a-4d2e-a2ea-93354c6af2df
+            handle: serviceImage
+            instructions: null
+            label: 'Service Image'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 9e23d6be-35c6-4db5-aeeb-a3e46b341df9
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 67ffad80-6f58-4aa0-adce-b663ccddcfb1
+            handle: null
+            instructions: null
+            label: 'Link?'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: a4409592-0e6f-463b-9976-584196f9dec6
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: cb3aee08-c458-40d7-a35a-1f5028762bc4
+        userCondition: null
+    thumbFieldKey: null
+handle: serviceBlock
+hasTitleField: false
+icon: null
+name: 'Page Sections - ServicesList - Service Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

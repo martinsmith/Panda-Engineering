@@ -1,0 +1,44 @@
+columnSuffix: null
+handle: reference
+instructions: null
+name: 'References - Reference'
+searchable: true
+settings:
+  availableTransforms: '*'
+  availableVolumes: ''
+  css: null
+  cssFile: null
+  defaultTransform: ''
+  enableSourceEditingForNonAdmins: true
+  fullGraphqlData: false
+  headingLevels:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+  js: null
+  jsFile: Default.json
+  options: null
+  purifierConfig: null
+  purifyHtml: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+  toolbar:
+    - sourceEditing
+    - '|'
+    - heading
+    - '|'
+    - blockQuote
+    - codeBlock
+    - bold
+    - italic
+    - strikethrough
+    - bulletedList
+    - numberedList
+    - insertImage
+    - link
+translationKeyFormat: null
+translationMethod: site
+type: craft\ckeditor\Field

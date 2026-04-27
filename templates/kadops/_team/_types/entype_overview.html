@@ -1,0 +1,47 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageText }}
+    </div>
+    <div class="pulledProfiles">
+      <h2>{{ entry.title }}</h2>
+      {% set children = entry.children().level(2) %}
+        <ul>
+          {% for content in children.all() %}
+          {% set profile = content.profileDetails.one() %}
+          {% if profile %}
+          <li>
+              <h3>{{ profile.firstName }} {{ profile.surname }} {{ profile.qualifications }}</h3>
+              <h4>{{ profile.positionTitle }}</h4>
+              <figure>
+                <a href="{{ content.url }}">
+                {% if profile.profilePicture|length %}
+                <img src="{{ profile.profilePicture.one().url('profilePictures') }}" alt="{{ profile.profilePicture.one().title }}">
+                {% endif %}
+              </a>
+            </figure>
+              <p class="email">Email: <a href="mailto:{{ profile.emailAddress }}">{{ profile.emailAddress }}</a></p>
+              <p class="pLink">More about <a href="{{ content.url }}">{{ profile.firstName }}</a></p>
+          </li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

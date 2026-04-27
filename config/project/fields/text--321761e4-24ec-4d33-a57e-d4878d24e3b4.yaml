@@ -1,0 +1,41 @@
+columnSuffix: null
+handle: text
+instructions: null
+name: 'Content - Section Text - Text'
+searchable: true
+settings:
+  availableTransforms: '*'
+  availableVolumes: '*'
+  css: null
+  cssFile: null
+  defaultTransform: ''
+  enableSourceEditingForNonAdmins: true
+  fullGraphqlData: false
+  headingLevels:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+  js: null
+  jsFile: Kadops.json
+  options: null
+  purifierConfig: null
+  purifyHtml: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+  toolbar:
+    - heading
+    - '|'
+    - blockQuote
+    - codeBlock
+    - bold
+    - italic
+    - insertImage
+    - bulletedList
+    - link
+    - sourceEditing
+translationKeyFormat: null
+translationMethod: site
+type: craft\ckeditor\Field

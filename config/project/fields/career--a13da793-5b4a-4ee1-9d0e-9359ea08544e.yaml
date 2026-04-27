@@ -1,0 +1,90 @@
+columnSuffix: null
+contentColumnType: text
+handle: career
+instructions: null
+name: Career
+searchable: true
+settings:
+  addRowLabel: 'Add a Position'
+  columnType: text
+  columns:
+    __assoc__:
+      -
+        - col1
+        -
+          __assoc__:
+            -
+              - heading
+              - Position
+            -
+              - handle
+              - position
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+      -
+        - col2
+        -
+          __assoc__:
+            -
+              - heading
+              - Company
+            -
+              - handle
+              - company
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+      -
+        - col3
+        -
+          __assoc__:
+            -
+              - heading
+              - From
+            -
+              - handle
+              - from
+            -
+              - width
+              - ''
+            -
+              - type
+              - date
+      -
+        - col4
+        -
+          __assoc__:
+            -
+              - heading
+              - To
+            -
+              - handle
+              - to
+            -
+              - width
+              - ''
+            -
+              - type
+              - date
+  defaults:
+    -
+      __assoc__:
+        -
+          - col1
+          - ''
+        -
+          - col2
+          - ''
+  maxRows: null
+  minRows: 1
+  staticRows: false
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Table

@@ -1,0 +1,75 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+{% set profile = entry.profileDetails.one() %}
+<main>
+  <div class="content profiles">
+    <div class="pageText">
+      <header>
+        <h1>{{ profile.firstName }} {{ profile.surname }} {{ profile.qualifications }} - {{ profile.positionTitle }}</h1>
+      </header>
+      {{ entry.pageText }}
+    </div>
+    <figure>
+      {% if profile and profile.profilePicture|length %}
+      <img src="{{ profile.profilePicture.one().url('profilePictures') }}" alt="{{ profile.profilePicture.one().title }}">
+      {% endif %}
+      <figcaption>{{ profile.firstName }} {{ profile.surname }} - {{ profile.positionTitle }}</figcaption>
+    </figure>
+
+      {% if entry.career|length and entry.career[0].position %}
+    <div class="career">
+      <header>
+        <h2>Career</h2>
+      </header>
+      <ul>
+        {% for item in entry.career %}
+        <li><i>{{ item.position }}</i> {{ item.company }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if entry.achievements|length and entry.achievements[0].achievement %}
+    <div class="achievements">
+      <header>
+        <h2>Achievements</h2>
+      </header>
+      <ul>
+        {% for item in entry.achievements %}
+        <li><i>{{ item.achievement }}</i> {{ item.where }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if entry.references.exists() %}
+    <div class="references">
+      <header>
+        <h2>References</h2>
+      </header>
+      <ul>
+        {% for item in entry.references.all() %}
+        <li>
+          <blockquote>
+            <p>{{ item.reference }}</p>
+            <cite><i>{{ item.refereeName }}</i> {{ item.refereePosition }}</cite>
+          </blockquote>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}
+
+{% block pageScripts %}
+{% endblock %}

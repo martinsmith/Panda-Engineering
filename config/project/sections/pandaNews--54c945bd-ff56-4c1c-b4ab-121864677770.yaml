@@ -1,0 +1,21 @@
+defaultPlacement: end
+enableVersioning: true
+entryTypes:
+  -
+    uid: c2cd3f88-410e-4a31-9a2e-2bbf93b8da79 # News Intro
+  -
+    uid: dd1f3a64-42bf-4cb6-a468-cce29725df35 # Panda News
+handle: pandaNews
+maxAuthors: 1
+name: 'Panda News'
+propagationMethod: none
+siteSettings:
+  08101c32-d8eb-4be0-ae85-8bef7fa172b6: # Panda Engineering
+    enabledByDefault: true
+    hasUrls: true
+    template: _pandaNews/_entry
+    uriFormat: '{parent.uri}/{slug}'
+structure:
+  maxLevels: 2
+  uid: 7e976b1c-4731-42e7-9e78-47954568c3ff
+type: structure

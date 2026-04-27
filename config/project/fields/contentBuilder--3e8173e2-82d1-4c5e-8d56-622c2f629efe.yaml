@@ -1,0 +1,22 @@
+columnSuffix: null
+contentColumnType: string
+handle: contentBuilder
+instructions: null
+name: Content
+searchable: true
+settings:
+  entryTypes:
+    -
+      uid: 8b6761ff-d207-45ca-b2b0-11534c5863f6
+    -
+      uid: a71f9cdc-8077-459c-9b23-cf057000c642
+    -
+      uid: 9d99aefb-5b62-415b-9490-c9f89455adad
+  maxEntries: null
+  minEntries: 1
+  propagationKeyFormat: null
+  propagationMethod: none
+  viewMode: blocks
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Matrix

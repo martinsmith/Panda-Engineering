@@ -1,0 +1,104 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+{% set heroBlock = entry.hero.one() %}
+{% if heroBlock and heroBlock.heroImage|length %}
+<div class="hero" style="background-image: url({{ heroBlock.heroImage.one().url }})">
+  <div>{{ heroBlock.heroOverlayText }}</div>
+</div>
+{% endif %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {{ entry.pageIntroduction }}
+
+      {% for block in entry.pageSections.all() %}
+      {% switch block.type %}
+      {% case 'sectionTitle' %}
+      <header>
+        <h2>{{ block.sectionTitle }}</h2>
+      </header>
+      {% case 'sectionText' %}
+      <div>
+        {{ block.text }}
+      </div>
+      {% case 'serviceslisting' %}
+      {% set firstService = block.service.one() %}
+      <div class="serviceList {% if firstService and firstService.serviceImage.one()|length %}withImage{% endif %}">
+        {% if block.serviceSectionTitle|length %}
+        <header>
+          <h2>{{ block.serviceSectionTitle }}</h2>
+        </header>
+        {% endif %}
+        <ul>
+          {% for item in block.service %}
+          <li>
+            {% if item.serviceImage.one()|length %}
+              <h2>{{ item.serviceName }}</h2>
+              <img src="{{ item.serviceImage.one().url }}" alt="{{ item.serviceName }}">
+            {% elseif item.serviceImage.one()|length and item.linkTo|length %}
+            <h2><a href="{{ item.linkTo }}">{{ item.serviceName }}</a></h2>
+            <img src="{{ item.serviceImage.one().url }}" alt="{{ item.serviceName }}">
+            {% elseif item.linkTo|length %}
+            <a href="{{ item.linkTo.one().url }}">{{ item.serviceName }}</a>
+            {% else %}
+              {{ item.serviceName }}
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% case 'capacityList' %}
+      <div class="serviceList">
+        <header>
+          <h2>{{ block.sectionTitle }}</h2>
+        </header>
+        <ul>
+          {% for item in block.capacityItems %}
+          <li>{{ item.capacityItem }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% case 'supportingImages' %}
+      <div class="supportingImages">
+        {% for asset in block.addImages %}
+          <img src="{{ asset.url('summaries') }}" alt="{{ asset.title }}">
+        {% endfor %}
+      </div>
+      {% endswitch %}
+      {% endfor %}
+    </div>
+
+    {% set children = craft.entries.section('areasOfCapability').level(2) %}
+    <ul class="serviceBlocks">
+      {% for item in children %}
+      {% set itemHero = item.hero.one() %}
+      <li>
+        <a href="{{ item.url }}">
+          <h2>{{ item.title }}</h2>
+          <p>{{ itemHero ? itemHero.heroOverlayText }}</p>
+          {% if itemHero and itemHero.heroImage|length %}
+          <img src="{{ itemHero.heroImage.one.url('summaries') }}" alt="{{ itemHero.heroImage.one.title }}">
+          {% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</main>
+  {% endblock %}
+
+  {% block pageScripts %}
+  {% endblock %}

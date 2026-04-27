@@ -1,0 +1,54 @@
+{% import '_includes/forms' as forms %}
+
+{% if options|length > 1 %}
+<style>
+	.data-sd {
+		padding: 15px 0;
+	}
+	.sd-input {
+		width: 100%;
+		margin-top: 6px;
+		margin-bottom: 15px;
+	}
+	.sd-input .select {
+		width: 100%;
+		display: block;
+	}
+	.sd-input .select select {
+		width: 100%;
+	}
+</style>
+
+<div class="meta" id="site-duplicate">
+	<div class="data-sd">
+
+		<h5>{{ 'Duplicate entry to another Site'|t('siteduplicate') }}</h5>
+
+		{#
+		Site ID: {{ entry.siteId }}<br/>
+		Section ID: {{ entry.sectionId }}
+		#}
+
+		<div class="input sd-input">
+			{{ forms.select({
+		        fieldClass: '',
+		        class: '',
+		        id: "siteduplicate-siteId",
+		        options: options,
+		        name: "siteduplicate-siteId",
+		    }) }}
+		</div>
+
+		<button type="button" name="siteduplicate-duplicateButton" id="siteduplicate-duplicateButton" class="btn">{{ 'Duplicate'|t('siteduplicate') }}</button>
+
+	</div>
+</div>
+
+{% js %}
+	$('#siteduplicate-duplicateButton').click(function(){
+		$('input[name=action]').val('siteduplicate/duplicate');
+		$('#main-form').append('<input type="hidden" name="duplicateSiteId" value="'+$('#siteduplicate-siteId').val()+'"/>').val();
+		$('#main-form').submit();
+	});
+{% endjs %}
+{% endif %}

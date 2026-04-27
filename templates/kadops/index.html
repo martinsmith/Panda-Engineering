@@ -1,0 +1,47 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+
+{% block content %}
+{% set heroBlock = entry.hero.one() %}
+{% if heroBlock and heroBlock.heroImage|length %}
+<div class="hero" style="background-image: url({{ heroBlock.heroImage.one().url }})">
+  <div>{{ heroBlock.heroOverlayText }}</div>
+</div>
+{% endif %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.pageTitle }}</h1>
+      </header>
+      {{ entry.pageText }}
+    </div>
+    <div class="pulledContent">
+      {% set myEntryQuery = craft.entries()
+        .section('capabilities')
+        %}
+
+        {% set pulled = myEntryQuery.all() %}
+        <ul>
+          {% for content in pulled %}
+          {% for service in content.serviceCapabilities.all() %}
+          <li>
+            <a href="/capabilities/#{{ service.serviceTitle|kebab }}">
+              <h2>{{ service.serviceTitle }}</h2>
+              <p>{{ service.serviceSummary }}</p>
+              <img src="{{ service.serviceImage.one().url('summaries') }}" alt="{{ service.serviceImage.one().title }}">
+            </a>
+          </li>
+          {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </main>
+  {% endblock %}
+
+  {% block pageScripts %}
+  {% endblock %}

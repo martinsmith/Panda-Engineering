@@ -1,0 +1,74 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  333dc926-33a2-45c6-8e0e-f2c957283121:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 6347a00b-ca50-41a2-ad19-8425c746ba6c
+            handle: null
+            instructions: null
+            label: 'Referee Name'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 262c60bf-5e95-4c61-b069-b3c7b6defb5d
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: f1e920b9-7b31-4868-b327-3c35f5fc3bf5
+            handle: null
+            instructions: null
+            label: 'Referee Position'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 65a25e6d-99b9-4ade-82d5-e3e17e4ddb0a
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 50244b2b-4d04-4815-85e6-044d3a4399d2 # References - Reference
+            handle: null
+            instructions: null
+            label: Reference
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 38d4c72e-8a38-4718-9d1c-19aaadf7e15c
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: 2e7d2ade-5f66-432b-9de7-848f2517777e
+        userCondition: null
+    thumbFieldKey: null
+handle: referencesBlock
+hasTitleField: false
+icon: null
+name: 'References Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

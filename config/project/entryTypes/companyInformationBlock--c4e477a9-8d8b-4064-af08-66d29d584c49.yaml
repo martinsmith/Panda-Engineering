@@ -1,0 +1,74 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  42b0855f-f646-4eec-8af6-f5b9f83f2d0f:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 1cfcc26c-9d2a-42d0-b6c7-155d7c010a92
+            handle: null
+            instructions: null
+            label: Address
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 9b5d6719-164d-422d-a36b-33b40c4e8688
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 8ec8a84e-28c6-4e2f-a346-0bbcbbd546dc
+            handle: null
+            instructions: null
+            label: 'Company Reg'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: bae8c31b-03a0-4c7d-86f2-0d03b92d2536
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 000dc138-de3d-4948-bec2-496f89984e1d
+            handle: null
+            instructions: null
+            label: Contacts
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 36776214-54b8-4da5-8123-4c8de2e2328b
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: 3c70f278-6b9e-4244-be25-c99b001f38af
+        userCondition: null
+    thumbFieldKey: null
+handle: companyInformationBlock
+hasTitleField: false
+icon: null
+name: 'Company Information Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

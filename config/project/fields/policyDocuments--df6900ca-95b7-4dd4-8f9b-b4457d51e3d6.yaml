@@ -1,0 +1,26 @@
+columnSuffix: null
+handle: policyDocuments
+instructions: null
+name: 'Policy Documents'
+searchable: true
+settings:
+  createButtonLabel: null
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
+        -
+          - uid
+          - 2364038a-89ef-413b-ab78-2176456a14dd # Policy Documents Block
+  includeTableView: false
+  maxEntries: 5
+  minEntries: 1
+  pageSize: null
+  propagationKeyFormat: null
+  propagationMethod: none
+  showCardsInGrid: false
+  viewMode: blocks
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Matrix

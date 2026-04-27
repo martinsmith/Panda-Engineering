@@ -1,0 +1,10 @@
+columnSuffix: null
+handle: emailAddress2
+instructions: null
+name: 'Profile - Email Address'
+searchable: true
+settings:
+  placeholder: null
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Email

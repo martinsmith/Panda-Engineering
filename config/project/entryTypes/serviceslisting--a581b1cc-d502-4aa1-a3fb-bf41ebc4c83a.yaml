@@ -1,0 +1,60 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  69ebd490-2e94-42e6-8060-0dd0b0ce548c:
+    cardThumbAlignment: end
+    cardView:
+      - 'layoutElement:ef2905a7-a734-4fc7-8981-1b36bdaee372'
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: b0f72810-cb75-4db1-9846-ad819a9d3d5f
+            handle: null
+            instructions: null
+            label: 'Section Title'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: ef2905a7-a734-4fc7-8981-1b36bdaee372
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 2fd7d0b2-a8af-43b5-b48d-8aed11fb975b # Page Sections - ServicesList - Service
+            handle: null
+            instructions: null
+            label: Service
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 80aaea5e-368e-4f9f-95e2-99d1a0561b80
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: d3b21ab7-a7cb-44a3-8eac-b0575d86a0c3
+        userCondition: null
+    thumbFieldKey: null
+handle: serviceslisting
+hasTitleField: false
+icon: null
+name: ServicesList
+showSlugField: false
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

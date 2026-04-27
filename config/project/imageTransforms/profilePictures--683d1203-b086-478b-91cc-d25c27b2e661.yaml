@@ -1,0 +1,11 @@
+fill: null
+format: jpg
+handle: profilePictures
+height: 350
+interlace: none
+mode: crop
+name: 'Profile Pictures'
+position: center-center
+quality: 82
+upscale: true
+width: 250

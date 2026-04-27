@@ -1,0 +1,46 @@
+columnSuffix: null
+contentColumnType: text
+handle: pageIntroduction
+instructions: null
+name: 'Page Introduction'
+searchable: true
+settings:
+  availableTransforms: '*'
+  availableVolumes: '*'
+  columnType: text
+  css: null
+  cssFile: null
+  defaultTransform: ''
+  enableSourceEditingForNonAdmins: true
+  fullGraphqlData: false
+  headingLevels:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+  js: null
+  jsFile: Default.json
+  options: null
+  purifierConfig: null
+  purifyHtml: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+  toolbar:
+    - sourceEditing
+    - '|'
+    - heading
+    - '|'
+    - blockQuote
+    - codeBlock
+    - bold
+    - italic
+    - strikethrough
+    - bulletedList
+    - numberedList
+    - insertImage
+    - link
+translationKeyFormat: null
+translationMethod: site
+type: craft\ckeditor\Field

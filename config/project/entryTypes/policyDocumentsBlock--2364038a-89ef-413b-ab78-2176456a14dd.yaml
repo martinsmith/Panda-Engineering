@@ -1,0 +1,58 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  4f308347-8869-452c-9294-34ab46422219:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: e5fefffd-14d4-49f6-afba-ff31c9439344
+            handle: null
+            instructions: null
+            label: 'Document title'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: c0b886b6-55b5-4eb8-ab83-c9b46d69c805
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: d734bee2-d132-4204-89a0-edec02ba9213
+            handle: null
+            instructions: null
+            label: 'Document Upload'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 5bb871f7-da14-410f-89ca-17423749badf
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: a6be8dff-88bc-4b96-a731-95f11de9b563
+        userCondition: null
+    thumbFieldKey: null
+handle: policyDocumentsBlock
+hasTitleField: false
+icon: null
+name: 'Policy Documents Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

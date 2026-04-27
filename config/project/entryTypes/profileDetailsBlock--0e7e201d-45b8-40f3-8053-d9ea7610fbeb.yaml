@@ -1,0 +1,138 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  0e4420ae-c556-4666-b12f-bf3733dbccc7:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: a177ad8e-a72d-4a70-9d76-f8d803cae361
+            handle: null
+            instructions: null
+            label: 'Profile Picture'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: dd077602-24b1-49dc-a65f-a48ab1e8e0b8
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 18184c72-56da-4f73-9685-77478df376d7
+            handle: null
+            instructions: null
+            label: 'First Name'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 93c11729-7fa1-4869-b113-ab83ad799272
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: a2b34d35-591a-4435-9902-8ccb25ac9bb9
+            handle: null
+            instructions: null
+            label: Surname
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: a5361f0d-1cd3-46df-b351-ba6b6838a94b
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: e3402563-be6f-41fa-88d1-3b4d54a5e45c
+            handle: null
+            instructions: null
+            label: Position/Title
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 3fb73b09-4730-46f6-bcd6-b69b491ef4ce
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 53c51fff-4779-42d2-84dc-b034c0e7a5d6
+            handle: null
+            instructions: null
+            label: Qualifications
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 6e77119d-a05a-4b57-a128-b7b2629c0b7e
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: fa499391-926a-4107-8094-57c3522fb407
+            handle: null
+            instructions: null
+            label: 'Email Address'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 642376a6-e085-484c-a504-800ec83de1a1
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 4d9c3753-fecb-4198-9645-80bc57876a27
+            handle: null
+            instructions: null
+            label: 'LinkedIn Link'
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 9a00db60-8234-4934-a8f5-af428c0001a0
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: e1685c86-99ec-4159-850a-3069650f4fdc
+        userCondition: null
+    thumbFieldKey: null
+handle: profileDetailsBlock
+hasTitleField: false
+icon: null
+name: 'Profile Details Block'
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'

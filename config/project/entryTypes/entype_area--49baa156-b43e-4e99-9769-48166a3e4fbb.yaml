@@ -1,0 +1,100 @@
+fieldLayouts:
+  03c536a2-cf3f-4088-9b75-373b24d144b5:
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            elementCondition: null
+            id: null
+            inputType: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\entries\EntryTitleField
+            uid: 736d3e00-7a5f-4094-b8cf-4da680c25fd7
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            elementCondition: null
+            fieldUid: 318ceac4-1f0c-4b8b-b3db-39faa69fd25d # Hero
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: b8439cf1-f319-4af1-8fd7-edc184a9ddc1
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            elementCondition: null
+            fieldUid: 6af18bea-6a01-4de3-9c52-9162e75f7ebb # Page Introduction
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 37afbd32-c519-4ea8-b3ee-b1dbf071f0ff
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            elementCondition: null
+            fieldUid: c35e1a9b-e5ca-43f8-a58e-0a58e1581fbd # Page Sections
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 5e177b11-d8bd-4b17-bdf4-40d545b7689d
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: e025617c-1d70-4539-96dd-42023edcad94
+        userCondition: null
+      -
+        elementCondition: null
+        elements:
+          -
+            elementCondition: null
+            fieldUid: b0591aa2-c0f2-4fdf-a019-4416ebc666d8 # Override Global SEO Per Page
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 7ab35039-e830-40e6-9e18-168490678ff5
+            userCondition: null
+            warning: null
+            width: 100
+        name: SEOMatic
+        uid: 946762ab-3ea4-450d-9c05-3ab287553fbb
+        userCondition: null
+handle: entype_area
+hasTitleField: true
+name: Capability
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+sortOrder: 1
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

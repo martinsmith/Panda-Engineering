@@ -1,0 +1,57 @@
+{% extends '_layout' %}
+
+{% block pageCss %}
+{% endblock %}
+
+{% block bodyClass %}
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="content">
+    <div class="pageText">
+      <header>
+        <h1>{{ entry.title }}</h1>
+      </header>
+      {% for block in entry.contentBuilder.all() %}
+      {% switch block.type %}
+      {% case 'sectionTitle' %}
+      <header>
+        <h2>{{ block.sectionTitle }}</h2>
+      </header>
+      {% case 'sectionText' %}
+      <div>
+        {{ block.text }}
+      </div>
+      {% case 'supportingImages' %}
+      <div class="supportingImages">
+        {% for asset in block.addImages %}
+          <img src="{{ asset.url('summaries') }}" alt="{{ asset.title }}">
+        {% endfor %}
+      </div>
+      {% endswitch %}
+      {% endfor %}
+    </div>
+
+    {% set children = craft.entries.section('areasOfCapability').level(2) %}
+    <ul class="serviceBlocks">
+      {% for item in children %}
+      {% set itemHero = item.hero.one() %}
+      <li>
+        <a href="{{ item.url }}">
+          <h2>{{ item.title }}</h2>
+          <p>{{ itemHero ? itemHero.heroOverlayText }}</p>
+          {% if itemHero and itemHero.heroImage|length %}
+          <img src="{{ itemHero.heroImage.one.url('summaries') }}" alt="{{ itemHero.heroImage.one.title }}">
+          {% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</main>
+  {% endblock %}
+
+  {% block pageScripts %}
+  {% endblock %}

@@ -1,0 +1,184 @@
+dateModified: 1777279056
+email:
+  fromEmail: martin@mechanised.co.uk
+  fromName: Project
+  transportType: craft\mail\transportadapters\Sendmail
+fs:
+  direct:
+    hasUrls: true
+    name: Direct
+    settings:
+      path: assets
+    type: craft\fs\Local
+    url: /assets
+meta:
+  __names__:
+    0e7e201d-45b8-40f3-8053-d9ea7610fbeb: 'Profile Details Block' # Profile Details Block
+    0f34b306-eb64-41bb-9475-6d149116fd30: References # References
+    1a75f86f-3c8f-4301-8eb0-4be728618391: 'Supporting Images' # Supporting Images
+    2bab1b4b-9c73-46db-a424-065a6e96c879: 'Hero Block' # Hero Block
+    2fd7d0b2-a8af-43b5-b48d-8aed11fb975b: 'Page Sections - ServicesList - Service' # Page Sections - ServicesList - Service
+    3e8173e2-82d1-4c5e-8d56-622c2f629efe: Content # Content
+    6af18bea-6a01-4de3-9c52-9162e75f7ebb: 'Page Introduction' # Page Introduction
+    6b99b05c-3d3d-4cee-a97e-106e81e96b1c: Brand # Brand
+    6e987caa-c976-4b84-9b86-fe4c91a134a4: 'Contact Information' # Contact Information
+    7a102528-858e-40f4-8074-30384764baf8: 'Service Capabilities Block' # Service Capabilities Block
+    7b1e3f9b-1abf-4c62-a9ee-b907c066db18: small # small
+    7bfb3391-5edc-42d9-a58a-e34712a21e69: 'Service Capabilities' # Service Capabilities
+    7c8147fb-6b44-4bd9-9941-59c6cba1053d: 'Project Introduction' # Project Introduction
+    7efab5b7-5821-412c-9c72-9c03c486c460: 'Areas of Capability' # Areas of Capability
+    7fc6de07-1125-4dce-820e-d3a7b50f84ff: 'Policy Documents' # Policy Documents
+    8f1c1910-fa93-4ce9-a6fb-50f13a7989a4: 'Page Title' # Page Title
+    9da07754-03ed-4d57-b922-917ddba96c72: Biography # Biography
+    9de82510-27f9-4bc8-b117-2553094ea062: 'Case Study Images' # Case Study Images
+    9e43eb97-3023-4a81-bf7a-25709c76b78b: 'Images and Text Study' # Images and Text Study
+    9ebe2d4e-07f9-4fd3-8655-0b6ebcff6a31: 'Images Only Study' # Images Only Study
+    24ef758d-c6ee-4276-bf5d-2540f049b76a: Achievments # Achievments
+    49baa156-b43e-4e99-9769-48166a3e4fbb: Capability # Capability
+    54c945bd-ff56-4c1c-b4ab-121864677770: 'Panda News' # Panda News
+    88b867e8-471b-4a2a-a9cf-87a800ace135: 'Panda Team' # Panda Team
+    091b9d19-5686-40f4-93a4-ad85dc15777a: 'Company Information' # Company Information
+    318ceac4-1f0c-4b8b-b3db-39faa69fd25d: Hero # Hero
+    414f71cb-697e-478e-9f52-4b2fd4f6cbee: Homepage # Homepage
+    426b0d1b-7374-4c05-b844-97e94916dd5e: 'Public Schema' # Public Schema
+    683d1203-b086-478b-91cc-d25c27b2e661: 'Profile Pictures' # Profile Pictures
+    791a54fd-182a-4eca-b677-a52ea1ff20ad: 'Additional Pages' # Additional Pages
+    969e6c85-2a2f-4757-a703-a1e256b62323: 'Study Text' # Study Text
+    999c8e96-eedc-42d0-9936-1ed24f6a1237: 'Page Sections - Section Text - Text' # Page Sections - Section Text - Text
+    2440d605-4546-4ad3-84b8-61d02fd259f6: 'Hero - Hero Overlay Text' # Hero - Hero Overlay Text
+    08101c32-d8eb-4be0-ae85-8bef7fa172b6: 'Panda Engineering' # Panda Engineering
+    50244b2b-4d04-4815-85e6-044d3a4399d2: 'References - Reference' # References - Reference
+    75235d45-cfbe-4943-a49f-36622ebecb82: Gallery # Gallery
+    77448c72-dafb-4028-aea9-4eb677ca33aa: 'Project Images' # Project Images
+    321761e4-24ec-4d33-a57e-d4878d24e3b4: 'Content - Section Text - Text' # Content - Section Text - Text
+    757524fa-302d-4167-8b35-fca944b11b9d: Homepage # Homepage
+    2364038a-89ef-413b-ab78-2176456a14dd: 'Policy Documents Block' # Policy Documents Block
+    9587740a-09d9-47f6-9654-aecc04b70992: 'Brand Block' # Brand Block
+    a13da793-5b4a-4ee1-9d0e-9359ea08544e: Career # Career
+    a7606d83-b448-42ce-b465-eb80ab40d4d0: 'Page Text' # Page Text
+    b0591aa2-c0f2-4fdf-a019-4416ebc666d8: 'Override Global SEO Per Page' # Override Global SEO Per Page
+    b1b59a79-2793-4a07-a3ea-32d6be7324f4: 'Page Sections - ServicesList - Service Block' # Page Sections - ServicesList - Service Block
+    b8c2211b-67eb-41ad-808e-6adc735deb48: 'Article Text' # Article Text
+    b250b1af-00ee-4642-86d3-a0b2fcde0975: 'Profile Details' # Profile Details
+    b403bca0-2ac3-4d19-ae05-a15addf85b37: 'Panda Group' # Panda Group
+    bd7748ef-34c8-4922-843a-659895d90d4b: 'References Block' # References Block
+    be9cfcd7-876e-4f69-95e9-fd958c5a7402: Medium # Medium
+    bfcd7586-50fc-4927-800f-d7f798054851: Overview # Overview
+    c2cd3f88-410e-4a31-9a2e-2bbf93b8da79: 'News Intro' # News Intro
+    c4e477a9-8d8b-4064-af08-66d29d584c49: 'Company Information Block' # Company Information Block
+    c35e1a9b-e5ca-43f8-a58e-0a58e1581fbd: 'Page Sections' # Page Sections
+    c64ac48b-e6ad-4689-a725-076591167d20: 'Profile Block' # Profile Block
+    cd938a60-3fc2-45c8-be0e-56a73848693f: 'Project Text' # Project Text
+    cfb263fc-777f-4e2c-806b-beefa017645d: Brand # Brand
+    d1cec1dd-df52-4e68-a979-c893e6af1616: Profile # Profile
+    d7c35450-613e-4943-9003-ef28eaa6fd69: Overview # Overview
+    d5259a57-656b-4fef-8dab-006f806df19c: 'Additional Pages' # Additional Pages
+    da064374-dd80-4ac1-99e4-33946de39dc0: 'Panda Team' # Panda Team
+    dac17834-2dd9-44fe-82f5-551ddd17168d: Large # Large
+    dd1f3a64-42bf-4cb6-a468-cce29725df35: 'Panda News' # Panda News
+    de320aaf-bff6-4cd7-90a0-6590c4f80b01: Direct # Direct
+    df6900ca-95b7-4dd4-8f9b-b4457d51e3d6: 'Policy Documents' # Policy Documents
+    fe5d60d6-8991-48d8-be8d-742b86ea03cb: Summaries # Summaries
+plugins:
+  ckeditor:
+    edition: standard
+    enabled: true
+    schemaVersion: 5.0.0.1
+  cookie-consent-banner:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.3
+    settings:
+      allow: 'Allow cookies'
+      async_js: ''
+      auto_inject: '1'
+      decline: Decline
+      defer_js: ''
+      disable_in_live_preview: ''
+      dismiss: 'Got it!'
+      dismiss_on_scroll: '0'
+      dismiss_on_timeout: '0'
+      excluded_categories: null
+      excluded_entry_types: null
+      expiry_days: '365'
+      honour_do_not_track_header: ''
+      layout: classic
+      learn: 'Learn More'
+      learn_more_link: 'http://cookiesandyou.com/'
+      message: 'This website uses cookies to ensure you get the best experience on our website.'
+      palette: default
+      palette_banner: '#000000'
+      palette_banner_text: '#ffffff'
+      palette_button: '#76d6ff'
+      palette_button_text: '#000000'
+      palette_left_button_bg: '#f8e71c'
+      palette_left_button_text: '#000000'
+      palette_link: '#ffffff'
+      position: bottom-right
+      preload_css: ''
+      revokable: ''
+      secure_only: ''
+      target: _blank
+      type: info
+  postmark:
+    edition: standard
+    enabled: true
+    schemaVersion: 2.0.1
+  seomatic:
+    edition: standard
+    enabled: true
+    licenseKey: DLLIQHNJXEPHCIDOBX9I4AJL
+    schemaVersion: 3.0.13
+    settings:
+      addHrefLang: true
+      addPaginatedHreflang: true
+      addXDefaultHrefLang: true
+      cpTitlePrefix: '⚙ '
+      cspNonce: ''
+      cspScriptSrcPolicies:
+        -
+          __assoc__:
+            -
+              - policy
+              - "'self'"
+      devModeCpTitlePrefix: ''
+      devModeTitlePrefix: ''
+      displayAnalysisSidebar: true
+      displayPreviewSidebar: true
+      enableJsonLdEndpoint: false
+      enableMetaContainerEndpoint: false
+      enableSeoFileLinkEndpoint: false
+      environment: live
+      generatorEnabled: true
+      headersEnabled: true
+      lowercaseCanonicalUrl: '1'
+      maxDescriptionLength: 170
+      maxTitleLength: 80
+      metaCacheDuration: 'null'
+      pluginName: SEOmatic
+      regenerateSitemapsAutomatically: true
+      renderEnabled: true
+      separatorChar: '|'
+      sidebarDisplayPreviewTypes:
+        - google
+        - twitter
+        - linkedin
+      siteGroupsSeparate: '1'
+      siteUrlOverride: ''
+      sitemapsEnabled: true
+      socialMediaPreviewTarget: true
+      submitSitemaps: true
+system:
+  edition: pro
+  live: true
+  name: 'Panda Engineering'
+  retryDuration: null
+  schemaVersion: 5.9.0.8
+  timeZone: Europe/London
+users:
+  allowPublicRegistration: false
+  deactivateByDefault: false
+  defaultGroup: null
+  photoSubpath: ''
+  photoVolumeUid: null
+  requireEmailVerification: true

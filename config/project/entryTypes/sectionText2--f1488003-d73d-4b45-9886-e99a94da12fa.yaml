@@ -1,0 +1,44 @@
+allowLineBreaksInTitles: false
+color: null
+description: null
+fieldLayouts:
+  b4ae97f7-a70b-4203-aa01-72fbcc6549b5:
+    cardThumbAlignment: end
+    cardView:
+      - 'layoutElement:2bb3c780-4064-452b-b853-54baaeeb05a2'
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: null
+            editCondition: null
+            elementCondition: null
+            elementEditCondition: null
+            fieldUid: 999c8e96-eedc-42d0-9936-1ed24f6a1237 # Page Sections - Section Text - Text
+            handle: text
+            instructions: null
+            label: Text
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 2bb3c780-4064-452b-b853-54baaeeb05a2
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: ceabfce5-9a5d-4c34-a096-9a5741c44bb4
+        userCondition: null
+    thumbFieldKey: null
+handle: sectionText2
+hasTitleField: false
+icon: null
+name: 'Section Text'
+showSlugField: false
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
+uiLabelFormat: '{title}'
