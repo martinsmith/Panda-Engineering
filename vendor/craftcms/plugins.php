@@ -66,11 +66,11 @@ return array (
       '@craft/ckeditor' => $vendorDir . '/craftcms/ckeditor/src',
     ),
     'name' => 'CKEditor',
-    'version' => '5.4.0',
+    'version' => '5.5.0',
     'description' => 'Edit rich text content in Craft CMS using CKEditor.',
     'developer' => 'Pixel & Tonic',
     'developerUrl' => 'https://pixelandtonic.com/',
     'developerEmail' => 'support@craftcms.com',
-    'documentationUrl' => 'https://github.com/craftcms/ckeditor/blob/master/README.md',
+    'documentationUrl' => 'https://github.com/craftcms/ckeditor/blob/5.x/README.md',
   ),
 );

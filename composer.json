@@ -1,8 +1,8 @@
 {
   "require": {
     "adigital/cookie-consent-banner": "^3.0",
-    "craftcms/ckeditor": "^5.4.0",
-    "craftcms/cms": "^5.9.21",
+    "craftcms/ckeditor": "^5.5.0",
+    "craftcms/cms": "^5.9.22",
     "craftcms/postmark": "^3.0",
     "nystudio107/craft-seomatic": "^5.0",
     "vlucas/phpdotenv": "^5.4.0"

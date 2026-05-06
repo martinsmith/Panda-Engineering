@@ -1,4 +1,4 @@
-dateModified: 1777279056
+dateModified: 1778055824
 email:
   fromEmail: martin@mechanised.co.uk
   fromName: Project
@@ -169,7 +169,7 @@ plugins:
       socialMediaPreviewTarget: true
       submitSitemaps: true
 system:
-  edition: pro
+  edition: solo
   live: true
   name: 'Panda Engineering'
   retryDuration: null
