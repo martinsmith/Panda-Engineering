@@ -29,7 +29,7 @@ fieldLayouts:
             editCondition: null
             elementCondition: null
             elementEditCondition: null
-            fieldUid: 2bf32af3-2504-449b-9e7f-9a3548253ff8
+            fieldUid: 2bf32af3-2504-449b-9e7f-9a3548253ff8 # Service Capabilities - Service Image
             handle: null
             instructions: null
             label: 'Service Image'

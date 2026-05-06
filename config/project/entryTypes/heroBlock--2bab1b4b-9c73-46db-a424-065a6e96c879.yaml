@@ -13,7 +13,7 @@ fieldLayouts:
             editCondition: null
             elementCondition: null
             elementEditCondition: null
-            fieldUid: 4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a
+            fieldUid: 4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a # Hero - Hero Image
             handle: null
             instructions: null
             label: 'Hero Image'

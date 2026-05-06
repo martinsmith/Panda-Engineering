@@ -1,5 +1,4 @@
 columnSuffix: null
-contentColumnType: string
 handle: supportingImages
 instructions: null
 name: 'Supporting Images'
@@ -10,26 +9,27 @@ settings:
   allowUploads: true
   allowedKinds: null
   branchLimit: null
-  defaultUploadLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
+  defaultPlacement: end
+  defaultUploadLocationSource: 'volume:de320aaf-bff6-4cd7-90a0-6590c4f80b01' # Direct
   defaultUploadLocationSubpath: null
-  localizeRelations: false
   maintainHierarchy: false
   maxRelations: null
   minRelations: null
   previewMode: full
   restrictFiles: false
-  restrictLocation: true
+  restrictLocation: false
   restrictedDefaultUploadSubpath: null
-  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
+  restrictedLocationSource: 'volume:de320aaf-bff6-4cd7-90a0-6590c4f80b01' # Direct
   restrictedLocationSubpath: null
   selectionLabel: 'Add an Image'
+  showSearchInput: true
   showSiteMenu: true
   showUnpermittedFiles: false
   showUnpermittedVolumes: false
   sources: '*'
   targetSiteId: null
   validateRelatedElements: false
-  viewMode: large
+  viewMode: thumbs
 translationKeyFormat: null
-translationMethod: site
+translationMethod: none
 type: craft\fields\Assets

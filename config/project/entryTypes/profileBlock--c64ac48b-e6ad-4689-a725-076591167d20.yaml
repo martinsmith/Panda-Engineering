@@ -13,7 +13,7 @@ fieldLayouts:
             editCondition: null
             elementCondition: null
             elementEditCondition: null
-            fieldUid: 92c21d7c-f3a9-4219-8f54-505098156f65
+            fieldUid: 92c21d7c-f3a9-4219-8f54-505098156f65 # Profile - Profile Picture
             handle: profilePicture
             instructions: null
             label: 'Profile Picture'

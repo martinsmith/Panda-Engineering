@@ -1,4 +1,4 @@
-dateModified: 1778055824
+dateModified: 1778056350
 email:
   fromEmail: martin@mechanised.co.uk
   fromName: Project
@@ -17,10 +17,13 @@ meta:
     0f34b306-eb64-41bb-9475-6d149116fd30: References # References
     1a75f86f-3c8f-4301-8eb0-4be728618391: 'Supporting Images' # Supporting Images
     2bab1b4b-9c73-46db-a424-065a6e96c879: 'Hero Block' # Hero Block
+    2bf32af3-2504-449b-9e7f-9a3548253ff8: 'Service Capabilities - Service Image' # Service Capabilities - Service Image
     2fd7d0b2-a8af-43b5-b48d-8aed11fb975b: 'Page Sections - ServicesList - Service' # Page Sections - ServicesList - Service
     3e8173e2-82d1-4c5e-8d56-622c2f629efe: Content # Content
+    4e5e3aa1-5835-4980-ba6c-9f87b1cfa94a: 'Hero - Hero Image' # Hero - Hero Image
     6af18bea-6a01-4de3-9c52-9162e75f7ebb: 'Page Introduction' # Page Introduction
     6b99b05c-3d3d-4cee-a97e-106e81e96b1c: Brand # Brand
+    6e33bb60-e268-4870-bc46-b4fc8094502e: 'Brand - Logo' # Brand - Logo
     6e987caa-c976-4b84-9b86-fe4c91a134a4: 'Contact Information' # Contact Information
     7a102528-858e-40f4-8074-30384764baf8: 'Service Capabilities Block' # Service Capabilities Block
     7b1e3f9b-1abf-4c62-a9ee-b907c066db18: small # small
@@ -38,6 +41,8 @@ meta:
     54c945bd-ff56-4c1c-b4ab-121864677770: 'Panda News' # Panda News
     88b867e8-471b-4a2a-a9cf-87a800ace135: 'Panda Team' # Panda Team
     091b9d19-5686-40f4-93a4-ad85dc15777a: 'Company Information' # Company Information
+    92c21d7c-f3a9-4219-8f54-505098156f65: 'Profile - Profile Picture' # Profile - Profile Picture
+    96aa048d-6854-4079-a4bb-19af7c170d9f: 'Page Sections - Supporting Images - Add Images' # Page Sections - Supporting Images - Add Images
     318ceac4-1f0c-4b8b-b3db-39faa69fd25d: Hero # Hero
     414f71cb-697e-478e-9f52-4b2fd4f6cbee: Homepage # Homepage
     426b0d1b-7374-4c05-b844-97e94916dd5e: 'Public Schema' # Public Schema
@@ -54,7 +59,9 @@ meta:
     757524fa-302d-4167-8b35-fca944b11b9d: Homepage # Homepage
     2364038a-89ef-413b-ab78-2176456a14dd: 'Policy Documents Block' # Policy Documents Block
     9587740a-09d9-47f6-9654-aecc04b70992: 'Brand Block' # Brand Block
+    51382061-10b3-4d46-85d3-3e42b04e08f4: 'Content - Supporting Images - Add Images' # Content - Supporting Images - Add Images
     a13da793-5b4a-4ee1-9d0e-9359ea08544e: Career # Career
+    a177ad8e-a72d-4a70-9d76-f8d803cae361: 'Profile Details - Profile Picture' # Profile Details - Profile Picture
     a7606d83-b448-42ce-b465-eb80ab40d4d0: 'Page Text' # Page Text
     b0591aa2-c0f2-4fdf-a019-4416ebc666d8: 'Override Global SEO Per Page' # Override Global SEO Per Page
     b1b59a79-2793-4a07-a3ea-32d6be7324f4: 'Page Sections - ServicesList - Service Block' # Page Sections - ServicesList - Service Block
@@ -72,6 +79,7 @@ meta:
     cfb263fc-777f-4e2c-806b-beefa017645d: Brand # Brand
     d1cec1dd-df52-4e68-a979-c893e6af1616: Profile # Profile
     d7c35450-613e-4943-9003-ef28eaa6fd69: Overview # Overview
+    d734bee2-d132-4204-89a0-edec02ba9213: 'Policy Documents - Document Upload' # Policy Documents - Document Upload
     d5259a57-656b-4fef-8dab-006f806df19c: 'Additional Pages' # Additional Pages
     da064374-dd80-4ac1-99e4-33946de39dc0: 'Panda Team' # Panda Team
     dac17834-2dd9-44fe-82f5-551ddd17168d: Large # Large

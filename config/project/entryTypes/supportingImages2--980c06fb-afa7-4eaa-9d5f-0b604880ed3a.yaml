@@ -13,7 +13,7 @@ fieldLayouts:
             editCondition: null
             elementCondition: null
             elementEditCondition: null
-            fieldUid: 96aa048d-6854-4079-a4bb-19af7c170d9f
+            fieldUid: 96aa048d-6854-4079-a4bb-19af7c170d9f # Page Sections - Supporting Images - Add Images
             handle: addImages
             instructions: null
             label: 'Add Images'

@@ -1,5 +1,4 @@
 columnSuffix: null
-contentColumnType: string
 handle: caseStudyImages
 instructions: null
 name: 'Case Study Images'
@@ -10,9 +9,9 @@ settings:
   allowUploads: true
   allowedKinds: null
   branchLimit: null
-  defaultUploadLocationSource: 'volume:49dabed7-207d-4087-9227-a18660a3b4c2'
+  defaultPlacement: end
+  defaultUploadLocationSource: 'volume:de320aaf-bff6-4cd7-90a0-6590c4f80b01' # Direct
   defaultUploadLocationSubpath: null
-  localizeRelations: false
   maintainHierarchy: false
   maxRelations: null
   minRelations: null
@@ -20,17 +19,17 @@ settings:
   restrictFiles: false
   restrictLocation: false
   restrictedDefaultUploadSubpath: null
-  restrictedLocationSource: 'volume:504a9970-e732-4891-a6f3-66f1e99d8ae9'
+  restrictedLocationSource: 'volume:de320aaf-bff6-4cd7-90a0-6590c4f80b01' # Direct
   restrictedLocationSubpath: null
   selectionLabel: 'Add an Image'
+  showSearchInput: true
   showSiteMenu: true
   showUnpermittedFiles: false
   showUnpermittedVolumes: false
-  sources:
-    - 'volume:49dabed7-207d-4087-9227-a18660a3b4c2'
+  sources: '*'
   targetSiteId: null
   validateRelatedElements: false
-  viewMode: large
+  viewMode: thumbs
 translationKeyFormat: null
-translationMethod: site
+translationMethod: none
 type: craft\fields\Assets
